@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BA Шпаргалка v2</title>
+<title>BA Шпаргалка — Сбор требований</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -526,7 +526,10 @@
   <!-- Interview banner -->
   <div class="interview-banner" id="interviewBanner">
     <span>🎯 <strong>Режим собеседования</strong> — <span id="bannerStep">Понять проблему</span></span>
-    <button class="btn-next-step" onclick="interviewNextStep()">Следующий шаг →</button>
+    <div style="display:flex;gap:8px;">
+      <button class="btn-next-step" id="btnPrevStep" onclick="interviewPrevStep()" style="opacity:0.4;pointer-events:none;">← Назад</button>
+      <button class="btn-next-step" onclick="interviewNextStep()">Следующий шаг →</button>
+    </div>
   </div>
 
   <!-- Meta -->
@@ -1065,11 +1068,21 @@
       if (i === interviewStep) { card.classList.add('active-step','open'); }
       else { card.classList.add('locked'); }
     }
+    const btnPrev = document.getElementById('btnPrevStep');
+    if (btnPrev) {
+      const isFirst = interviewStep === 1;
+      btnPrev.style.opacity = isFirst ? '0.4' : '1';
+      btnPrev.style.pointerEvents = isFirst ? 'none' : 'auto';
+    }
   }
 
   function interviewNextStep() {
     if (interviewStep < 5) { interviewStep++; applyInterviewMode(); }
     else { showToast('Все шаги пройдены 🎉'); }
+  }
+
+  function interviewPrevStep() {
+    if (interviewStep > 1) { interviewStep--; applyInterviewMode(); }
   }
 
   function resetAll() {
