@@ -313,17 +313,29 @@
 
   .questions-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
 
+  /* Question wrap — единый блок с одной рамкой */
+  .question-wrap {
+    display: flex; flex-direction: column;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid transparent;
+    background: var(--bg);
+    transition: all 0.15s;
+    overflow: hidden;
+  }
+  .question-wrap:hover { border-color: var(--accent); background: var(--accent-light); }
+  .question-wrap.hint-open { border-color: var(--accent); background: var(--accent-light); }
+  .question-wrap.asked-wrap { background: var(--success-light); border-color: var(--success-border); }
+
   .question-item {
     display: flex; align-items: flex-start; gap: 10px;
     font-size: 13px; color: var(--text); line-height: 1.5;
-    padding: 9px 12px; border-radius: var(--radius-sm);
-    background: var(--bg); border: 1.5px solid transparent;
-    cursor: pointer; transition: all 0.15s;
+    padding: 9px 12px;
+    background: transparent; border: none;
+    cursor: pointer; transition: color 0.15s;
   }
-  .question-item:hover { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
-  .question-item.asked {
-    background: var(--success-light); border-color: var(--success-border);
-    color: var(--success); text-decoration: line-through; opacity: 0.65;
+  .question-wrap:hover .question-item { color: var(--accent); }
+  .question-wrap.asked-wrap .question-item {
+    color: var(--success); text-decoration: line-through; opacity: 0.75;
   }
 
   .question-check {
@@ -332,10 +344,68 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 10px; transition: all 0.15s; background: var(--surface);
   }
-  .question-item:hover .question-check { border-color: var(--accent); }
-  .question-item.asked .question-check {
+  .question-wrap:hover .question-check { border-color: var(--accent); }
+  .question-wrap.asked-wrap .question-check {
     background: var(--success); border-color: var(--success); color: white;
   }
+
+  .question-text { flex: 1; }
+
+  .btn-info {
+    width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; margin-top: 1px;
+    border: 1.5px solid var(--border); background: var(--surface);
+    color: var(--text-muted); font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.15s; font-style: italic;
+    font-family: Georgia, serif;
+  }
+  .question-wrap:hover .btn-info { border-color: var(--accent); color: var(--accent); background: transparent; }
+  .btn-info.active { border-color: var(--accent); color: var(--accent); }
+
+  .question-hint {
+    display: none; font-size: 12px; color: var(--text-muted);
+    padding: 0 12px 9px 38px; line-height: 1.5;
+    font-style: italic;
+  }
+  .question-hint.visible { display: block; }
+
+  /* Custom question add */
+  .custom-q-section { margin-top: 10px; }
+  .custom-q-label {
+    font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; color: var(--text-xs); margin-bottom: 7px;
+  }
+  .add-question-row { display: flex; gap: 7px; margin-bottom: 6px; }
+  .add-question-input {
+    flex: 1; padding: 8px 11px; border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm); font-family: 'Inter', sans-serif;
+    font-size: 13px; color: var(--text); background: var(--bg); outline: none;
+    transition: border-color 0.15s;
+  }
+  .add-question-input:focus { border-color: var(--accent); background: var(--surface); }
+  .add-question-input::placeholder { color: #D4D4D8; }
+  .btn-add-q {
+    padding: 8px 13px; border-radius: var(--radius-sm);
+    border: 1.5px solid var(--accent-mid); background: var(--accent-light);
+    color: var(--accent); font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s; white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+  }
+  .btn-add-q:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+  .custom-question-item {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: var(--accent); line-height: 1.5;
+    padding: 9px 12px; border-radius: var(--radius-sm);
+    background: var(--accent-light); border: 1.5px solid var(--accent-mid);
+    cursor: pointer; transition: border-color 0.15s;
+  }
+  .custom-question-item:hover { border-color: var(--accent); }
+  .custom-question-item.asked { background: var(--success-light); border-color: var(--success-border); color: var(--success); text-decoration: line-through; opacity: 0.65; }
+  .custom-question-item.asked .question-check { background: var(--success); border-color: var(--success); color: white; }
+  .custom-question-item .question-check { border-color: var(--accent-mid); background: transparent; }
+  .custom-q-del { background: none; border: none; color: var(--accent); opacity: 0.4; cursor: pointer; font-size: 16px; margin-left: auto; padding: 0 2px; transition: opacity 0.15s; }
+  .custom-q-del:hover { opacity: 1; color: var(--danger); }
 
   /* Notes */
   .notes-header {
@@ -571,12 +641,35 @@
       <div class="step-body">
         <div class="questions-label">Вопросы</div>
         <ul class="questions-list" id="q-1">
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Какую проблему мы решаем этой фичей?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Кто конкретно с этим сталкивается и как часто?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Как люди обходятся без этого сейчас?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Почему это важно именно сейчас?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Есть ли жалобы, отзывы или данные, которые подтверждают проблему?</li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какую проблему мы решаем этой фичей?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Стейкхолдер часто приходит с готовым решением, минуя проблему. Этот вопрос возвращает разговор к корню.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Кто конкретно с этим сталкивается и как часто?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Помогает понять масштаб — решаем боль 1000 пользователей или одного руководителя.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Как люди обходятся без этого сейчас?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Если обходятся легко — проблема не критична. Если с трудом — высокий приоритет.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Почему это важно именно сейчас?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Выявляет скрытый дедлайн или внешний триггер — конкурент запустил фичу, регулятор требует, CEO увидел.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Есть ли жалобы, отзывы или данные, подтверждающие проблему?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Отличает реальную боль от предположения. Без данных — это гипотеза, не факт.</div>
+          </li>
         </ul>
+        <div class="custom-q-section">
+          <div class="custom-q-label">Свой вопрос</div>
+          <div class="add-question-row">
+            <input class="add-question-input" id="cq-1" placeholder="Добавь вопрос специфичный для этого кейса...">
+            <button class="btn-add-q" onclick="addCustomQ(1)">+ Добавить</button>
+          </div>
+          <ul class="questions-list" id="cq-list-1"></ul>
+        </div>
         <div class="notes-header">
           <div class="notes-label">Заметки</div>
           <button class="btn-template" onclick="fillTemplate(1)">+ Шаблон</button>
@@ -604,12 +697,35 @@
       <div class="step-body">
         <div class="questions-label">Вопросы</div>
         <ul class="questions-list" id="q-2">
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Как мы поймём, что фича работает? Какая метрика?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Какая конкретная цифра будет считаться успехом?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Что изменится для пользователя после запуска?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Что изменится для бизнеса?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Как эта метрика выглядит сейчас — есть ли базовая линия?</li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Как мы поймём, что фича работает? Какая метрика?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Без метрики невозможно оценить успех. Часто стейкхолдер не думал об этом — помоги ему сформулировать.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какая конкретная цифра будет считаться успехом?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">"Стало лучше" — не метрика. "Конверсия выросла с 3% до 5%" — метрика.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Что изменится для пользователя после запуска?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Проверяет что фича реально меняет опыт, а не просто добавляет кнопку ради кнопки.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Что изменится для бизнеса?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Помогает связать фичу с бизнес-целью — без этого сложно обосновать приоритет.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Как эта метрика выглядит сейчас — есть ли базовая линия?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Без базовой линии ты не докажешь что фича сработала. Нужно зафиксировать точку отсчёта до запуска.</div>
+          </li>
         </ul>
+        <div class="custom-q-section">
+          <div class="custom-q-label">Свой вопрос</div>
+          <div class="add-question-row">
+            <input class="add-question-input" id="cq-2" placeholder="Добавь вопрос специфичный для этого кейса...">
+            <button class="btn-add-q" onclick="addCustomQ(2)">+ Добавить</button>
+          </div>
+          <ul class="questions-list" id="cq-list-2"></ul>
+        </div>
         <div class="notes-header">
           <div class="notes-label">Заметки</div>
           <button class="btn-template" onclick="fillTemplate(2)">+ Шаблон</button>
@@ -637,16 +753,51 @@
       <div class="step-body">
         <div class="questions-label">Вопросы <span class="risk-tag">⚠ риск</span></div>
         <ul class="questions-list" id="q-3">
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Какие данные нужны для работы этой фичи?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Эти данные у нас уже есть? В каком виде и где хранятся?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Кто владелец данных — нужно ли согласование с другой командой?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Данные чистые? Есть ли пропуски или аномалии?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Нужно ли подключать дата-аналитика?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Если данных нет — сколько времени займёт их начать собирать?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Есть ли технические ограничения?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Есть ли юридические ограничения (персональные данные, налоги, compliance)?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Какие зависимости от других команд или систем?</li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какие данные нужны для работы этой фичи?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Большинство фич требуют данных для работы или измерения результата. Выясни что именно нужно до начала разработки.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Эти данные у нас уже есть? В каком виде и где хранятся?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Если данных нет — фича не взлетит. Это самый частый невидимый риск который обнаруживают уже в середине разработки.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Кто владелец данных — нужно ли согласование с другой командой?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Данные могут принадлежать другой команде. Согласование занимает время — выясни это на старте.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Данные чистые? Есть ли пропуски или аномалии?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Грязные данные дадут неверные результаты. Аналитик должен это проверить до разработки.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Нужно ли подключать дата-аналитика?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Аналитик скажет чистые ли данные, как их получить, сколько займёт. Подключай на старте — не в конце.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Если данных нет — сколько времени займёт начать их собирать?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Сбор данных может занять недели или месяцы. Это критично для оценки реального дедлайна.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Есть ли технические ограничения?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Архитектура системы может не позволить реализовать фичу быстро. Уточни у разработчиков до написания требований.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Есть ли юридические ограничения (персональные данные, налоги, compliance)?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Персональные данные, финансы, медицина — всё регулируется. Лучше узнать сейчас чем переделывать после разработки.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какие зависимости от других команд или систем?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Зависимость от другой команды — риск для дедлайна. Нужно согласовать заранее.</div>
+          </li>
         </ul>
+        <div class="custom-q-section">
+          <div class="custom-q-label">Свой вопрос</div>
+          <div class="add-question-row">
+            <input class="add-question-input" id="cq-3" placeholder="Добавь вопрос специфичный для этого кейса...">
+            <button class="btn-add-q" onclick="addCustomQ(3)">+ Добавить</button>
+          </div>
+          <ul class="questions-list" id="cq-list-3"></ul>
+        </div>
         <div class="notes-header">
           <div class="notes-label">Заметки</div>
           <button class="btn-template" onclick="fillTemplate(3)">+ Шаблон</button>
@@ -674,14 +825,43 @@
       <div class="step-body">
         <div class="questions-label">Вопросы</div>
         <ul class="questions-list" id="q-4">
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Кто пользователи этой фичи? (физлица / юрлица / все?)</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Что точно входит в скоуп?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Что точно не входит в скоуп?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>На каких платформах? (мобайл / веб / оба?)</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Есть ли дедлайн? Жёсткий или мягкий?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Привязан ли дедлайн к кампании или внешнему событию?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Какой приоритет относительно других задач?</li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Кто пользователи этой фичи? (физлица / юрлица / все?)</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Разные аудитории — разные сценарии и требования. Это влияет на скоуп и сложность.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Что точно входит в скоуп?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Без явного скоупа разработчики начнут делать "всё что логично" — и никогда не закончат.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Что точно не входит в скоуп?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Зафиксировать что НЕ делаем — так же важно как что делаем. Это защита от расползания скоупа.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">На каких платформах? (мобайл / веб / оба?)</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Разные платформы — разные команды и сроки. Уточни сразу чтобы не было сюрпризов.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Есть ли дедлайн? Жёсткий или мягкий?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Жёсткий дедлайн меняет приоритизацию и скоуп. Если привязан к маркетинговой кампании — это риск.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Привязан ли дедлайн к кампании или внешнему событию?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Если анонс уже запланирован — нужно подтвердить реалистичность сроков с разработчиками до того как стейкхолдер включит фичу в анонс.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какой приоритет относительно других задач?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Команда не может делать всё одновременно. Нужно понять что подвинется ради этой фичи.</div>
+          </li>
         </ul>
+        <div class="custom-q-section">
+          <div class="custom-q-label">Свой вопрос</div>
+          <div class="add-question-row">
+            <input class="add-question-input" id="cq-4" placeholder="Добавь вопрос специфичный для этого кейса...">
+            <button class="btn-add-q" onclick="addCustomQ(4)">+ Добавить</button>
+          </div>
+          <ul class="questions-list" id="cq-list-4"></ul>
+        </div>
         <div class="notes-header">
           <div class="notes-label">Заметки</div>
           <button class="btn-template" onclick="fillTemplate(4)">+ Шаблон</button>
@@ -709,12 +889,35 @@
       <div class="step-body">
         <div class="questions-label">Чеклист перед завершением</div>
         <ul class="questions-list" id="q-5">
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Зафиксировал все открытые вопросы и риски?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Договорились кто проверяет данные с дата-аналитиком?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Стейкхолдер знает что ему нужно уточнить до следующей встречи?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Назначен следующий созвон или дедлайн по уточнениям?</li>
-          <li class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div>Если нашёл риск — предложил решение, а не просто констатировал?</li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Зафиксировал все открытые вопросы и риски?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Открытые вопросы должны быть явно записаны — иначе они теряются и всплывают в середине разработки.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Договорились кто проверяет данные с дата-аналитиком?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Без конкретного ответственного это не будет сделано. Зафикисруй имя и срок.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Стейкхолдер знает что ему нужно уточнить?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Без чёткого "домашнего задания" стейкхолдер забудет. Проговори вслух и зафиксируй.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Назначен следующий созвон или дедлайн по уточнениям?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">Договорённости без даты — не договорённости. Назначь сразу пока оба на звонке.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Если нашёл риск — предложил решение, а не просто констатировал?</span><button class="btn-info" onclick="toggleHint(event, this)">i</button></div>
+            <div class="question-hint">BA который только называет проблему — это репортёр. BA который предлагает решение — это партнёр бизнеса.</div>
+          </li>
         </ul>
+        <div class="custom-q-section">
+          <div class="custom-q-label">Свой вопрос</div>
+          <div class="add-question-row">
+            <input class="add-question-input" id="cq-5" placeholder="Добавь пункт специфичный для этого кейса...">
+            <button class="btn-add-q" onclick="addCustomQ(5)">+ Добавить</button>
+          </div>
+          <ul class="questions-list" id="cq-list-5"></ul>
+        </div>
         <div class="notes-header">
           <div class="notes-label">Следующие шаги</div>
           <button class="btn-template" onclick="fillTemplate(5)">+ Шаблон</button>
@@ -818,13 +1021,46 @@
   }
 
   function toggleQuestion(el) {
+    const wrap = el.closest('.question-wrap');
     const step = el.closest('.step-card').dataset.step;
-    const idx = Array.from(el.closest('.questions-list').children).indexOf(el);
+    const idx = Array.from(el.closest('.questions-list').children).indexOf(wrap);
     el.classList.toggle('asked');
+    wrap.classList.toggle('asked-wrap', el.classList.contains('asked'));
     el.querySelector('.question-check').textContent = el.classList.contains('asked') ? '✓' : '';
     state[`q_${step}_${idx}`] = el.classList.contains('asked');
     saveState(); updateQProgress(parseInt(step));
   }
+
+  function toggleHint(e, btn) {
+    e.stopPropagation();
+    const wrap = btn.closest('.question-wrap');
+    const hint = wrap.querySelector('.question-hint');
+    if (!hint) return;
+    hint.classList.toggle('visible');
+    btn.classList.toggle('active');
+    wrap.classList.toggle('hint-open', hint.classList.contains('visible'));
+  }
+
+  function addCustomQ(stepNum) {
+    const input = document.getElementById(`cq-${stepNum}`);
+    const text = input.value.trim();
+    if (!text) return;
+    const list = document.getElementById(`cq-list-${stepNum}`);
+    const li = document.createElement('li');
+    li.className = '';
+    li.innerHTML = `<div class="custom-question-item" onclick="this.classList.toggle('asked');this.querySelector('.question-check').textContent=this.classList.contains('asked')?'✓':''"><div class="question-check"></div><span class="question-text">${text}</span><button class="custom-q-del" onclick="event.stopPropagation();this.closest('li').remove()">×</button></div>`;
+    list.appendChild(li);
+    input.value = '';
+    input.focus();
+  }
+
+  // Enter key for custom questions
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.classList.contains('add-question-input')) {
+      const match = e.target.id.match(/cq-(\d+)/);
+      if (match) addCustomQ(parseInt(match[1]));
+    }
+  });
 
   function updateQProgress(n) {
     const total = document.querySelectorAll(`#q-${n} .question-item`).length;

@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BA — Встреча про проблему</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: #EA580C;
+    --accent-hover: #C2410C;
+    --accent-light: #FFF7ED;
+    --accent-mid: #FED7AA;
+    --bg: #FAFAF9;
+    --surface: #FFFFFF;
+    --text: #18181B;
+    --text-muted: #71717A;
+    --text-xs: #A1A1AA;
+    --border: #E4E4E7;
+    --border-hover: #D4D4D8;
+    --success: #16A34A;
+    --success-light: #F0FDF4;
+    --success-border: #BBF7D0;
+    --danger: #DC2626;
+    --danger-light: #FEF2F2;
+    --radius: 12px;
+    --radius-sm: 8px;
+
+    --p1: #DC2626;
+    --p1-light: #FEF2F2;
+    --p1-mid: #FECACA;
+    --p2: #D97706;
+    --p2-light: #FFFBEB;
+    --p2-mid: #FDE68A;
+    --p3: #2563EB;
+    --p3-light: #EFF6FF;
+    --p3-mid: #BFDBFE;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 36px 16px 80px;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #DC2626, #EA580C, #F59E0B);
+    z-index: 100;
+  }
+
+  .container { max-width: 780px; margin: 0 auto; }
+
+  /* Header */
+  .header { margin-bottom: 24px; }
+  .header-top {
+    display: flex; align-items: flex-start;
+    justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    margin-bottom: 16px;
+  }
+  .header-title { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+  .header-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+  .header-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+  /* Timer */
+  .timer-wrap {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm); padding: 6px 12px;
+    transition: all 0.3s;
+  }
+  .timer-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .timer-display {
+    font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px; min-width: 46px; color: var(--text);
+    transition: color 0.3s;
+  }
+  .timer-wrap.green { border-color: #BBF7D0; background: #F0FDF4; }
+  .timer-wrap.green .timer-display { color: var(--success); }
+  .timer-wrap.yellow { border-color: #FDE68A; background: #FFFBEB; }
+  .timer-wrap.yellow .timer-display { color: #D97706; }
+  .timer-wrap.red { border-color: #FECACA; background: #FEF2F2; animation: pulse 2s infinite; }
+  .timer-wrap.red .timer-display { color: var(--p1); }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.7; } }
+
+  .btn-timer {
+    font-size: 11px; font-weight: 600; padding: 4px 10px;
+    border-radius: 6px; border: 1.5px solid var(--border);
+    background: var(--bg); color: var(--text-muted);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn-timer:hover { background: var(--accent); border-color: var(--accent); color: white; }
+  .btn-timer.active { background: var(--danger); border-color: var(--danger); color: white; }
+
+  .btn-secondary {
+    font-size: 13px; font-weight: 500; padding: 7px 14px;
+    border-radius: var(--radius-sm); border: 1.5px solid var(--border);
+    background: var(--surface); color: var(--text-muted);
+    cursor: pointer; transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .btn-secondary:hover { border-color: var(--border-hover); color: var(--text); }
+
+  .btn-danger {
+    font-size: 13px; font-weight: 500; padding: 7px 14px;
+    border-radius: var(--radius-sm); border: 1.5px solid var(--border);
+    background: var(--surface); color: var(--text-muted);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn-danger:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-light); }
+
+  /* Progress */
+  .progress-track { background: var(--border); border-radius: 99px; height: 4px; overflow: hidden; }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #DC2626, #EA580C, #F59E0B);
+    border-radius: 99px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1), background 0.5s;
+  }
+  .progress-fill.all-done { background: linear-gradient(90deg, #16A34A, #22C55E); }
+  .progress-label { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+
+  .resolution-banner {
+    display: none; margin-top: 10px; padding: 10px 16px;
+    background: var(--success-light); border: 1.5px solid var(--success-border);
+    border-radius: var(--radius-sm);
+    font-size: 13px; color: var(--success); font-weight: 600;
+    align-items: center; gap: 8px;
+  }
+  .resolution-banner.visible { display: flex; }
+
+  /* Priority selector */
+  .priority-card {
+    background: var(--surface); border: 2px solid var(--border);
+    border-radius: var(--radius); padding: 16px 20px; margin-bottom: 12px;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .priority-card.prio-p1 { border-color: var(--p1); background: var(--p1-light); }
+  .priority-card.prio-p2 { border-color: var(--p2); background: var(--p2-light); }
+  .priority-card.prio-p3 { border-color: var(--p3); background: var(--p3-light); }
+
+  .priority-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+  .priority-grid { display: flex; gap: 8px; align-items: stretch; }
+
+  .priority-btn {
+    flex: 1; padding: 10px 12px; border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border); background: var(--bg);
+    cursor: pointer; transition: all 0.2s; text-align: left;
+    font-family: 'Inter', sans-serif; display: flex; align-items: flex-start; gap: 8px;
+    min-width: 0;
+  }
+  .priority-btn .p-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+  .priority-btn .p-content { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .priority-btn .p-label { font-size: 12px; font-weight: 800; white-space: nowrap; }
+  .priority-btn .p-desc { font-size: 11px; color: var(--text-muted); line-height: 1.3; }
+
+  .priority-btn.p1 .p-label { color: var(--p1); }
+  .priority-btn.p2 .p-label { color: var(--p2); }
+  .priority-btn.p3 .p-label { color: var(--p3); }
+
+  .priority-btn.selected.p1 { border-color: var(--p1); background: var(--p1-light); box-shadow: 0 0 0 2px var(--p1); }
+  .priority-btn.selected.p2 { border-color: var(--p2); background: var(--p2-light); box-shadow: 0 0 0 2px var(--p2); }
+  .priority-btn.selected.p3 { border-color: var(--p3); background: var(--p3-light); box-shadow: 0 0 0 2px var(--p3); }
+
+  @media (max-width: 560px) { .priority-grid { flex-direction: column; } }
+
+  /* Participants card */
+  .participants-card {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: 18px 20px; margin-bottom: 12px;
+  }
+  .participants-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+  .participants-grid { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+
+  .participant-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 10px; border-radius: 99px;
+    font-size: 12px; font-weight: 500; cursor: pointer;
+    border: 1.5px solid var(--border); background: var(--bg);
+    color: var(--text-muted); transition: all 0.15s;
+    user-select: none;
+  }
+  .participant-tag:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .participant-tag.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); font-weight: 600; }
+  .participant-tag .tag-check { font-size: 10px; }
+
+  .add-participant-row { display: flex; gap: 7px; }
+  .add-participant-input {
+    flex: 1; padding: 7px 11px; border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm); font-family: 'Inter', sans-serif;
+    font-size: 13px; color: var(--text); background: var(--bg); outline: none;
+    transition: border-color 0.15s;
+  }
+  .add-participant-input:focus { border-color: var(--accent); background: var(--surface); }
+  .add-participant-input::placeholder { color: #D4D4D8; }
+  .btn-add-participant {
+    padding: 7px 13px; border-radius: var(--radius-sm);
+    border: 1.5px solid var(--accent-mid); background: var(--accent-light);
+    color: var(--accent); font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif;
+  }
+  .btn-add-participant:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+  /* Step card */
+  .step-card {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: var(--radius); margin-bottom: 10px; overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .step-card:hover { border-color: var(--border-hover); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .step-card.completed { border-color: var(--success-border); background: linear-gradient(to right, #F0FDF4 0%, var(--surface) 40%); }
+  .step-card.open { border-left: 3px solid var(--accent); }
+
+  .step-header { display: flex; align-items: center; gap: 14px; padding: 16px 18px; cursor: pointer; user-select: none; }
+
+  .step-number-inner {
+    width: 34px; height: 34px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+    background: var(--accent-light); color: var(--accent);
+    border: 1.5px solid var(--accent-mid); flex-shrink: 0; transition: all 0.2s;
+  }
+  .step-card.completed .step-number-inner {
+    background: linear-gradient(135deg, #16A34A, #22C55E);
+    color: white; border-color: transparent; font-size: 15px;
+  }
+
+  .step-title-wrap { flex: 1; min-width: 0; }
+  .step-title { font-size: 14.5px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; letter-spacing: -0.1px; }
+  .step-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+
+  .step-badge {
+    font-size: 10.5px; font-weight: 600; padding: 2px 8px;
+    border-radius: 99px; background: var(--accent-light); color: var(--accent);
+    border: 1px solid var(--accent-mid);
+  }
+  .step-card.completed .step-badge { background: var(--success-light); color: var(--success); border-color: var(--success-border); }
+
+  .step-toggle { font-size: 16px; color: var(--text-xs); transition: transform 0.25s; flex-shrink: 0; }
+  .step-card.open .step-toggle { transform: rotate(180deg); }
+
+  .step-body { display: none; padding: 0 18px 18px; border-top: 1.5px solid var(--border); }
+  .step-card.open .step-body { display: block; }
+
+  /* Questions */
+  .questions-label {
+    font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; color: var(--text-xs); margin: 16px 0 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .questions-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+
+  .question-wrap {
+    display: flex; flex-direction: column;
+    border-radius: var(--radius-sm); border: 1.5px solid transparent;
+    background: var(--bg); transition: all 0.15s; overflow: hidden;
+  }
+  .question-wrap:hover { border-color: var(--accent); background: var(--accent-light); }
+  .question-wrap.hint-open { border-color: var(--accent); background: var(--accent-light); }
+  .question-wrap.asked-wrap { background: var(--success-light); border-color: var(--success-border); }
+
+  .question-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 13px; color: var(--text); line-height: 1.5;
+    padding: 9px 12px; background: transparent; border: none;
+    cursor: pointer; transition: color 0.15s;
+  }
+  .question-wrap:hover .question-item { color: var(--accent); }
+  .question-wrap.asked-wrap .question-item { color: var(--success); text-decoration: line-through; opacity: 0.75; }
+
+  .question-check {
+    width: 16px; height: 16px; border-radius: 5px; flex-shrink: 0; margin-top: 1px;
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; transition: all 0.15s; background: var(--surface);
+  }
+  .question-wrap:hover .question-check { border-color: var(--accent); }
+  .question-wrap.asked-wrap .question-check { background: var(--success); border-color: var(--success); color: white; }
+
+  .question-text { flex: 1; }
+
+  .btn-info {
+    width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; margin-top: 1px;
+    border: 1.5px solid var(--border); background: var(--surface);
+    color: var(--text-muted); font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.15s; font-style: italic;
+    font-family: Georgia, serif;
+  }
+  .question-wrap:hover .btn-info { border-color: var(--accent); color: var(--accent); background: transparent; }
+  .btn-info.active { border-color: var(--accent); color: var(--accent); }
+
+  .question-hint {
+    display: none; font-size: 12px; color: var(--text-muted);
+    padding: 0 12px 9px 38px; line-height: 1.5; font-style: italic;
+  }
+  .question-hint.visible { display: block; }
+
+  /* Custom questions */
+  .custom-q-section { margin-top: 10px; }
+  .custom-q-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-xs); margin-bottom: 7px; }
+  .add-question-row { display: flex; gap: 7px; margin-bottom: 6px; }
+  .add-question-input {
+    flex: 1; padding: 8px 11px; border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm); font-family: 'Inter', sans-serif;
+    font-size: 13px; color: var(--text); background: var(--bg); outline: none; transition: border-color 0.15s;
+  }
+  .add-question-input:focus { border-color: var(--accent); background: var(--surface); }
+  .add-question-input::placeholder { color: #D4D4D8; }
+  .btn-add-q {
+    padding: 8px 13px; border-radius: var(--radius-sm);
+    border: 1.5px solid var(--accent-mid); background: var(--accent-light);
+    color: var(--accent); font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif;
+  }
+  .btn-add-q:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+  .custom-question-item {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: var(--accent); line-height: 1.5;
+    padding: 9px 12px; border-radius: var(--radius-sm);
+    background: var(--accent-light); border: 1.5px solid var(--accent-mid);
+    cursor: pointer; transition: border-color 0.15s;
+  }
+  .custom-question-item:hover { border-color: var(--accent); }
+  .custom-question-item.asked { background: var(--success-light); border-color: var(--success-border); color: var(--success); text-decoration: line-through; opacity: 0.65; }
+  .custom-question-item.asked .question-check { background: var(--success); border-color: var(--success); color: white; }
+  .custom-question-item .question-check { border-color: var(--accent-mid); background: transparent; }
+  .custom-q-del { background: none; border: none; color: var(--accent); opacity: 0.4; cursor: pointer; font-size: 16px; margin-left: auto; padding: 0 2px; transition: opacity 0.15s; }
+  .custom-q-del:hover { opacity: 1; color: var(--danger); }
+
+  /* Notes */
+  .notes-header { display: flex; align-items: center; justify-content: space-between; margin: 14px 0 7px; }
+  .notes-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-xs); }
+  .notes-textarea {
+    width: 100%; min-height: 80px; padding: 10px 12px;
+    border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+    font-family: 'Inter', sans-serif; font-size: 13px;
+    color: var(--text); background: var(--bg);
+    resize: vertical; outline: none; line-height: 1.6; transition: all 0.15s;
+  }
+  .notes-textarea:focus { border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 3px rgba(234,88,12,0.08); }
+  .notes-textarea::placeholder { color: #D4D4D8; }
+
+  /* Step footer */
+  .step-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; gap: 10px; }
+  .btn-step-done {
+    flex: 1; font-size: 13px; font-weight: 700; padding: 10px;
+    border-radius: var(--radius-sm); border: none;
+    background: linear-gradient(135deg, #DC2626, #EA580C);
+    color: white; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-step-done:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(234,88,12,0.35); }
+  .btn-step-undone {
+    font-size: 12px; font-weight: 500; padding: 10px 14px;
+    border-radius: var(--radius-sm); border: 1.5px solid var(--border);
+    background: var(--surface); color: var(--text-muted);
+    cursor: pointer; transition: all 0.15s; display: none;
+  }
+  .step-card.completed .btn-step-done { display: none; }
+  .step-card.completed .btn-step-undone { display: inline-flex; }
+  .questions-progress { font-size: 12px; color: var(--text-muted); }
+
+  /* Summary */
+  .summary-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 18px 20px; margin-top: 4px; }
+  .summary-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .summary-title { font-size: 14px; font-weight: 700; color: var(--text); }
+  .summary-empty { font-size: 13px; color: var(--text-muted); font-style: italic; }
+  .summary-list { display: flex; flex-direction: column; gap: 8px; }
+  .summary-item { font-size: 13px; color: var(--text); padding: 10px 14px; background: var(--bg); border-radius: var(--radius-sm); border-left: 3px solid var(--accent); white-space: pre-wrap; line-height: 1.6; }
+  .summary-item-step { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(8px);
+    background: #18181B; color: white; font-size: 13px; font-weight: 500;
+    padding: 10px 20px; border-radius: 10px;
+    opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 9999;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Section divider */
+  .section-divider { display: flex; align-items: center; gap: 12px; margin: 22px 0 14px; }
+  .section-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-xs); white-space: nowrap; }
+  .section-line { flex: 1; height: 1.5px; background: var(--border); border-radius: 99px; }
+
+  @media (max-width: 560px) { .priority-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <div class="header-title">🔥 Встреча про проблему</div>
+        <div class="header-sub">Локализуй, найди причину, прими решение — быстро</div>
+      </div>
+      <div class="header-actions">
+        <div class="timer-wrap" id="timerWrap">
+          <div class="timer-label">Инцидент</div>
+          <div class="timer-display" id="timerDisplay">00:00</div>
+          <button class="btn-timer" id="timerBtn" onclick="toggleTimer()">Старт</button>
+          <button class="btn-timer" onclick="resetTimer()" title="Сбросить">↺</button>
+        </div>
+        <button class="btn-danger" onclick="resetAll()">Сбросить</button>
+      </div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="progress-label" id="progressLabel">0 из 6 шагов выполнено</div>
+    <div class="resolution-banner" id="resolutionBanner">
+      ✓ Инцидент закрыт — время решения: <span id="resolutionTime">—</span>
+    </div>
+  </div>
+
+  <!-- Priority -->
+  <div class="priority-card" id="priorityCard">
+    <div class="priority-title">Уровень критичности — выбери перед началом</div>
+    <div class="priority-grid">
+      <button class="priority-btn p1" id="prio-p1" onclick="setPriority('p1')">
+        <span class="p-icon">🔴</span>
+        <div class="p-content">
+          <span class="p-label">P1 — Критично</span>
+          <span class="p-desc">Всё сломалось, все затронуты, каждая минута — потери</span>
+        </div>
+      </button>
+      <button class="priority-btn p2" id="prio-p2" onclick="setPriority('p2')">
+        <span class="p-icon">🟡</span>
+        <div class="p-content">
+          <span class="p-label">P2 — Частичная</span>
+          <span class="p-desc">Часть пользователей затронута, есть обходной путь</span>
+        </div>
+      </button>
+      <button class="priority-btn p3" id="prio-p3" onclick="setPriority('p3')">
+        <span class="p-icon">🔵</span>
+        <div class="p-content">
+          <span class="p-label">P3 — Некритично</span>
+          <span class="p-desc">Косметика или редкий кейс, бизнес работает</span>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Participants -->
+  <div class="participants-card">
+    <div class="participants-title">Кто подключён к решению</div>
+    <div class="participants-grid" id="participantsGrid">
+      <div class="participant-tag" onclick="toggleParticipant(this)" data-name="Разработка"><span class="tag-check"></span>Разработка</div>
+      <div class="participant-tag" onclick="toggleParticipant(this)" data-name="Тестирование"><span class="tag-check"></span>Тестирование</div>
+      <div class="participant-tag" onclick="toggleParticipant(this)" data-name="Поддержка"><span class="tag-check"></span>Поддержка</div>
+      <div class="participant-tag" onclick="toggleParticipant(this)" data-name="Маркетинг"><span class="tag-check"></span>Маркетинг</div>
+      <div class="participant-tag" onclick="toggleParticipant(this)" data-name="Аналитика"><span class="tag-check"></span>Аналитика</div>
+      <div class="participant-tag" onclick="toggleParticipant(this)" data-name="Финансы"><span class="tag-check"></span>Финансы</div>
+      <div class="participant-tag" onclick="toggleParticipant(this)" data-name="Юристы"><span class="tag-check"></span>Юристы</div>
+      <div class="participant-tag" onclick="toggleParticipant(this)" data-name="CTO / Руководство"><span class="tag-check"></span>CTO / Руководство</div>
+      <div class="participant-tag" onclick="toggleParticipant(this)" data-name="Продакт"><span class="tag-check"></span>Продакт</div>
+    </div>
+    <div class="add-participant-row">
+      <input class="add-participant-input" id="participantInput" placeholder="Добавить отдел или человека...">
+      <button class="btn-add-participant" onclick="addParticipant()">+ Добавить</button>
+    </div>
+  </div>
+
+  <!-- Steps -->
+  <div id="steps-container">
+
+    <!-- Step 1 -->
+    <div class="step-card" id="step-1" data-step="1">
+      <div class="step-header" onclick="toggleStep(1)">
+        <div class="step-number-inner"><span class="step-number-text">1</span></div>
+        <div class="step-title-wrap">
+          <div class="step-title">Зафиксировать факт <span class="step-badge">Что случилось?</span></div>
+          <div class="step-subtitle">Что именно не работает, когда началось, кто сообщил</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Вопросы</div>
+        <ul class="questions-list" id="q-1">
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Что именно не работает — опиши симптом?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Фиксируй симптом, а не предположение о причине. "Кнопка оплаты не реагирует" — симптом. "Сломался платёжный модуль" — уже гипотеза.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Когда это началось — точное время?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Точное время поможет найти что изменилось прямо перед инцидентом — деплой, миграция, внешний сервис.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Кто обнаружил и как сообщил?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Пользователь, мониторинг или коллега — это влияет на оценку масштаба. Если мониторинг молчал а пользователи кричат — что-то не так с алертами.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Сколько пользователей затронуто — все или часть?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Масштаб определяет приоритет и срочность. Если затронут 1 пользователь — это P3. Если все — P1, бросай всё.</div>
+          </li>
+        </ul>
+        <div class="custom-q-section">
+          <div class="custom-q-label">Свой вопрос</div>
+          <div class="add-question-row">
+            <input class="add-question-input" id="cq-1" placeholder="Добавь вопрос для этого кейса...">
+            <button class="btn-add-q" onclick="addCustomQ(1)">+ Добавить</button>
+          </div>
+          <ul class="questions-list" id="cq-list-1"></ul>
+        </div>
+        <div class="notes-header"><div class="notes-label">Заметки</div></div>
+        <textarea class="notes-textarea" id="notes-1" placeholder="Фиксируй факты здесь..."></textarea>
+        <div class="step-footer">
+          <div class="questions-progress" id="qp-1"></div>
+          <button class="btn-step-undone" onclick="markStep(1,false)">↩ Вернуть</button>
+          <button class="btn-step-done" onclick="markStep(1,true)">Шаг выполнен ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step-card" id="step-2" data-step="2">
+      <div class="step-header" onclick="toggleStep(2)">
+        <div class="step-number-inner"><span class="step-number-text">2</span></div>
+        <div class="step-title-wrap">
+          <div class="step-title">Локализовать проблему <span class="step-badge">Где ломается?</span></div>
+          <div class="step-subtitle">На каком именно шаге, в какой части системы</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Вопросы</div>
+        <ul class="questions-list" id="q-2">
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">На каком шаге пользователь сталкивается с проблемой?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Чем точнее локализация — тем быстрее найдёт причину разработчик. "Не работает оплата" хуже чем "падает после нажатия кнопки Оплатить на шаге 3".</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Это происходит всегда или при определённых условиях?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Если не всегда — ищи паттерн. Определённый браузер, устройство, регион, сумма заказа. Паттерн сужает поиск причины.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какое сообщение об ошибке видит пользователь?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Текст ошибки или код — прямая подсказка для разработчика где смотреть в логах.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Проблема воспроизводится стабильно?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Если воспроизводится стабильно — проще чинить. Если нет — возможно гонка состояний или зависимость от внешнего сервиса.</div>
+          </li>
+        </ul>
+        <div class="custom-q-section">
+          <div class="custom-q-label">Свой вопрос</div>
+          <div class="add-question-row">
+            <input class="add-question-input" id="cq-2" placeholder="Добавь вопрос для этого кейса...">
+            <button class="btn-add-q" onclick="addCustomQ(2)">+ Добавить</button>
+          </div>
+          <ul class="questions-list" id="cq-list-2"></ul>
+        </div>
+        <div class="notes-header"><div class="notes-label">Заметки</div></div>
+        <textarea class="notes-textarea" id="notes-2" placeholder="Где именно ломается..."></textarea>
+        <div class="step-footer">
+          <div class="questions-progress" id="qp-2"></div>
+          <button class="btn-step-undone" onclick="markStep(2,false)">↩ Вернуть</button>
+          <button class="btn-step-done" onclick="markStep(2,true)">Шаг выполнен ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step-card" id="step-3" data-step="3">
+      <div class="step-header" onclick="toggleStep(3)">
+        <div class="step-number-inner"><span class="step-number-text">3</span></div>
+        <div class="step-title-wrap">
+          <div class="step-title">Найти причину <span class="step-badge">Почему сломалось?</span></div>
+          <div class="step-subtitle">Что изменилось перед инцидентом — деплой, данные, внешний сервис</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Вопросы</div>
+        <ul class="questions-list" id="q-3">
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Что изменялось в системе перед появлением проблемы?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Деплой, миграция базы, изменение конфига, обновление зависимостей — всё что могло стать триггером. Ищи изменения за последние 24 часа.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Что говорят логи и мониторинг?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Логи — первый источник правды. Попроси разработчика показать ошибки в период инцидента.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Зависит ли проблема от внешнего сервиса?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Платёжный шлюз, SMS-сервис, карты — внешние сервисы падают независимо от вас. Проверь их статус-страницы.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Была ли похожая проблема раньше?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Если да — возможно это повторяющийся баг или системная проблема которую не починили до конца.</div>
+          </li>
+        </ul>
+        <div class="custom-q-section">
+          <div class="custom-q-label">Свой вопрос</div>
+          <div class="add-question-row">
+            <input class="add-question-input" id="cq-3" placeholder="Добавь вопрос для этого кейса...">
+            <button class="btn-add-q" onclick="addCustomQ(3)">+ Добавить</button>
+          </div>
+          <ul class="questions-list" id="cq-list-3"></ul>
+        </div>
+        <div class="notes-header"><div class="notes-label">Заметки</div></div>
+        <textarea class="notes-textarea" id="notes-3" placeholder="Гипотезы о причине..."></textarea>
+        <div class="step-footer">
+          <div class="questions-progress" id="qp-3"></div>
+          <button class="btn-step-undone" onclick="markStep(3,false)">↩ Вернуть</button>
+          <button class="btn-step-done" onclick="markStep(3,true)">Шаг выполнен ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="step-card" id="step-4" data-step="4">
+      <div class="step-header" onclick="toggleStep(4)">
+        <div class="step-number-inner"><span class="step-number-text">4</span></div>
+        <div class="step-title-wrap">
+          <div class="step-title">Оценить влияние <span class="step-badge">Насколько критично?</span></div>
+          <div class="step-subtitle">Потери, обходной путь, срочность</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Вопросы</div>
+        <ul class="questions-list" id="q-4">
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какие потери несёт бизнес каждую минуту?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Деньги, репутация, SLA — конкретные потери помогают правильно расставить приоритет и обосновать экстренные меры.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Есть ли обходной путь для пользователей прямо сейчас?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Даже временное решение снижает ущерб пока ищется причина. Другой способ оплаты, ручная обработка, временное отключение фичи.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Затронуты ли другие части системы?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Иногда одна проблема — симптом более широкого сбоя. Проверь смежные функции.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Есть ли SLA или обязательства перед клиентами?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Если есть SLA — нарушение может стоить штрафов или потери контракта. Это меняет приоритет.</div>
+          </li>
+        </ul>
+        <div class="custom-q-section">
+          <div class="custom-q-label">Свой вопрос</div>
+          <div class="add-question-row">
+            <input class="add-question-input" id="cq-4" placeholder="Добавь вопрос для этого кейса...">
+            <button class="btn-add-q" onclick="addCustomQ(4)">+ Добавить</button>
+          </div>
+          <ul class="questions-list" id="cq-list-4"></ul>
+        </div>
+        <div class="notes-header"><div class="notes-label">Заметки</div></div>
+        <textarea class="notes-textarea" id="notes-4" placeholder="Оценка влияния и обходные пути..."></textarea>
+        <div class="step-footer">
+          <div class="questions-progress" id="qp-4"></div>
+          <button class="btn-step-undone" onclick="markStep(4,false)">↩ Вернуть</button>
+          <button class="btn-step-done" onclick="markStep(4,true)">Шаг выполнен ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="step-card" id="step-5" data-step="5">
+      <div class="step-header" onclick="toggleStep(5)">
+        <div class="step-number-inner"><span class="step-number-text">5</span></div>
+        <div class="step-title-wrap">
+          <div class="step-title">Принять решение <span class="step-badge">Что делаем?</span></div>
+          <div class="step-subtitle">Варианты с рисками — и кто принимает финальное решение</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Вопросы</div>
+        <ul class="questions-list" id="q-5">
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какие варианты решения есть — быстрый и надёжный?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Всегда есть минимум два варианта: быстрый с риском и медленный но надёжный. Зафиксируй оба с оценкой времени и риска.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Кто имеет полномочия принять решение о действиях?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">BA не принимает решение об откате или деплое — это техлид, CTO или продакт. Твоя задача сформулировать варианты и эскалировать к нужному человеку.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Сколько времени займёт каждый вариант?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Время — критичный параметр при инциденте. 5 минут с риском vs 20 минут надёжно — разные решения в зависимости от приоритета.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Нужен ли откат или хватит точечного фикса?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Откат безопаснее но теряешь новый функционал. Точечный фикс быстрее но риск что что-то упустишь.</div>
+          </li>
+        </ul>
+        <div class="custom-q-section">
+          <div class="custom-q-label">Свой вопрос</div>
+          <div class="add-question-row">
+            <input class="add-question-input" id="cq-5" placeholder="Добавь вопрос для этого кейса...">
+            <button class="btn-add-q" onclick="addCustomQ(5)">+ Добавить</button>
+          </div>
+          <ul class="questions-list" id="cq-list-5"></ul>
+        </div>
+        <div class="notes-header"><div class="notes-label">Заметки</div></div>
+        <textarea class="notes-textarea" id="notes-5" placeholder="Варианты решения и кто решает..."></textarea>
+        <div class="step-footer">
+          <div class="questions-progress" id="qp-5"></div>
+          <button class="btn-step-undone" onclick="markStep(5,false)">↩ Вернуть</button>
+          <button class="btn-step-done" onclick="markStep(5,true)">Шаг выполнен ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 6 -->
+    <div class="step-card" id="step-6" data-step="6">
+      <div class="step-header" onclick="toggleStep(6)">
+        <div class="step-number-inner"><span class="step-number-text">6</span></div>
+        <div class="step-title-wrap">
+          <div class="step-title">Коммуникация и следующие шаги <span class="step-badge">Кто и что сообщает?</span></div>
+          <div class="step-subtitle">Пользователи, команда, руководство — все должны знать статус</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Вопросы</div>
+        <ul class="questions-list" id="q-6">
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Кто и как сообщает пользователям о проблеме?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Молчание злит больше чем признание проблемы. Даже "мы знаем, чиним" снижает поток жалоб в поддержку.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Кто информирует руководство о статусе?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">При P1 руководство должно знать сразу. Они могут принять решения которые ускорят решение — дополнительные ресурсы, партнёрские договорённости.</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Как проверим что проблема решена?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Нужен чёткий критерий — не "разработчик сказал что починил", а "проверили на продакшене, X пользователей успешно оплатили".</div>
+          </li>
+          <li class="question-wrap">
+            <div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Что делаем чтобы это не повторилось?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div>
+            <div class="question-hint">Post-mortem, тест на стейджинге с боевыми ключами, алерт в мониторинге — зафиксируй что конкретно меняем в процессе.</div>
+          </li>
+        </ul>
+        <div class="custom-q-section">
+          <div class="custom-q-label">Свой вопрос</div>
+          <div class="add-question-row">
+            <input class="add-question-input" id="cq-6" placeholder="Добавь вопрос для этого кейса...">
+            <button class="btn-add-q" onclick="addCustomQ(6)">+ Добавить</button>
+          </div>
+          <ul class="questions-list" id="cq-list-6"></ul>
+        </div>
+        <div class="notes-header"><div class="notes-label">Заметки</div></div>
+        <textarea class="notes-textarea" id="notes-6" placeholder="Кто что сообщает и следующие шаги..."></textarea>
+        <div class="step-footer">
+          <div class="questions-progress" id="qp-6"></div>
+          <button class="btn-step-undone" onclick="markStep(6,false)">↩ Вернуть</button>
+          <button class="btn-step-done" onclick="markStep(6,true)">Шаг выполнен ✓</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Summary -->
+  <div class="section-divider"><div class="section-line"></div><div class="section-label">Итог инцидента</div><div class="section-line"></div></div>
+
+  <div class="summary-card">
+    <div class="summary-header">
+      <div class="summary-title">Заметки по всем шагам</div>
+      <button class="btn-secondary" onclick="exportNotes()">📋 Скопировать итог</button>
+    </div>
+    <div id="summary-content">
+      <div class="summary-empty">Заполни заметки в шагах — они появятся здесь</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">Скопировано в буфер ✓</div>
+
+<script>
+  const STEP_NAMES = {
+    1: 'Шаг 1 — Факт',
+    2: 'Шаг 2 — Локализация',
+    3: 'Шаг 3 — Причина',
+    4: 'Шаг 4 — Влияние',
+    5: 'Шаг 5 — Решение',
+    6: 'Шаг 6 — Коммуникация'
+  };
+
+  const TOTAL_STEPS = 6;
+
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem('ba_problem') || '{}'); }
+    catch { return {}; }
+  }
+  function saveState() { localStorage.setItem('ba_problem', JSON.stringify(state)); }
+
+  let state = loadState();
+  let timerInterval = null, timerSeconds = 0, timerRunning = false;
+
+  function init() {
+    for (let i = 1; i <= TOTAL_STEPS; i++) {
+      if (state[`step_${i}_done`]) {
+        const card = document.getElementById(`step-${i}`);
+        card.classList.add('completed');
+        card.querySelector('.step-number-text').textContent = '✓';
+      }
+      if (state[`notes_${i}`]) document.getElementById(`notes-${i}`).value = state[`notes_${i}`];
+      document.querySelectorAll(`#q-${i} .question-item`).forEach((q, idx) => {
+        if (state[`q_${i}_${idx}`]) {
+          q.classList.add('asked');
+          q.closest('.question-wrap').classList.add('asked-wrap');
+          q.querySelector('.question-check').textContent = '✓';
+        }
+      });
+      document.getElementById(`notes-${i}`).addEventListener('input', function() {
+        state[`notes_${i}`] = this.value; saveState(); updateSummary();
+      });
+    }
+
+    // Restore priority
+    if (state.priority) setPriority(state.priority, true);
+
+    // Restore participants
+    if (state.participants) {
+      state.participants.forEach(name => {
+        const existing = document.querySelector(`.participant-tag[data-name="${name}"]`);
+        if (existing) { existing.classList.add('active'); existing.querySelector('.tag-check').textContent = '✓ '; }
+        else addParticipantTag(name, true);
+      });
+    }
+
+    if (state.timerSeconds) { timerSeconds = state.timerSeconds; updateTimerDisplay(); }
+    if (state.resolutionTime) {
+      document.getElementById('resolutionTime').textContent = state.resolutionTime;
+      document.getElementById('resolutionBanner').classList.add('visible');
+    }
+
+    updateProgress(); updateSummary();
+  }
+
+  function toggleStep(n) {
+    document.getElementById(`step-${n}`).classList.toggle('open');
+  }
+
+  function toggleQuestion(el) {
+    const wrap = el.closest('.question-wrap');
+    const step = el.closest('.step-card').dataset.step;
+    const idx = Array.from(el.closest('.questions-list').children).indexOf(wrap);
+    el.classList.toggle('asked');
+    wrap.classList.toggle('asked-wrap', el.classList.contains('asked'));
+    el.querySelector('.question-check').textContent = el.classList.contains('asked') ? '✓' : '';
+    state[`q_${step}_${idx}`] = el.classList.contains('asked');
+    saveState(); updateQProgress(parseInt(step));
+  }
+
+  function toggleHint(e, btn) {
+    e.stopPropagation();
+    const wrap = btn.closest('.question-wrap');
+    const hint = wrap.querySelector('.question-hint');
+    if (!hint) return;
+    hint.classList.toggle('visible');
+    btn.classList.toggle('active');
+    wrap.classList.toggle('hint-open', hint.classList.contains('visible'));
+  }
+
+  function updateQProgress(n) {
+    const total = document.querySelectorAll(`#q-${n} .question-item`).length;
+    const done = document.querySelectorAll(`#q-${n} .question-item.asked`).length;
+    const el = document.getElementById(`qp-${n}`);
+    if (el) el.textContent = done > 0 ? `${done} / ${total} вопросов` : '';
+  }
+
+  function markStep(n, done) {
+    const card = document.getElementById(`step-${n}`);
+    const numText = card.querySelector('.step-number-text');
+    if (done) { card.classList.add('completed'); card.classList.remove('open'); numText.textContent = '✓'; }
+    else { card.classList.remove('completed'); numText.textContent = n; }
+    state[`step_${n}_done`] = done;
+    saveState(); updateProgress();
+  }
+
+  function updateProgress() {
+    let done = 0;
+    for (let i = 1; i <= TOTAL_STEPS; i++) if (state[`step_${i}_done`]) done++;
+    const fill = document.getElementById('progressFill');
+    fill.style.width = (done / TOTAL_STEPS * 100) + '%';
+    fill.classList.toggle('all-done', done === TOTAL_STEPS);
+    document.getElementById('progressLabel').textContent = done === TOTAL_STEPS ? '✓ Инцидент разобран' : `${done} из ${TOTAL_STEPS} шагов выполнено`;
+    if (done === TOTAL_STEPS) {
+      // Останавливаем таймер и фиксируем время
+      if (timerRunning) toggleTimer();
+      const m = Math.floor(timerSeconds / 60), s = timerSeconds % 60;
+      const timeStr = timerSeconds > 0 ? `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : 'не отслеживалось';
+      document.getElementById('resolutionTime').textContent = timeStr;
+      document.getElementById('resolutionBanner').classList.add('visible');
+      state.resolutionTime = timeStr; saveState();
+    } else {
+      document.getElementById('resolutionBanner').classList.remove('visible');
+    }
+    for (let i = 1; i <= TOTAL_STEPS; i++) updateQProgress(i);
+  }
+
+  function addCustomQ(stepNum) {
+    const input = document.getElementById(`cq-${stepNum}`);
+    const text = input.value.trim();
+    if (!text) return;
+    const list = document.getElementById(`cq-list-${stepNum}`);
+    const li = document.createElement('li');
+    li.innerHTML = `<div class="custom-question-item" onclick="this.classList.toggle('asked');this.querySelector('.question-check').textContent=this.classList.contains('asked')?'✓':''"><div class="question-check"></div><span class="question-text">${text}</span><button class="custom-q-del" onclick="event.stopPropagation();this.closest('li').remove()">×</button></div>`;
+    list.appendChild(li);
+    input.value = ''; input.focus();
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.classList.contains('add-question-input')) {
+      const match = e.target.id.match(/cq-(\d+)/);
+      if (match) addCustomQ(parseInt(match[1]));
+    }
+    if (e.key === 'Enter' && e.target.id === 'participantInput') addParticipant();
+  });
+
+  // Priority
+  function setPriority(p, silent = false) {
+    const btn = document.getElementById(`prio-${p}`);
+    const card = document.getElementById('priorityCard');
+    // Если уже выбран — отжимаем
+    if (btn.classList.contains('selected') && !silent) {
+      btn.classList.remove('selected');
+      card.className = 'priority-card';
+      state.priority = null; saveState();
+      return;
+    }
+    ['p1','p2','p3'].forEach(lvl => document.getElementById(`prio-${lvl}`).classList.remove('selected'));
+    btn.classList.add('selected');
+    card.className = `priority-card prio-${p}`;
+    if (!silent) {
+      state.priority = p; saveState();
+      if (p === 'p1' && !timerRunning) toggleTimer();
+    }
+  }
+
+  // Participants
+  function toggleParticipant(tag) {
+    tag.classList.toggle('active');
+    const check = tag.querySelector('.tag-check');
+    check.textContent = tag.classList.contains('active') ? '✓ ' : '';
+    saveParticipants();
+  }
+
+  function addParticipant() {
+    const input = document.getElementById('participantInput');
+    const name = input.value.trim();
+    if (!name) return;
+    addParticipantTag(name, false);
+    input.value = ''; input.focus();
+  }
+
+  function addParticipantTag(name, active) {
+    const grid = document.getElementById('participantsGrid');
+    const tag = document.createElement('div');
+    tag.className = 'participant-tag' + (active ? ' active' : '');
+    tag.dataset.name = name;
+    tag.innerHTML = `<span class="tag-check">${active ? '✓ ' : ''}</span>${name}`;
+    tag.onclick = () => toggleParticipant(tag);
+    grid.appendChild(tag);
+    if (!active) { tag.classList.add('active'); tag.querySelector('.tag-check').textContent = '✓ '; saveParticipants(); }
+  }
+
+  function saveParticipants() {
+    state.participants = Array.from(document.querySelectorAll('.participant-tag.active')).map(t => t.dataset.name);
+    saveState();
+  }
+
+  // Timer
+  function toggleTimer() {
+    if (timerRunning) {
+      clearInterval(timerInterval); timerRunning = false;
+      document.getElementById('timerBtn').textContent = 'Старт';
+      document.getElementById('timerBtn').classList.remove('active');
+    } else {
+      timerRunning = true;
+      document.getElementById('timerBtn').textContent = 'Стоп';
+      document.getElementById('timerBtn').classList.add('active');
+      timerInterval = setInterval(() => {
+        timerSeconds++; state.timerSeconds = timerSeconds; saveState(); updateTimerDisplay();
+      }, 1000);
+    }
+  }
+
+  function resetTimer() {
+    clearInterval(timerInterval); timerRunning = false; timerSeconds = 0;
+    state.timerSeconds = 0; saveState(); updateTimerDisplay();
+    document.getElementById('timerBtn').textContent = 'Старт';
+    document.getElementById('timerBtn').classList.remove('active');
+  }
+
+  function updateTimerDisplay() {
+    const m = Math.floor(timerSeconds / 60), s = timerSeconds % 60;
+    document.getElementById('timerDisplay').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    const wrap = document.getElementById('timerWrap');
+    wrap.className = 'timer-wrap';
+    if (timerSeconds < 1800) wrap.classList.add('green');
+    else if (timerSeconds < 3600) wrap.classList.add('yellow');
+    else wrap.classList.add('red');
+  }
+
+  function updateSummary() {
+    const container = document.getElementById('summary-content');
+    const items = [];
+    for (let i = 1; i <= TOTAL_STEPS; i++) {
+      const notes = (state[`notes_${i}`] || '').trim();
+      if (notes) items.push({ step: STEP_NAMES[i], text: notes });
+    }
+    if (!items.length) {
+      container.innerHTML = '<div class="summary-empty">Заполни заметки в шагах — они появятся здесь</div>';
+    } else {
+      container.innerHTML = '<div class="summary-list">' +
+        items.map(it => `<div class="summary-item"><div class="summary-item-step">${it.step}</div>${it.text}</div>`).join('') +
+        '</div>';
+    }
+  }
+
+  function exportNotes() {
+    const priority = state.priority ? state.priority.toUpperCase() : '—';
+    const participants = (state.participants || []).join(', ') || '—';
+    let text = `╔══════════════════════════════════════╗\n   РАЗБОР ИНЦИДЕНТА\n╚══════════════════════════════════════╝\n\n`;
+    text += `🔴 Уровень критичности: ${priority}\n`;
+    text += `👥 Кто подключён: ${participants}\n\n`;
+    for (let i = 1; i <= TOTAL_STEPS; i++) {
+      const notes = (state[`notes_${i}`] || '').trim();
+      const total = document.querySelectorAll(`#q-${i} .question-item`).length;
+      const asked = document.querySelectorAll(`#q-${i} .question-item.asked`).length;
+      const done = state[`step_${i}_done`] ? 'выполнен' : 'не выполнен';
+      text += `${STEP_NAMES[i].toUpperCase()} [${done}, вопросов: ${asked}/${total}]\n`;
+      text += notes ? `${notes}\n\n` : `(заметок нет)\n\n`;
+    }
+    text += `──────────────────────────────────────\n`;
+    text += `🤖 ПРОМПТ ДЛЯ АНАЛИЗА С ИИ\n`;
+    text += `──────────────────────────────────────\n`;
+    text += `Выше — данные разбора инцидента уровня ${priority}.\n\n`;
+    text += `Пожалуйста, проанализируй:\n`;
+    text += `1. Какие причины инцидента я мог упустить?\n`;
+    text += `2. Какие альтернативные решения стоит рассмотреть?\n`;
+    text += `3. Что нужно сделать чтобы это не повторилось?\n`;
+    text += `4. Есть ли риски в выбранном решении которые я не учёл?`;
+    copyToClipboard(text.trim());
+  }
+
+  function copyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(showToast).catch(() => fallbackCopy(text));
+    } else { fallbackCopy(text); }
+  }
+
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try { document.execCommand('copy'); showToast(); } catch(e) { alert('Не удалось скопировать.'); }
+    document.body.removeChild(ta);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    if (msg) t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => { t.classList.remove('show'); t.textContent = 'Скопировано в буфер ✓'; }, 2200);
+  }
+
+  function resetAll() {
+    if (!confirm('Сбросить все данные инцидента?')) return;
+    localStorage.removeItem('ba_problem'); state = {}; location.reload();
+  }
+
+  init();
+</script>
+</body>
+</html>
