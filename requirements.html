@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BA Шпаргалка v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: #6366F1;
+    --accent-hover: #4F46E5;
+    --accent-light: #EEF2FF;
+    --accent-mid: #C7D2FE;
+    --bg: #FAFAF9;
+    --surface: #FFFFFF;
+    --text: #18181B;
+    --text-muted: #71717A;
+    --text-xs: #A1A1AA;
+    --border: #E4E4E7;
+    --border-hover: #D4D4D8;
+    --success: #16A34A;
+    --success-light: #F0FDF4;
+    --success-border: #BBF7D0;
+    --warning: #D97706;
+    --warning-light: #FFFBEB;
+    --danger: #DC2626;
+    --danger-light: #FEF2F2;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 36px 16px 80px;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* Top accent line */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #6366F1, #8B5CF6, #EC4899);
+    z-index: 100;
+  }
+
+  .container { max-width: 780px; margin: 0 auto; }
+
+  /* ─── INTERVIEW MODE ─── */
+  body.interview-mode { background: #09090B; color: #FAFAFA; }
+  body.interview-mode::before { background: linear-gradient(90deg, #4F46E5, #7C3AED); }
+  body.interview-mode .surface-el {
+    background: #18181B; border-color: #27272A; color: #FAFAFA;
+  }
+  body.interview-mode .step-card { background: #18181B; border-color: #27272A; }
+  body.interview-mode .step-title { color: #FAFAFA; }
+  body.interview-mode .step-subtitle { color: #A1A1AA; }
+  body.interview-mode .question-item { background: #09090B; color: #D4D4D8; border-color: transparent; }
+  body.interview-mode .question-item:hover { background: #1E1B4B; border-color: #6366F1; }
+  body.interview-mode .notes-textarea { background: #09090B; border-color: #27272A; color: #FAFAFA; }
+  body.interview-mode .meta-input { background: #09090B; border-color: #27272A; color: #FAFAFA; }
+  body.interview-mode .meta-label,
+  body.interview-mode .notes-label,
+  body.interview-mode .questions-label { color: #71717A; }
+  body.interview-mode .step-number-inner { background: #27272A; color: #A1A1AA; border-color: #3F3F46; }
+  body.interview-mode .step-toggle { color: #52525B; }
+  body.interview-mode .step-card.locked { opacity: 0.2; pointer-events: none; }
+  body.interview-mode .step-card.active-step {
+    border-color: #6366F1 !important;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
+    opacity: 1; pointer-events: all;
+  }
+  body.interview-mode .risks-card { background: #18181B; border-color: #3F3F46; }
+  body.interview-mode .risk-item { background: #09090B; border-color: #3F3F46; }
+  body.interview-mode .risk-item input { color: #D4D4D8; }
+  body.interview-mode .summary-card { background: #18181B; border-color: #27272A; }
+  body.interview-mode .summary-item { background: #09090B; }
+  body.interview-mode .summary-title,
+  body.interview-mode .risks-title { color: #FAFAFA; }
+  body.interview-mode .section-label { color: #52525B; }
+  body.interview-mode .section-line { background: #27272A; }
+  body.interview-mode .header-title { color: #FAFAFA; }
+  body.interview-mode .header-sub { color: #71717A; }
+  body.interview-mode .progress-label { color: #71717A; }
+  body.interview-mode .progress-track { background: #27272A; }
+  body.interview-mode .timer-wrap { background: #18181B; border-color: #27272A; }
+  body.interview-mode .timer-display { color: #FAFAFA; }
+  body.interview-mode .btn-secondary { background: #18181B; border-color: #27272A; color: #A1A1AA; }
+  body.interview-mode .summary-empty,
+  body.interview-mode .risks-empty { color: #52525B; }
+  body.interview-mode .questions-progress { color: #71717A; }
+  body.interview-mode .step-card.completed { background: #18181B; border-color: #166534; }
+  body.interview-mode .step-badge { background: #1E1B4B; color: #A5B4FC; }
+
+  /* ─── HEADER ─── */
+  .header { margin-bottom: 28px; }
+
+  .header-top {
+    display: flex; flex-direction: column;
+    gap: 12px; margin-bottom: 16px;
+  }
+
+  .header-title {
+    font-size: 22px; font-weight: 800;
+    color: var(--text); letter-spacing: -0.5px; line-height: 1.2;
+  }
+
+  .header-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+  .header-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+  /* Timer */
+  .timer-wrap {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm); padding: 6px 12px;
+    transition: border-color 0.15s;
+  }
+  .timer-wrap:hover { border-color: var(--border-hover); }
+
+  .timer-display {
+    font-size: 15px; font-weight: 700;
+    color: var(--text); font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px; min-width: 46px;
+  }
+  .timer-display.running { color: var(--accent); }
+  .timer-display.warning { color: var(--warning); }
+
+  .btn-timer {
+    font-size: 11px; font-weight: 600; padding: 4px 10px;
+    border-radius: 6px; border: 1.5px solid var(--border);
+    background: var(--bg); color: var(--text-muted);
+    cursor: pointer; transition: all 0.15s; letter-spacing: 0.2px;
+  }
+  .btn-timer:hover { background: var(--accent); border-color: var(--accent); color: white; }
+  .btn-timer.active { background: var(--danger); border-color: var(--danger); color: white; }
+
+  /* Buttons */
+  .btn-primary {
+    font-size: 13px; font-weight: 600; padding: 7px 16px;
+    border-radius: var(--radius-sm); border: none;
+    background: var(--accent); color: white;
+    cursor: pointer; transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(99,102,241,0.3); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-secondary {
+    font-size: 13px; font-weight: 500; padding: 7px 14px;
+    border-radius: var(--radius-sm); border: 1.5px solid var(--border);
+    background: var(--surface); color: var(--text-muted);
+    cursor: pointer; transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .btn-secondary:hover { border-color: var(--border-hover); color: var(--text); }
+
+  .btn-danger {
+    font-size: 13px; font-weight: 500; padding: 7px 14px;
+    border-radius: var(--radius-sm); border: 1.5px solid var(--border);
+    background: var(--surface); color: var(--text-muted);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn-danger:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-light); }
+
+  /* Progress */
+  .progress-track {
+    background: var(--border); border-radius: 99px;
+    height: 4px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #8B5CF6);
+    border-radius: 99px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1), background 0.5s;
+  }
+  .progress-fill.all-done {
+    background: linear-gradient(90deg, #16A34A, #22C55E);
+  }
+  .progress-label { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+
+  /* Interview banner */
+  .interview-banner {
+    display: none;
+    background: linear-gradient(135deg, #4F46E5, #7C3AED);
+    color: white; border-radius: var(--radius);
+    padding: 12px 18px; margin-bottom: 16px;
+    align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .interview-banner.visible { display: flex; }
+  .interview-banner strong { font-weight: 700; }
+  .interview-banner span { font-size: 13px; }
+  .btn-next-step {
+    font-size: 12px; font-weight: 700; padding: 7px 16px;
+    border-radius: 7px; border: none;
+    background: rgba(255,255,255,0.18); color: white;
+    cursor: pointer; transition: background 0.15s; white-space: nowrap;
+    letter-spacing: 0.2px;
+  }
+  .btn-next-step:hover { background: rgba(255,255,255,0.3); }
+
+  /* Meta card */
+  .meta-card {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: 18px 20px;
+    margin-bottom: 12px;
+    transition: border-color 0.15s;
+  }
+  .meta-card:hover { border-color: var(--border-hover); }
+
+  .meta-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  @media (max-width: 560px) { .meta-grid { grid-template-columns: 1fr; } }
+
+  .meta-field { display: flex; flex-direction: column; gap: 5px; }
+  .meta-label {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.7px; color: var(--text-xs);
+  }
+  .meta-input {
+    font-family: 'Inter', sans-serif; font-size: 13.5px;
+    color: var(--text); border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm); padding: 8px 11px;
+    background: var(--bg); outline: none; transition: all 0.15s;
+  }
+  .meta-input:focus { border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+  .meta-input::placeholder { color: #D4D4D8; }
+
+  /* ─── STEP CARD ─── */
+  .step-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px; overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  }
+  .step-card:hover { border-color: var(--border-hover); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+
+  .step-card.completed {
+    border-color: var(--success-border);
+    background: linear-gradient(to right, #F0FDF4 0%, var(--surface) 40%);
+  }
+
+  .step-header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 18px; cursor: pointer; user-select: none;
+  }
+
+  /* Step number — gradient pill */
+  .step-number {
+    position: relative; flex-shrink: 0;
+  }
+  .step-number-inner {
+    width: 34px; height: 34px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+    background: var(--accent-light); color: var(--accent);
+    border: 1.5px solid var(--accent-mid);
+    transition: all 0.2s;
+  }
+  .step-card.completed .step-number-inner {
+    background: linear-gradient(135deg, #16A34A, #22C55E);
+    color: white; border-color: transparent;
+    font-size: 15px;
+  }
+
+  .step-title-wrap { flex: 1; min-width: 0; }
+
+  .step-title {
+    font-size: 14.5px; font-weight: 700; color: var(--text);
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    letter-spacing: -0.1px;
+  }
+
+  .step-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+
+  .step-badge {
+    font-size: 10.5px; font-weight: 600; padding: 2px 8px;
+    border-radius: 99px; letter-spacing: 0.2px;
+    background: var(--accent-light); color: var(--accent);
+    border: 1px solid var(--accent-mid);
+  }
+  .step-card.completed .step-badge {
+    background: var(--success-light); color: var(--success); border-color: var(--success-border);
+  }
+
+  .step-toggle {
+    font-size: 16px; color: var(--text-xs);
+    transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); flex-shrink: 0;
+  }
+  .step-card.open .step-toggle { transform: rotate(180deg); }
+
+  .step-body {
+    display: none; padding: 0 18px 18px;
+    border-top: 1.5px solid var(--border);
+  }
+  .step-card.open .step-body { display: block; }
+  .step-card.open { border-left: 3px solid var(--accent); }
+
+  /* Questions */
+  .questions-label {
+    font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; color: var(--text-xs); margin: 16px 0 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .questions-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+
+  .question-wrap {
+    display: flex; flex-direction: column;
+    border-radius: var(--radius-sm); border: 1.5px solid transparent;
+    background: var(--bg); transition: all 0.15s; overflow: hidden;
+  }
+  .question-wrap:hover { border-color: var(--accent); background: var(--accent-light); }
+  .question-wrap.hint-open { border-color: var(--accent); background: var(--accent-light); }
+  .question-wrap.asked-wrap { background: var(--success-light); border-color: var(--success-border); }
+
+  .question-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 13px; color: var(--text); line-height: 1.5;
+    padding: 9px 12px; background: transparent; border: none;
+    cursor: pointer; transition: color 0.15s;
+  }
+  .question-wrap:hover .question-item { color: var(--accent); }
+  .question-wrap.asked-wrap .question-item { color: var(--success); text-decoration: line-through; opacity: 0.75; }
+
+  .question-check {
+    width: 16px; height: 16px; border-radius: 5px; flex-shrink: 0; margin-top: 1px;
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; transition: all 0.15s; background: var(--surface);
+  }
+  .question-wrap:hover .question-check { border-color: var(--accent); }
+  .question-wrap.asked-wrap .question-check { background: var(--success); border-color: var(--success); color: white; }
+  .question-text { flex: 1; }
+
+  .btn-info {
+    width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; margin-top: 1px;
+    border: 1.5px solid var(--border); background: var(--surface);
+    color: var(--text-muted); font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.15s; font-style: italic;
+    font-family: Georgia, serif;
+  }
+  .question-wrap:hover .btn-info { border-color: var(--accent); color: var(--accent); background: transparent; }
+  .btn-info.active { border-color: var(--accent); color: var(--accent); }
+
+  .question-hint {
+    display: none; font-size: 12px; color: var(--text-muted);
+    padding: 0 12px 9px 38px; line-height: 1.5; font-style: italic;
+  }
+  .question-hint.visible { display: block; }
+
+  .custom-q-section { margin-top: 10px; }
+  .custom-q-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-xs); margin-bottom: 7px; }
+  .add-question-row { display: flex; gap: 7px; margin-bottom: 6px; }
+  .add-question-input {
+    flex: 1; padding: 8px 11px; border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm); font-family: 'Inter', sans-serif;
+    font-size: 13px; color: var(--text); background: var(--bg); outline: none; transition: border-color 0.15s;
+  }
+  .add-question-input:focus { border-color: var(--accent); background: var(--surface); }
+  .add-question-input::placeholder { color: #D4D4D8; }
+  .btn-add-q {
+    padding: 8px 13px; border-radius: var(--radius-sm);
+    border: 1.5px solid var(--accent-mid); background: var(--accent-light);
+    color: var(--accent); font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif;
+  }
+  .btn-add-q:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+  .custom-question-item {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: var(--accent); line-height: 1.5;
+    padding: 9px 12px; border-radius: var(--radius-sm);
+    background: var(--accent-light); border: 1.5px solid var(--accent-mid);
+    cursor: pointer; transition: border-color 0.15s;
+  }
+  .custom-question-item:hover { border-color: var(--accent); }
+  .custom-question-item.asked { background: var(--success-light); border-color: var(--success-border); color: var(--success); text-decoration: line-through; opacity: 0.65; }
+  .custom-question-item.asked .question-check { background: var(--success); border-color: var(--success); color: white; }
+  .custom-question-item .question-check { border-color: var(--accent-mid); background: transparent; }
+  .custom-q-del { background: none; border: none; color: var(--accent); opacity: 0.4; cursor: pointer; font-size: 16px; margin-left: auto; padding: 0 2px; transition: opacity 0.15s; }
+  .custom-q-del:hover { opacity: 1; color: var(--danger); }
+
+  /* Notes */
+  .notes-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin: 16px 0 7px;
+  }
+  .notes-label {
+    font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; color: var(--text-xs);
+  }
+  .btn-template {
+    font-size: 11px; font-weight: 600; padding: 4px 10px;
+    border-radius: 6px; border: 1.5px solid var(--border);
+    background: var(--bg); color: var(--text-muted);
+    cursor: pointer; transition: all 0.15s; letter-spacing: 0.2px;
+  }
+  .btn-template:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+  .notes-textarea {
+    width: 100%; min-height: 82px; padding: 10px 12px;
+    border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+    font-family: 'Inter', sans-serif; font-size: 13px;
+    color: var(--text); background: var(--bg);
+    resize: vertical; transition: all 0.15s; outline: none; line-height: 1.6;
+  }
+  .notes-textarea::placeholder { color: #D4D4D8; }
+  .notes-textarea:focus { border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+
+  /* Step footer */
+  .step-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 14px; gap: 10px;
+  }
+
+  .btn-step-done {
+    flex: 1; font-size: 13px; font-weight: 700; padding: 10px;
+    border-radius: var(--radius-sm); border: none;
+    background: linear-gradient(135deg, var(--accent), #8B5CF6);
+    color: white; cursor: pointer; transition: all 0.2s;
+    letter-spacing: 0.1px;
+  }
+  .btn-step-done:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(99,102,241,0.35); }
+  .btn-step-done:active { transform: translateY(0); }
+
+  .btn-step-undone {
+    font-size: 12px; font-weight: 500; padding: 10px 14px;
+    border-radius: var(--radius-sm); border: 1.5px solid var(--border);
+    background: var(--surface); color: var(--text-muted);
+    cursor: pointer; transition: all 0.15s; display: none;
+  }
+  .btn-step-undone:hover { border-color: var(--border-hover); color: var(--text); }
+
+  .step-card.completed .btn-step-done { display: none; }
+  .step-card.completed .btn-step-undone { display: inline-flex; }
+
+  .questions-progress { font-size: 12px; color: var(--text-muted); }
+
+  /* Risk tag */
+  .risk-tag {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 10px; font-weight: 700; padding: 2px 7px;
+    border-radius: 99px; background: #FEF3C7; color: #92400E;
+    border: 1px solid #FDE68A; letter-spacing: 0.3px;
+  }
+
+  /* ─── RISKS ─── */
+  .risks-card {
+    background: var(--surface); border: 1.5px solid #FDE68A;
+    border-radius: var(--radius); padding: 18px 20px; margin-bottom: 10px;
+  }
+  .risks-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+  }
+  .risks-title {
+    font-size: 14px; font-weight: 700; color: var(--text);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .btn-add-risk {
+    font-size: 12px; font-weight: 600; padding: 6px 13px;
+    border-radius: var(--radius-sm); border: 1.5px solid #FDE68A;
+    background: #FFFBEB; color: #92400E; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-add-risk:hover { background: #FEF3C7; border-color: #F59E0B; }
+
+  .risks-list { display: flex; flex-direction: column; gap: 7px; }
+
+  .risk-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-radius: var(--radius-sm);
+    background: #FFFBEB; border: 1.5px solid #FDE68A;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .risk-item.is-closed {
+    background: var(--success-light); border-color: var(--success-border);
+  }
+  .risk-item.is-closed input { color: var(--success); }
+
+  .risk-item input {
+    flex: 1; border: none; background: transparent;
+    font-family: 'Inter', sans-serif; font-size: 13px;
+    color: var(--text); outline: none;
+  }
+  .risk-item input::placeholder { color: #D97706; opacity: 0.5; }
+
+  .risk-status {
+    font-size: 10.5px; font-weight: 700; padding: 3px 9px;
+    border-radius: 99px; cursor: pointer; white-space: nowrap;
+    border: 1.5px solid; transition: all 0.15s; letter-spacing: 0.2px;
+  }
+  .risk-status.open { background: #FEF3C7; color: #92400E; border-color: #FDE68A; }
+  .risk-status.closed { background: var(--success-light); color: var(--success); border-color: var(--success-border); }
+
+  .risk-del {
+    font-size: 18px; color: #D97706; cursor: pointer;
+    opacity: 0.4; transition: opacity 0.15s; border: none;
+    background: none; line-height: 1; padding: 0 2px;
+  }
+  .risk-del:hover { opacity: 1; color: var(--danger); }
+
+  .risks-empty { font-size: 13px; color: #D97706; opacity: 0.5; font-style: italic; }
+
+  /* ─── SUMMARY ─── */
+  .summary-card {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: 18px 20px; margin-top: 4px;
+  }
+  .summary-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
+  }
+  .summary-title { font-size: 14px; font-weight: 700; color: var(--text); }
+
+  .summary-empty { font-size: 13px; color: var(--text-muted); font-style: italic; }
+  .summary-list { display: flex; flex-direction: column; gap: 8px; }
+  .summary-item {
+    font-size: 13px; color: var(--text); padding: 10px 14px;
+    background: var(--bg); border-radius: var(--radius-sm);
+    border-left: 3px solid var(--accent); white-space: pre-wrap; line-height: 1.6;
+  }
+  .summary-item-step { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(8px);
+    background: #18181B; color: white; font-size: 13px; font-weight: 500;
+    padding: 10px 20px; border-radius: 10px;
+    opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 9999;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Section divider */
+  .section-divider {
+    display: flex; align-items: center; gap: 12px; margin: 24px 0 14px;
+  }
+  .section-label {
+    font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; color: var(--text-xs); white-space: nowrap;
+  }
+  .section-line { flex: 1; height: 1.5px; background: var(--border); border-radius: 99px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <div class="header-title">Сбор требований</div>
+        <div class="header-sub">Шпаргалка BA — отмечай шаги и фиксируй по ходу разговора</div>
+      </div>
+      <div class="header-actions">
+        <div class="timer-wrap">
+          <div class="timer-display" id="timerDisplay">00:00</div>
+          <button class="btn-timer" id="timerBtn" onclick="toggleTimer()">Старт</button>
+          <button class="btn-timer" onclick="resetTimer()" title="Сбросить">↺</button>
+        </div>
+        <button class="btn-secondary" id="interviewBtn" onclick="toggleInterviewMode()">🎯 Режим собеса</button>
+        <button class="btn-danger" onclick="resetAll()">Сбросить</button>
+      </div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="progress-label" id="progressLabel">0 из 5 шагов выполнено</div>
+  </div>
+
+  <!-- Interview banner -->
+  <div class="interview-banner" id="interviewBanner">
+    <span>🎯 <strong>Режим собеседования</strong> — <span id="bannerStep">Понять проблему</span></span>
+    <button class="btn-next-step" onclick="interviewNextStep()">Следующий шаг →</button>
+  </div>
+
+  <!-- Meta -->
+  <div class="meta-card surface-el">
+    <div class="meta-grid">
+      <div class="meta-field">
+        <div class="meta-label">Название фичи / проекта</div>
+        <input class="meta-input" id="meta-feature" type="text" placeholder="Например: Система рейтинга курьеров">
+      </div>
+      <div class="meta-field">
+        <div class="meta-label">Стейкхолдер — имя и роль</div>
+        <input class="meta-input" id="meta-stakeholder" type="text" placeholder="Иван, Product Manager">
+      </div>
+      <div class="meta-field">
+        <div class="meta-label">Команда / отдел</div>
+        <input class="meta-input" id="meta-team" type="text" placeholder="Мобильное приложение">
+      </div>
+      <div class="meta-field">
+        <div class="meta-label">Кто принимает финальное решение?</div>
+        <input class="meta-input" id="meta-decider" type="text" placeholder="Стейкхолдер или его руководитель?">
+      </div>
+    </div>
+  </div>
+
+  <!-- Steps -->
+  <div id="steps-container">
+
+    <div class="step-card" id="step-1" data-step="1">
+      <div class="step-header" onclick="toggleStep(1)">
+        <div class="step-number">
+          <div class="step-number-inner"><span class="step-number-text">1</span></div>
+        </div>
+        <div class="step-title-wrap">
+          <div class="step-title">Понять проблему, а не фичу <span class="step-badge">Зачем?</span></div>
+          <div class="step-subtitle">Стейкхолдер приходит с решением — докопайся до проблемы</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Вопросы</div>
+        <ul class="questions-list" id="q-1">
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какую проблему мы решаем этой фичей?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Стейкхолдер часто приходит с готовым решением, минуя проблему. Этот вопрос возвращает разговор к корню.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Кто конкретно с этим сталкивается и как часто?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Помогает понять масштаб — решаем боль 1000 пользователей или одного руководителя.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Как люди обходятся без этого сейчас?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Если обходятся легко — проблема не критична. Если с трудом — высокий приоритет.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Почему это важно именно сейчас?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Выявляет скрытый дедлайн или внешний триггер — конкурент запустил фичу, регулятор требует, CEO увидел.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Есть ли жалобы, отзывы или данные, подтверждающие проблему?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Отличает реальную боль от предположения. Без данных — это гипотеза, не факт.</div></li>
+        </ul>
+        <div class="custom-q-section"><div class="custom-q-label">Свой вопрос</div><div class="add-question-row"><input class="add-question-input" id="cq-1" placeholder="Добавь вопрос специфичный для этого кейса..."><button class="btn-add-q" onclick="addCustomQ(1)">+ Добавить</button></div><ul class="questions-list" id="cq-list-1"></ul></div>
+        <div class="notes-header">
+          <div class="notes-label">Заметки</div>
+          <button class="btn-template" onclick="fillTemplate(1)">+ Шаблон</button>
+        </div>
+        <textarea class="notes-textarea" id="notes-1" placeholder="Фиксируй ответы стейкхолдера здесь..."></textarea>
+        <div class="step-footer">
+          <div class="questions-progress" id="qp-1"></div>
+          <button class="btn-step-undone" onclick="markStep(1, false)">↩ Вернуть</button>
+          <button class="btn-step-done" onclick="markStep(1, true)">Шаг выполнен ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card" id="step-2" data-step="2">
+      <div class="step-header" onclick="toggleStep(2)">
+        <div class="step-number">
+          <div class="step-number-inner"><span class="step-number-text">2</span></div>
+        </div>
+        <div class="step-title-wrap">
+          <div class="step-title">Ожидаемый результат и метрики <span class="step-badge">Что измеряем?</span></div>
+          <div class="step-subtitle">Нужна конкретная цифра — не "стало лучше", а "выросло с X до Y"</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Вопросы</div>
+        <ul class="questions-list" id="q-2">
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Как мы поймём, что фича работает? Какая метрика?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Без метрики невозможно оценить успех. Часто стейкхолдер не думал об этом — помоги ему сформулировать.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какая конкретная цифра будет считаться успехом?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">"Стало лучше" — не метрика. "Конверсия выросла с 3% до 5%" — метрика.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Что изменится для пользователя после запуска?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Проверяет что фича реально меняет опыт, а не просто добавляет кнопку ради кнопки.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Что изменится для бизнеса?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Помогает связать фичу с бизнес-целью — без этого сложно обосновать приоритет.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Как эта метрика выглядит сейчас — есть ли базовая линия?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Без базовой линии ты не докажешь что фича сработала. Нужно зафиксировать точку отсчёта до запуска.</div></li>
+        </ul>
+        <div class="custom-q-section"><div class="custom-q-label">Свой вопрос</div><div class="add-question-row"><input class="add-question-input" id="cq-2" placeholder="Добавь вопрос специфичный для этого кейса..."><button class="btn-add-q" onclick="addCustomQ(2)">+ Добавить</button></div><ul class="questions-list" id="cq-list-2"></ul></div>
+        <div class="notes-header">
+          <div class="notes-label">Заметки</div>
+          <button class="btn-template" onclick="fillTemplate(2)">+ Шаблон</button>
+        </div>
+        <textarea class="notes-textarea" id="notes-2" placeholder="Фиксируй метрики и целевые цифры..."></textarea>
+        <div class="step-footer">
+          <div class="questions-progress" id="qp-2"></div>
+          <button class="btn-step-undone" onclick="markStep(2, false)">↩ Вернуть</button>
+          <button class="btn-step-done" onclick="markStep(2, true)">Шаг выполнен ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card" id="step-3" data-step="3">
+      <div class="step-header" onclick="toggleStep(3)">
+        <div class="step-number">
+          <div class="step-number-inner"><span class="step-number-text">3</span></div>
+        </div>
+        <div class="step-title-wrap">
+          <div class="step-title">Откуда данные и кто нам нужен? <span class="step-badge">⚠ Самый важный</span></div>
+          <div class="step-subtitle">Проверь: данные есть, дата-аналитик подключён, юридика чистая — иначе фича не взлетит</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Вопросы <span class="risk-tag">⚠ риск</span></div>
+        <ul class="questions-list" id="q-3">
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какие данные нужны для работы этой фичи?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Большинство фич требуют данных для работы или измерения результата. Выясни что именно нужно до начала разработки.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Эти данные у нас уже есть? В каком виде и где хранятся?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Если данных нет — фича не взлетит. Это самый частый невидимый риск который обнаруживают уже в середине разработки.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Кто владелец данных — нужно ли согласование с другой командой?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Данные могут принадлежать другой команде. Согласование занимает время — выясни это на старте.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Данные чистые? Есть ли пропуски или аномалии?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Грязные данные дадут неверные результаты. Аналитик должен это проверить до разработки.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Нужно ли подключать дата-аналитика?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Аналитик скажет чистые ли данные, как их получить, сколько займёт. Подключай на старте — не в конце.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Если данных нет — сколько времени займёт начать их собирать?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Сбор данных может занять недели или месяцы. Это критично для оценки реального дедлайна.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Есть ли технические ограничения?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Архитектура системы может не позволить реализовать фичу быстро. Уточни у разработчиков до написания требований.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Есть ли юридические ограничения (персональные данные, налоги, compliance)?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Персональные данные, финансы, медицина — всё регулируется. Лучше узнать сейчас чем переделывать после разработки.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какие зависимости от других команд или систем?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Зависимость от другой команды — риск для дедлайна. Нужно согласовать заранее.</div></li>
+        </ul>
+        <div class="custom-q-section"><div class="custom-q-label">Свой вопрос</div><div class="add-question-row"><input class="add-question-input" id="cq-3" placeholder="Добавь вопрос специфичный для этого кейса..."><button class="btn-add-q" onclick="addCustomQ(3)">+ Добавить</button></div><ul class="questions-list" id="cq-list-3"></ul></div>
+        <div class="notes-header">
+          <div class="notes-label">Заметки</div>
+          <button class="btn-template" onclick="fillTemplate(3)">+ Шаблон</button>
+        </div>
+        <textarea class="notes-textarea" id="notes-3" placeholder="Где данные, кто владелец, открытые риски..."></textarea>
+        <div class="step-footer">
+          <div class="questions-progress" id="qp-3"></div>
+          <button class="btn-step-undone" onclick="markStep(3, false)">↩ Вернуть</button>
+          <button class="btn-step-done" onclick="markStep(3, true)">Шаг выполнен ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card" id="step-4" data-step="4">
+      <div class="step-header" onclick="toggleStep(4)">
+        <div class="step-number">
+          <div class="step-number-inner"><span class="step-number-text">4</span></div>
+        </div>
+        <div class="step-title-wrap">
+          <div class="step-title">Рамки задачи — скоуп и дедлайн <span class="step-badge">Что входит?</span></div>
+          <div class="step-subtitle">Что делаем сейчас, что потом, когда — и есть ли жёсткий дедлайн</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Вопросы</div>
+        <ul class="questions-list" id="q-4">
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Кто пользователи этой фичи? (физлица / юрлица / все?)</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Разные аудитории — разные сценарии и требования. Это влияет на скоуп и сложность.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Что точно входит в скоуп?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Без явного скоупа разработчики начнут делать "всё что логично" — и никогда не закончат.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Что точно не входит в скоуп?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Зафиксировать что НЕ делаем — так же важно как что делаем. Это защита от расползания скоупа.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">На каких платформах? (мобайл / веб / оба?)</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Разные платформы — разные команды и сроки. Уточни сразу чтобы не было сюрпризов.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Есть ли дедлайн? Жёсткий или мягкий?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Жёсткий дедлайн меняет приоритизацию и скоуп. Если привязан к маркетинговой кампании — это риск.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Привязан ли дедлайн к кампании или внешнему событию?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Если анонс уже запланирован — нужно подтвердить реалистичность сроков с разработчиками заранее.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какой приоритет относительно других задач?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Команда не может делать всё одновременно. Нужно понять что подвинется ради этой фичи.</div></li>
+        </ul>
+        <div class="custom-q-section"><div class="custom-q-label">Свой вопрос</div><div class="add-question-row"><input class="add-question-input" id="cq-4" placeholder="Добавь вопрос специфичный для этого кейса..."><button class="btn-add-q" onclick="addCustomQ(4)">+ Добавить</button></div><ul class="questions-list" id="cq-list-4"></ul></div>
+        <div class="notes-header">
+          <div class="notes-label">Заметки</div>
+          <button class="btn-template" onclick="fillTemplate(4)">+ Шаблон</button>
+        </div>
+        <textarea class="notes-textarea" id="notes-4" placeholder="Что входит, что нет, дедлайны..."></textarea>
+        <div class="step-footer">
+          <div class="questions-progress" id="qp-4"></div>
+          <button class="btn-step-undone" onclick="markStep(4, false)">↩ Вернуть</button>
+          <button class="btn-step-done" onclick="markStep(4, true)">Шаг выполнен ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card" id="step-5" data-step="5">
+      <div class="step-header" onclick="toggleStep(5)">
+        <div class="step-number">
+          <div class="step-number-inner"><span class="step-number-text">5</span></div>
+        </div>
+        <div class="step-title-wrap">
+          <div class="step-title">Зафиксировать и определить следующие шаги <span class="step-badge">Итог</span></div>
+          <div class="step-subtitle">Не уходи без чёткого списка — кто что делает до следующей встречи</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Чеклист перед завершением</div>
+        <ul class="questions-list" id="q-5">
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Зафиксировал все открытые вопросы и риски?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Открытые вопросы должны быть явно записаны — иначе они теряются и всплывают в середине разработки.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Договорились кто проверяет данные с дата-аналитиком?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Без конкретного ответственного это не будет сделано. Зафиксируй имя и срок.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Стейкхолдер знает что ему нужно уточнить?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Без чёткого "домашнего задания" стейкхолдер забудет. Проговори вслух и зафиксируй.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Назначен следующий созвон или дедлайн по уточнениям?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Договорённости без даты — не договорённости. Назначь сразу пока оба на звонке.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Если нашёл риск — предложил решение, а не просто констатировал?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">BA который только называет проблему — это репортёр. BA который предлагает решение — это партнёр бизнеса.</div></li>
+        </ul>
+        <div class="custom-q-section"><div class="custom-q-label">Свой вопрос</div><div class="add-question-row"><input class="add-question-input" id="cq-5" placeholder="Добавь пункт специфичный для этого кейса..."><button class="btn-add-q" onclick="addCustomQ(5)">+ Добавить</button></div><ul class="questions-list" id="cq-list-5"></ul></div>
+        <div class="notes-header">
+          <div class="notes-label">Следующие шаги</div>
+          <button class="btn-template" onclick="fillTemplate(5)">+ Шаблон</button>
+        </div>
+        <textarea class="notes-textarea" id="notes-5" placeholder="Кто что делает до следующей встречи..."></textarea>
+        <div class="step-footer">
+          <div class="questions-progress" id="qp-5"></div>
+          <button class="btn-step-undone" onclick="markStep(5, false)">↩ Вернуть</button>
+          <button class="btn-step-done" onclick="markStep(5, true)">Шаг выполнен ✓</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Risks -->
+  <div class="section-divider"><div class="section-line"></div><div class="section-label">Открытые риски</div><div class="section-line"></div></div>
+
+  <div class="risks-card surface-el">
+    <div class="risks-header">
+      <div class="risks-title">⚠️ Риски встречи</div>
+      <button class="btn-add-risk" onclick="addRisk()">+ Добавить риск</button>
+    </div>
+    <div class="risks-list" id="risksList">
+      <div class="risks-empty" id="risksEmpty">Рисков пока нет — добавь если нашёл в ходе разговора</div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="section-divider"><div class="section-line"></div><div class="section-label">Итог встречи</div><div class="section-line"></div></div>
+
+  <div class="summary-card surface-el">
+    <div class="summary-header">
+      <div class="summary-title">Заметки по всем шагам</div>
+      <button class="btn-secondary" onclick="exportNotes()">📋 Скопировать итог</button>
+    </div>
+    <div id="summary-content">
+      <div class="summary-empty">Заполни заметки в шагах — они появятся здесь</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">Скопировано в буфер ✓</div>
+
+<script>
+  const STEP_NAMES = {
+    1: 'Шаг 1 — Проблема',
+    2: 'Шаг 2 — Метрики',
+    3: 'Шаг 3 — Данные и риски',
+    4: 'Шаг 4 — Скоуп',
+    5: 'Шаг 5 — Следующие шаги'
+  };
+
+  const TEMPLATES = {
+    1: `Проблема: \nКто страдает: \nЧастота: \nКак обходятся сейчас: \nПодтверждающие данные: `,
+    2: `Метрика успеха: \nЦелевая цифра: \nБазовая линия сейчас: \nЧто изменится для пользователя: \nЧто изменится для бизнеса: `,
+    3: `Нужные данные: \nГде хранятся: \nВладелец данных: \nЧистота данных: \nДата-аналитик нужен: \nТехнические ограничения: \nЮридические ограничения: \nЗависимости от других команд: `,
+    4: `Пользователи фичи: \nЧто входит в скоуп: \nЧто НЕ входит: \nПлатформы: \nДедлайн: \nПривязка к событию: \nПриоритет: `,
+    5: `Открытые вопросы: \nКто проверяет данные: \nЧто делает стейкхолдер до следующей встречи: \nЧто делаю я: \nДата следующей встречи: `
+  };
+
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem('ba_v2') || '{}'); }
+    catch { return {}; }
+  }
+  function saveState() { localStorage.setItem('ba_v2', JSON.stringify(state)); }
+
+  let state = loadState();
+  let timerInterval = null, timerSeconds = 0, timerRunning = false;
+  let interviewMode = false, interviewStep = 1;
+
+  function init() {
+    ['feature','stakeholder','team','decider'].forEach(k => {
+      const el = document.getElementById(`meta-${k}`);
+      if (state[`meta_${k}`]) el.value = state[`meta_${k}`];
+      el.addEventListener('input', () => { state[`meta_${k}`] = el.value; saveState(); });
+    });
+    for (let i = 1; i <= 5; i++) {
+      if (state[`step_${i}_done`]) {
+        const card = document.getElementById(`step-${i}`);
+        card.classList.add('completed');
+        card.querySelector('.step-number-text').textContent = '✓';
+      }
+      if (state[`notes_${i}`]) document.getElementById(`notes-${i}`).value = state[`notes_${i}`];
+      document.querySelectorAll(`#q-${i} .question-item`).forEach((q, idx) => {
+        if (state[`q_${i}_${idx}`]) { q.classList.add('asked'); q.querySelector('.question-check').textContent = '✓'; }
+      });
+      document.getElementById(`notes-${i}`).addEventListener('input', function() {
+        state[`notes_${i}`] = this.value; saveState(); updateSummary();
+      });
+    }
+    (state.risks || []).forEach(r => renderRisk(r.text, r.closed, r.id));
+    if (state.timerSeconds) { timerSeconds = state.timerSeconds; updateTimerDisplay(); }
+    updateProgress(); updateSummary(); updateRisksEmpty();
+  }
+
+  function toggleStep(n) {
+    if (interviewMode && n !== interviewStep) return;
+    document.getElementById(`step-${n}`).classList.toggle('open');
+  }
+
+  function toggleQuestion(el) {
+    const wrap = el.closest('.question-wrap');
+    const step = el.closest('.step-card').dataset.step;
+    const idx = Array.from(el.closest('.questions-list').children).indexOf(wrap);
+    el.classList.toggle('asked');
+    wrap.classList.toggle('asked-wrap', el.classList.contains('asked'));
+    el.querySelector('.question-check').textContent = el.classList.contains('asked') ? '✓' : '';
+    state[`q_${step}_${idx}`] = el.classList.contains('asked');
+    saveState(); updateQProgress(parseInt(step));
+  }
+
+  function toggleHint(e, btn) {
+    e.stopPropagation();
+    const wrap = btn.closest('.question-wrap');
+    const hint = wrap.querySelector('.question-hint');
+    if (!hint) return;
+    hint.classList.toggle('visible');
+    btn.classList.toggle('active');
+    wrap.classList.toggle('hint-open', hint.classList.contains('visible'));
+  }
+
+  function addCustomQ(stepNum) {
+    const input = document.getElementById(`cq-${stepNum}`);
+    const text = input.value.trim();
+    if (!text) return;
+    const list = document.getElementById(`cq-list-${stepNum}`);
+    const li = document.createElement('li');
+    li.innerHTML = `<div class="custom-question-item" onclick="this.classList.toggle('asked');this.querySelector('.question-check').textContent=this.classList.contains('asked')?'✓':''"><div class="question-check"></div><span class="question-text">${text}</span><button class="custom-q-del" onclick="event.stopPropagation();this.closest('li').remove()">×</button></div>`;
+    list.appendChild(li);
+    input.value = ''; input.focus();
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.classList.contains('add-question-input')) {
+      const match = e.target.id.match(/cq-(\d+)/);
+      if (match) addCustomQ(parseInt(match[1]));
+    }
+  });
+
+  function updateQProgress(n) {
+    const total = document.querySelectorAll(`#q-${n} .question-item`).length;
+    const done = document.querySelectorAll(`#q-${n} .question-item.asked`).length;
+    const el = document.getElementById(`qp-${n}`);
+    if (el) el.textContent = done > 0 ? `${done} / ${total} вопросов` : '';
+  }
+
+  function markStep(n, done) {
+    const card = document.getElementById(`step-${n}`);
+    const numText = card.querySelector('.step-number-text');
+    if (done) {
+      card.classList.add('completed'); card.classList.remove('open');
+      numText.textContent = '✓';
+    } else {
+      card.classList.remove('completed');
+      numText.textContent = n;
+    }
+    state[`step_${n}_done`] = done;
+    saveState(); updateProgress();
+    if (interviewMode && done) { interviewStep = Math.min(interviewStep + 1, 5); applyInterviewMode(); }
+  }
+
+  function updateProgress() {
+    let done = 0;
+    for (let i = 1; i <= 5; i++) if (state[`step_${i}_done`]) done++;
+    const fill = document.getElementById('progressFill');
+    fill.style.width = (done / 5 * 100) + '%';
+    fill.classList.toggle('all-done', done === 5);
+    document.getElementById('progressLabel').textContent = done === 5 ? '✓ Все шаги выполнены' : `${done} из 5 шагов выполнено`;
+    for (let i = 1; i <= 5; i++) updateQProgress(i);
+  }
+
+  function fillTemplate(n) {
+    const ta = document.getElementById(`notes-${n}`);
+    if (ta.value.trim() && !confirm('Заменить текущие заметки шаблоном?')) return;
+    ta.value = TEMPLATES[n]; state[`notes_${n}`] = ta.value;
+    saveState(); updateSummary(); ta.focus();
+  }
+
+  function updateSummary() {
+    const container = document.getElementById('summary-content');
+    const items = [];
+    for (let i = 1; i <= 5; i++) {
+      const notes = (state[`notes_${i}`] || '').trim();
+      if (notes) items.push({ step: STEP_NAMES[i], text: notes });
+    }
+    if (!items.length) {
+      container.innerHTML = '<div class="summary-empty">Заполни заметки в шагах — они появятся здесь</div>';
+    } else {
+      container.innerHTML = '<div class="summary-list">' +
+        items.map(it => `<div class="summary-item"><div class="summary-item-step">${it.step}</div>${it.text}</div>`).join('') +
+        '</div>';
+    }
+  }
+
+  function exportNotes() {
+    const feature = state.meta_feature || '—';
+    const stakeholder = state.meta_stakeholder || '—';
+    const team = state.meta_team || '—';
+    const decider = state.meta_decider || '—';
+
+    let text = '';
+    text += `╔══════════════════════════════════════╗\n`;
+    text += `   СБОР ТРЕБОВАНИЙ — ИТОГ ВСТРЕЧИ\n`;
+    text += `╚══════════════════════════════════════╝\n\n`;
+
+    text += `📋 ОБЩАЯ ИНФОРМАЦИЯ\n`;
+    text += `Фича / проект: ${feature}\n`;
+    text += `Стейкхолдер: ${stakeholder}\n`;
+    text += `Команда: ${team}\n`;
+    text += `Кто принимает решение: ${decider}\n\n`;
+
+    const stepTitles = {
+      1: '🔍 ШАГ 1 — ПРОБЛЕМА',
+      2: '📊 ШАГ 2 — МЕТРИКИ И РЕЗУЛЬТАТ',
+      3: '🗄 ШАГ 3 — ДАННЫЕ И ЗАВИСИМОСТИ',
+      4: '🎯 ШАГ 4 — СКОУП И ДЕДЛАЙН',
+      5: '✅ ШАГ 5 — СЛЕДУЮЩИЕ ШАГИ'
+    };
+
+    for (let i = 1; i <= 5; i++) {
+      const notes = (state[`notes_${i}`] || '').trim();
+      const totalQ = document.querySelectorAll(`#q-${i} .question-item`).length;
+      const askedQ = document.querySelectorAll(`#q-${i} .question-item.asked`).length;
+      const done = state[`step_${i}_done`] ? 'выполнен' : 'не выполнен';
+      text += `${stepTitles[i]} [${done}, вопросов задано: ${askedQ}/${totalQ}]\n`;
+      text += notes ? `${notes}\n\n` : `(заметок нет)\n\n`;
+    }
+
+    const risks = state.risks || [];
+    if (risks.length) {
+      text += `⚠️ РИСКИ\n`;
+      risks.forEach(r => {
+        if (r.text.trim()) text += `• [${r.closed ? '✓ закрыт' : '! открыт'}] ${r.text}\n`;
+      });
+      text += '\n';
+    }
+
+    text += `──────────────────────────────────────\n`;
+    text += `🤖 ПРОМПТ ДЛЯ АНАЛИЗА С ИИ\n`;
+    text += `──────────────────────────────────────\n`;
+    text += `Выше — данные собранные на встрече с стейкхолдером по фиче "${feature}".\n\n`;
+    text += `Пожалуйста, проанализируй:\n`;
+    text += `1. Какие риски я мог упустить?\n`;
+    text += `2. Есть ли противоречия или белые пятна в требованиях?\n`;
+    text += `3. Что стоит уточнить на следующей встрече?\n`;
+    text += `4. Достаточно ли данных для начала работы над фичей?`;
+
+    copyToClipboard(text.trim());
+  }
+
+  function copyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(showToast).catch(() => fallbackCopy(text));
+    } else {
+      fallbackCopy(text);
+    }
+  }
+
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    try { document.execCommand('copy'); showToast(); }
+    catch (e) { alert('Не удалось скопировать. Попробуй открыть файл через браузер.'); }
+    document.body.removeChild(ta);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    if (msg) t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => { t.classList.remove('show'); t.textContent = 'Скопировано в буфер ✓'; }, 2200);
+  }
+
+  // Risks
+  let riskIdCounter = Date.now();
+  function addRisk(text = '', closed = false, id = null) {
+    const rid = id || (++riskIdCounter);
+    if (!id) { if (!state.risks) state.risks = []; state.risks.push({ id: rid, text: '', closed: false }); saveState(); }
+    renderRisk(text, closed, rid); updateRisksEmpty();
+  }
+
+  function renderRisk(text, closed, id) {
+    const list = document.getElementById('risksList');
+    const item = document.createElement('div');
+    item.className = 'risk-item' + (closed ? ' is-closed' : '');
+    item.dataset.id = id;
+    item.innerHTML = `
+      <input type="text" placeholder="Опиши риск..." value="${text.replace(/"/g,'&quot;')}">
+      <button class="risk-status ${closed ? 'closed' : 'open'}" onclick="toggleRiskStatus(this)">${closed ? 'закрыт' : 'открыт'}</button>
+      <button class="risk-del" onclick="deleteRisk(this)" title="Удалить">×</button>`;
+    item.querySelector('input').addEventListener('input', function() { updateRisk(id, { text: this.value }); });
+    list.appendChild(item); updateRisksEmpty();
+  }
+
+  function toggleRiskStatus(btn) {
+    const item = btn.closest('.risk-item');
+    const id = parseInt(item.dataset.id);
+    const closed = btn.classList.contains('open');
+    btn.classList.toggle('open', !closed); btn.classList.toggle('closed', closed);
+    btn.textContent = closed ? 'закрыт' : 'открыт';
+    item.classList.toggle('is-closed', closed);
+    updateRisk(id, { closed });
+  }
+
+  function deleteRisk(btn) {
+    const item = btn.closest('.risk-item');
+    const id = parseInt(item.dataset.id);
+    state.risks = (state.risks || []).filter(r => r.id !== id);
+    saveState(); item.remove(); updateRisksEmpty();
+  }
+
+  function updateRisk(id, changes) {
+    const r = (state.risks || []).find(r => r.id === id);
+    if (r) Object.assign(r, changes); saveState();
+  }
+
+  function updateRisksEmpty() {
+    const empty = document.getElementById('risksEmpty');
+    if (empty) empty.style.display = document.querySelectorAll('.risk-item').length ? 'none' : 'block';
+  }
+
+  // Timer
+  function toggleTimer() {
+    if (timerRunning) {
+      clearInterval(timerInterval); timerRunning = false;
+      document.getElementById('timerBtn').textContent = 'Старт';
+      document.getElementById('timerBtn').classList.remove('active');
+    } else {
+      timerRunning = true;
+      document.getElementById('timerBtn').textContent = 'Стоп';
+      document.getElementById('timerBtn').classList.add('active');
+      timerInterval = setInterval(() => {
+        timerSeconds++; state.timerSeconds = timerSeconds; saveState(); updateTimerDisplay();
+      }, 1000);
+    }
+  }
+
+  function resetTimer() {
+    clearInterval(timerInterval); timerRunning = false; timerSeconds = 0;
+    state.timerSeconds = 0; saveState(); updateTimerDisplay();
+    document.getElementById('timerBtn').textContent = 'Старт';
+    document.getElementById('timerBtn').classList.remove('active');
+  }
+
+  function updateTimerDisplay() {
+    const m = Math.floor(timerSeconds / 60), s = timerSeconds % 60;
+    const el = document.getElementById('timerDisplay');
+    el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    el.className = 'timer-display' + (timerRunning ? (timerSeconds >= 2700 ? ' warning' : ' running') : '');
+  }
+
+  // Interview mode
+  const STEP_SHORT = ['Понять проблему','Метрики','Данные и риски','Скоуп','Следующие шаги'];
+
+  function toggleInterviewMode() {
+    interviewMode = !interviewMode;
+    const btn = document.getElementById('interviewBtn');
+    const banner = document.getElementById('interviewBanner');
+    if (interviewMode) {
+      interviewStep = 1; btn.classList.add('active');
+      btn.textContent = '✕ Выйти из режима'; banner.classList.add('visible');
+      applyInterviewMode();
+    } else {
+      btn.classList.remove('active'); btn.textContent = '🎯 Режим собеса';
+      banner.classList.remove('visible'); document.body.classList.remove('interview-mode');
+      for (let i = 1; i <= 5; i++) document.getElementById(`step-${i}`).classList.remove('locked','active-step','open');
+    }
+  }
+
+  function applyInterviewMode() {
+    document.body.classList.add('interview-mode');
+    document.getElementById('bannerStep').textContent = STEP_SHORT[interviewStep - 1];
+    for (let i = 1; i <= 5; i++) {
+      const card = document.getElementById(`step-${i}`);
+      card.classList.remove('locked','active-step','open');
+      if (i === interviewStep) { card.classList.add('active-step','open'); }
+      else { card.classList.add('locked'); }
+    }
+  }
+
+  function interviewNextStep() {
+    if (interviewStep < 5) { interviewStep++; applyInterviewMode(); }
+    else { showToast('Все шаги пройдены 🎉'); }
+  }
+
+  function resetAll() {
+    if (!confirm('Сбросить все данные?')) return;
+    localStorage.removeItem('ba_v2'); state = {}; location.reload();
+  }
+
+  init();
+</script>
+</body>
+</html>
