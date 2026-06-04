@@ -59,9 +59,8 @@
   /* Header */
   .header { margin-bottom: 24px; }
   .header-top {
-    display: flex; align-items: flex-start;
-    justify-content: space-between; flex-wrap: wrap; gap: 16px;
-    margin-bottom: 16px;
+    display: flex; flex-direction: column;
+    gap: 12px; margin-bottom: 16px;
   }
   .header-title { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
   .header-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
@@ -74,7 +73,6 @@
     border-radius: var(--radius-sm); padding: 6px 12px;
     transition: all 0.3s;
   }
-  .timer-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
   .timer-display {
     font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;
     letter-spacing: 0.5px; min-width: 46px; color: var(--text);
@@ -404,7 +402,6 @@
       </div>
       <div class="header-actions">
         <div class="timer-wrap" id="timerWrap">
-          <div class="timer-label">Инцидент</div>
           <div class="timer-display" id="timerDisplay">00:00</div>
           <button class="btn-timer" id="timerBtn" onclick="toggleTimer()">Старт</button>
           <button class="btn-timer" onclick="resetTimer()" title="Сбросить">↺</button>
