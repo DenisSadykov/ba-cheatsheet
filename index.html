@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,14 +7,42 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #FAFAF9;
+    --bg: #F5F4F2;
     --surface: #FFFFFF;
+    --surface2: #F9F8F7;
     --text: #18181B;
-    --text-muted: #71717A;
+    --text-mid: #71717A;
     --text-xs: #A1A1AA;
     --border: #E4E4E7;
-    --radius: 16px;
-    --radius-sm: 10px;
+    --radius: 14px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.07);
+
+    --c-req: #6366F1;
+    --c-req-light: #EEF2FF;
+    --c-req-border: #C7D2FE;
+    --c-prob: #EA580C;
+    --c-prob-light: #FFF7ED;
+    --c-prob-border: #FED7AA;
+    --c-grid: #0EA5E9;
+    --c-grid-light: #E0F2FE;
+    --c-grid-border: #7DD3FC;
+  }
+
+  [data-theme="dark"] {
+    --bg: #0F0F13;
+    --surface: #1A1A24;
+    --surface2: #13131A;
+    --text: #F4F4F5;
+    --text-mid: #A1A1AA;
+    --text-xs: #52525B;
+    --border: #27272A;
+    --shadow: 0 2px 12px rgba(0,0,0,0.3);
+    --c-req-light: rgba(99,102,241,0.12);
+    --c-req-border: rgba(99,102,241,0.3);
+    --c-prob-light: rgba(234,88,12,0.12);
+    --c-prob-border: rgba(234,88,12,0.3);
+    --c-grid-light: rgba(14,165,233,0.12);
+    --c-grid-border: rgba(14,165,233,0.3);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -25,95 +53,169 @@
     color: var(--text);
     min-height: 100vh;
     display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    padding: 32px 16px;
+    align-items: center;
+    padding: 40px 16px 48px;
+    transition: background .2s, color .2s;
   }
 
   body::before {
     content: '';
     position: fixed; top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, #6366F1, #EA580C, #F59E0B);
+    background: linear-gradient(90deg, #6366F1, #0EA5E9, #EA580C);
     z-index: 100;
   }
 
   .container { max-width: 680px; width: 100%; }
 
+  /* Шапка */
+  .btn-theme {
+    position: fixed;
+    top: 16px; right: 16px;
+    z-index: 200;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-mid);
+    border-radius: 99px;
+    width: 36px; height: 36px;
+    font-size: 17px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all .15s;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow);
+  }
+  .btn-theme:hover { border-color: var(--c-req); transform: scale(1.1); }
+
   /* Hero */
-  .hero { text-align: center; margin-bottom: 48px; }
+  .hero { text-align: center; margin-bottom: 44px; }
   .hero-badge {
     display: inline-flex; align-items: center; gap: 6px;
-    font-size: 12px; font-weight: 600; color: var(--text-muted);
-    background: var(--surface); border: 1.5px solid var(--border);
-    padding: 4px 12px; border-radius: 99px; margin-bottom: 20px;
-    letter-spacing: 0.3px;
+    font-size: 12px; font-weight: 600; color: var(--text-mid);
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 4px 12px; border-radius: 99px; margin-bottom: 18px;
   }
   .hero-title {
-    font-size: 36px; font-weight: 800; letter-spacing: -1px;
-    color: var(--text); line-height: 1.15; margin-bottom: 12px;
+    font-size: 34px; font-weight: 800; letter-spacing: -1px;
+    line-height: 1.15; margin-bottom: 12px;
   }
   .hero-title span {
-    background: linear-gradient(135deg, #6366F1, #EA580C);
+    background: linear-gradient(135deg, #6366F1, #0EA5E9);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
-  .hero-sub { font-size: 15px; color: var(--text-muted); line-height: 1.6; max-width: 420px; margin: 0 auto; }
+  .hero-sub { font-size: 15px; color: var(--text-mid); line-height: 1.6; }
 
-  /* Cards */
-  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
-  @media (max-width: 520px) { .cards { grid-template-columns: 1fr; } }
+  /* Секция */
+  .section { margin-bottom: 20px; }
 
-  .card {
-    background: var(--surface); border: 1.5px solid var(--border);
-    border-radius: var(--radius); padding: 28px 24px;
+  /* Сбор требований — два варианта */
+  .req-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--c-req);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 0;
+  }
+
+  .req-header {
+    padding: 20px 22px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .req-header-icon { font-size: 26px; }
+
+  .req-header-text {}
+  .req-header-title {
+    font-size: 16px; font-weight: 800; color: var(--c-req);
+    margin-bottom: 2px;
+  }
+  .req-header-sub { font-size: 13px; color: var(--text-mid); }
+
+  .req-formats {
+    display: grid; grid-template-columns: 1fr 1fr;
+  }
+
+  .format-card {
+    padding: 18px 20px;
     text-decoration: none; color: var(--text);
-    display: flex; flex-direction: column; gap: 16px;
-    transition: all 0.2s; cursor: pointer;
-    position: relative; overflow: hidden;
+    display: flex; flex-direction: column; gap: 8px;
+    transition: background .15s;
+    border-right: 1px solid var(--border);
+    position: relative;
   }
-  .card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    transition: opacity 0.2s;
+  .format-card:last-child { border-right: none; }
+  .format-card:hover { background: var(--surface2); }
+
+  .format-card::before {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    opacity: 0; transition: opacity .2s;
   }
-  .card.requirements::before { background: linear-gradient(90deg, #6366F1, #8B5CF6); }
-  .card.problem::before { background: linear-gradient(90deg, #DC2626, #EA580C, #F59E0B); }
+  .format-step::before { background: var(--c-req); }
+  .format-grid::before { background: var(--c-grid); }
+  .format-card:hover::before { opacity: 1; }
 
-  .card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); border-color: var(--border); }
-  .card.requirements:hover { border-color: #C7D2FE; }
-  .card.problem:hover { border-color: #FED7AA; }
-
-  .card-icon { font-size: 32px; }
-
-  .card-content { flex: 1; }
-  .card-title { font-size: 17px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.3px; }
-  .card.requirements .card-title { color: #4F46E5; }
-  .card.problem .card-title { color: #EA580C; }
-  .card-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
-
-  .card-footer {
-    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  .format-name { font-size: 14px; font-weight: 700; }
+  .format-desc {
+    font-size: 12px; color: var(--text-mid); line-height: 1.5;
+    flex: 1; /* растягивает описание, прижимая пилюльки вниз */
+    min-height: 48px; /* выравнивание между двумя карточками */
   }
-  .card-tags { display: flex; flex-wrap: wrap; gap: 5px; }
-  .card-tag {
-    font-size: 11px; font-weight: 500; padding: 3px 9px;
+
+  .format-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+  .format-tag {
+    font-size: 11px; font-weight: 500; padding: 2px 8px;
     border-radius: 99px; border: 1px solid; white-space: nowrap;
   }
-  .card.requirements .card-tag { background: #EEF2FF; color: #6366F1; border-color: #C7D2FE; }
-  .card.problem .card-tag { background: #FFF7ED; color: #EA580C; border-color: #FED7AA; }
+  .format-step .format-tag { background: var(--c-req-light); color: var(--c-req); border-color: var(--c-req-border); }
+  .format-grid .format-tag { background: var(--c-grid-light); color: var(--c-grid); border-color: var(--c-grid-border); }
 
-  .card-arrow {
-    font-size: 18px; opacity: 0.3; transition: all 0.2s; flex-shrink: 0;
+  .format-footer {
+    display: flex; align-items: center; justify-content: flex-end; margin-top: 4px;
   }
-  .card:hover .card-arrow { opacity: 1; transform: translateX(3px); }
-  .card.requirements .card-arrow { color: #6366F1; }
-  .card.problem .card-arrow { color: #EA580C; }
+  .format-arrow {
+    font-size: 16px; opacity: 0.25; transition: all .15s;
+  }
+  .format-card:hover .format-arrow { opacity: 1; transform: translateX(3px); }
+  .format-step .format-arrow { color: var(--c-req); }
+  .format-grid .format-arrow { color: var(--c-grid); }
+
+  /* Карточка проблемы */
+  .tool-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 22px 22px 20px;
+    text-decoration: none; color: var(--text);
+    display: flex; align-items: flex-start; gap: 16px;
+    transition: all .15s; box-shadow: var(--shadow);
+  }
+  .tool-problem { border-left: 2px solid var(--c-prob); }
+  .tool-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+  .tool-problem:hover { border-color: var(--c-prob-border); border-left-color: var(--c-prob); }
+
+  .tool-icon { font-size: 28px; flex-shrink: 0; margin-top: 2px; }
+  .tool-body { flex: 1; }
+  .tool-title { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+  .tool-problem .tool-title { color: var(--c-prob); }
+  .tool-desc { font-size: 13px; color: var(--text-mid); line-height: 1.5; margin-bottom: 10px; }
+  .tool-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .tool-tag {
+    font-size: 11px; font-weight: 500; padding: 2px 8px;
+    border-radius: 99px; border: 1px solid;
+  }
+  .tool-problem .tool-tag { background: var(--c-prob-light); color: var(--c-prob); border-color: var(--c-prob-border); }
+  .tool-arrow { font-size: 18px; opacity: 0.25; transition: all .15s; align-self: center; flex-shrink: 0; }
+  .tool-card:hover .tool-arrow { opacity: 1; transform: translateX(3px); }
+  .tool-problem .tool-arrow { color: var(--c-prob); }
 
   /* Footer */
-  .footer { text-align: center; font-size: 12px; color: var(--text-xs); }
-  .footer a { color: var(--text-muted); text-decoration: none; }
-  .footer a:hover { text-decoration: underline; }
+  .footer { text-align: center; font-size: 12px; color: var(--text-xs); margin-top: 8px; }
 </style>
 </head>
 <body>
 <div class="container">
+
+  <button class="btn-theme" onclick="toggleTheme()" id="themeBtn">🌙</button>
 
   <div class="hero">
     <div class="hero-badge">🛠 BA Toolkit</div>
@@ -121,44 +223,76 @@
     <p class="hero-sub">Структурированные шаблоны для встреч — выбери нужный тип и начни работу</p>
   </div>
 
-  <div class="cards">
-    <a class="card requirements" href="requirements.html">
-      <div class="card-icon">📋</div>
-      <div class="card-content">
-        <div class="card-title">Сбор требований</div>
-        <div class="card-desc">Первичная встреча со стейкхолдером — зафиксируй проблему, метрики, данные и скоуп</div>
-      </div>
-      <div class="card-footer">
-        <div class="card-tags">
-          <span class="card-tag">Режим собеса</span>
-          <span class="card-tag">Подсказки ⓘ</span>
-          <span class="card-tag">Стейкхолдер</span>
+  <!-- Сбор требований -->
+  <div class="section">
+    <div class="req-card">
+      <div class="req-header">
+        <div class="req-header-icon">📋</div>
+        <div class="req-header-text">
+          <div class="req-header-title">Сбор требований</div>
+          <div class="req-header-sub">Первичная встреча со стейкхолдером — выбери удобный формат</div>
         </div>
-        <div class="card-arrow">→</div>
       </div>
-    </a>
+      <div class="req-formats">
+        <a class="format-card format-step" href="requirements.html">
+          <div class="format-name">По шагам</div>
+          <div class="format-desc">Ведёт по структуре встречи — подсказки и вопросы на каждом этапе.</div>
+          <div class="format-tags">
+            <span class="format-tag">Джун / Мидл</span>
+            <span class="format-tag">Подсказки ⓘ</span>
+            <span class="format-tag">Шаг за шагом</span>
+          </div>
+          <div class="format-footer"><span class="format-arrow">→</span></div>
+        </a>
+        <a class="format-card format-grid" href="layout_grid_v2.html">
+          <div class="format-name">Открытая доска</div>
+          <div class="format-desc">Все разделы видны сразу — заполняй в любом порядке по ходу разговора.</div>
+          <div class="format-tags">
+            <span class="format-tag">Мидл / Сеньор</span>
+            <span class="format-tag">Свободная навигация</span>
+            <span class="format-tag">Кастомные поля</span>
+          </div>
+          <div class="format-footer"><span class="format-arrow">→</span></div>
+        </a>
+      </div>
+    </div>
+  </div>
 
-    <a class="card problem" href="problem.html">
-      <div class="card-icon">🔥</div>
-      <div class="card-content">
-        <div class="card-title">Встреча про проблему</div>
-        <div class="card-desc">Инцидент или баг — локализуй причину, оцени влияние и прими решение быстро</div>
-      </div>
-      <div class="card-footer">
-        <div class="card-tags">
-          <span class="card-tag">Приоритизация</span>
-          <span class="card-tag">Участники</span>
-          <span class="card-tag">Время решения</span>
+  <!-- Встреча про проблему -->
+  <div class="section">
+    <a class="tool-card tool-problem" href="problem.html">
+      <div class="tool-icon">🔥</div>
+      <div class="tool-body">
+        <div class="tool-title">Встреча про проблему</div>
+        <div class="tool-desc">Инцидент или баг — локализуй причину, оцени влияние и прими решение быстро</div>
+        <div class="tool-tags">
+          <span class="tool-tag">Приоритизация</span>
+          <span class="tool-tag">Участники</span>
+          <span class="tool-tag">Время решения</span>
         </div>
-        <div class="card-arrow">→</div>
       </div>
+      <div class="tool-arrow">→</div>
     </a>
   </div>
 
-  <div class="footer">
-    Скоро: ретроспектива, планирование спринта, согласование требований
-  </div>
+  <div class="footer">Скоро: ретроспектива, планирование спринта, согласование требований</div>
 
 </div>
+
+<script>
+  function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+    localStorage.setItem('ba_theme', isDark ? 'light' : 'dark');
+  }
+
+  const saved = localStorage.getItem('ba_theme');
+  if (saved === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.getElementById('themeBtn').textContent = '☀️';
+  }
+</script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BA Шпаргалка v2</title>
+<title>Сбор требований - По шагам / BA</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -11,7 +11,7 @@
     --accent-hover: #4F46E5;
     --accent-light: #EEF2FF;
     --accent-mid: #C7D2FE;
-    --bg: #FAFAF9;
+    --bg: #F5F4F2;
     --surface: #FFFFFF;
     --text: #18181B;
     --text-muted: #71717A;
@@ -30,6 +30,17 @@
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .btn-theme-fixed {
+    position: fixed; top: 16px; right: 16px; z-index: 200;
+    width: 34px; height: 34px;
+    border: 1px solid var(--border); background: var(--surface);
+    border-radius: 99px; font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08); transition: all .15s;
+    font-family: inherit;
+  }
+  .btn-theme-fixed:hover { transform: scale(1.1); }
 
   body {
     font-family: 'Inter', sans-serif;
@@ -52,51 +63,60 @@
 
   .container { max-width: 780px; margin: 0 auto; }
 
-  /* ─── INTERVIEW MODE ─── */
-  body.interview-mode { background: #09090B; color: #FAFAFA; }
-  body.interview-mode::before { background: linear-gradient(90deg, #4F46E5, #7C3AED); }
-  body.interview-mode .surface-el {
-    background: #18181B; border-color: #27272A; color: #FAFAFA;
+  /* ─── DARK THEME ─── */
+  [data-theme="dark"] { --bg: #0F0F13; --surface: #1A1A24; --text: #F4F4F5; --text-muted: #A1A1AA; --text-xs: #52525B; --border: #27272A; --border-hover: #3F3F46; --accent: #818CF8; --accent-light: #1E1B4B; --accent-mid: #3730A3; }
+  [data-theme="dark"] body { background: var(--bg); color: var(--text); }
+  [data-theme="dark"] .surface-el { background: var(--surface); border-color: var(--border); }
+  [data-theme="dark"] .step-card { background: var(--surface); border-color: var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+  [data-theme="dark"] .step-title { color: var(--text); }
+  [data-theme="dark"] .step-subtitle { color: var(--text-muted); }
+  [data-theme="dark"] .question-item { background: #0F0F13; color: #D4D4D8; border-color: var(--border); }
+  [data-theme="dark"] .question-item:hover { background: #1E1B4B; border-color: var(--accent); }
+  [data-theme="dark"] .notes-textarea { background: #0F0F13; border-color: var(--border); color: var(--text); }
+  [data-theme="dark"] .meta-input { background: #0F0F13; border-color: var(--border); color: var(--text); }
+  [data-theme="dark"] .meta-label, [data-theme="dark"] .notes-label, [data-theme="dark"] .questions-label { color: var(--text-muted); }
+  [data-theme="dark"] .step-number-inner { background: var(--border); color: var(--text-muted); border-color: var(--border-hover); }
+  [data-theme="dark"] .step-toggle { color: var(--text-xs); }
+  [data-theme="dark"] .risks-card { background: var(--surface); border-color: var(--border-hover); }
+  [data-theme="dark"] .risk-item { background: #0F0F13; border-color: var(--border-hover); }
+  [data-theme="dark"] .risk-item input { color: #D4D4D8; }
+  [data-theme="dark"] .summary-card { background: var(--surface); border-color: var(--border); }
+  [data-theme="dark"] .summary-item { background: #0F0F13; }
+  [data-theme="dark"] .summary-title, [data-theme="dark"] .risks-title { color: var(--text); }
+  [data-theme="dark"] .section-label { color: var(--text-xs); }
+  [data-theme="dark"] .section-line { background: var(--border); }
+  [data-theme="dark"] .header-title { color: var(--text); }
+  [data-theme="dark"] .header-sub { color: var(--text-muted); }
+  [data-theme="dark"] .progress-label { color: var(--text-muted); }
+  [data-theme="dark"] .progress-track { background: var(--border); }
+  [data-theme="dark"] .timer-wrap { background: var(--surface); border-color: var(--border); }
+  [data-theme="dark"] .timer-display { color: var(--text); }
+  [data-theme="dark"] .btn-secondary { background: var(--surface); border-color: var(--border); color: var(--text-muted); }
+  [data-theme="dark"] .summary-empty, [data-theme="dark"] .risks-empty { color: var(--text-xs); }
+  [data-theme="dark"] .questions-progress { color: var(--text-muted); }
+  [data-theme="dark"] .step-card.completed { background: var(--surface); border-color: #166534; }
+  [data-theme="dark"] .step-badge { background: #1E1B4B; color: #A5B4FC; }
+  [data-theme="dark"] .sf-label { background: #1E1B4B; color: #A5B4FC; border-color: #6366F1; }
+  [data-theme="dark"] .sf-textarea { background: #0F0F13; border-color: var(--border-hover); color: var(--text); }
+  [data-theme="dark"] .sf-textarea::placeholder { color: var(--border-hover); }
+  [data-theme="dark"] .meta-card { background: var(--surface); border-color: var(--border); }
+  [data-theme="dark"] .add-question-input { background: #0F0F13; border-color: var(--border); color: var(--text); }
+  [data-theme="dark"] .custom-question-item { background: #0F0F13; border-color: var(--border); color: #D4D4D8; }
+  /* Приглушаем цветные поля AS-IS / TO-BE в тёмной теме */
+  [data-theme="dark"] .sf-textarea {
+    background: rgba(255,255,255,0.05) !important;
+    border-color: rgba(255,255,255,0.12) !important;
+    color: #E4E4E7 !important;
   }
-  body.interview-mode .step-card { background: #18181B; border-color: #27272A; }
-  body.interview-mode .step-title { color: #FAFAFA; }
-  body.interview-mode .step-subtitle { color: #A1A1AA; }
-  body.interview-mode .question-item { background: #09090B; color: #D4D4D8; border-color: transparent; }
-  body.interview-mode .question-item:hover { background: #1E1B4B; border-color: #6366F1; }
-  body.interview-mode .notes-textarea { background: #09090B; border-color: #27272A; color: #FAFAFA; }
-  body.interview-mode .meta-input { background: #09090B; border-color: #27272A; color: #FAFAFA; }
-  body.interview-mode .meta-label,
-  body.interview-mode .notes-label,
-  body.interview-mode .questions-label { color: #71717A; }
-  body.interview-mode .step-number-inner { background: #27272A; color: #A1A1AA; border-color: #3F3F46; }
-  body.interview-mode .step-toggle { color: #52525B; }
-  body.interview-mode .step-card.locked { opacity: 0.2; pointer-events: none; }
-  body.interview-mode .step-card.active-step {
-    border-color: #6366F1 !important;
-    box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
-    opacity: 1; pointer-events: all;
+  [data-theme="dark"] .sf-textarea::placeholder { color: #3F3F46 !important; }
+  [data-theme="dark"] .sf-label {
+    background: rgba(255,255,255,0.05) !important;
+    color: #A5B4FC !important;
+    border-color: rgba(99,102,241,0.3) !important;
   }
-  body.interview-mode .risks-card { background: #18181B; border-color: #3F3F46; }
-  body.interview-mode .risk-item { background: #09090B; border-color: #3F3F46; }
-  body.interview-mode .risk-item input { color: #D4D4D8; }
-  body.interview-mode .summary-card { background: #18181B; border-color: #27272A; }
-  body.interview-mode .summary-item { background: #09090B; }
-  body.interview-mode .summary-title,
-  body.interview-mode .risks-title { color: #FAFAFA; }
-  body.interview-mode .section-label { color: #52525B; }
-  body.interview-mode .section-line { background: #27272A; }
-  body.interview-mode .header-title { color: #FAFAFA; }
-  body.interview-mode .header-sub { color: #71717A; }
-  body.interview-mode .progress-label { color: #71717A; }
-  body.interview-mode .progress-track { background: #27272A; }
-  body.interview-mode .timer-wrap { background: #18181B; border-color: #27272A; }
-  body.interview-mode .timer-display { color: #FAFAFA; }
-  body.interview-mode .btn-secondary { background: #18181B; border-color: #27272A; color: #A1A1AA; }
-  body.interview-mode .summary-empty,
-  body.interview-mode .risks-empty { color: #52525B; }
-  body.interview-mode .questions-progress { color: #71717A; }
-  body.interview-mode .step-card.completed { background: #18181B; border-color: #166534; }
-  body.interview-mode .step-badge { background: #1E1B4B; color: #A5B4FC; }
+  /* Нейтрализуем яркие border-color при hover в тёмной теме */
+  [data-theme="dark"] .step-card:hover { border-color: #3F3F46; }
+  [data-theme="dark"] .risks-card { box-shadow: none; }
 
   /* ─── HEADER ─── */
   .header { margin-bottom: 28px; }
@@ -125,9 +145,9 @@
   .timer-wrap:hover { border-color: var(--border-hover); }
 
   .timer-display {
-    font-size: 15px; font-weight: 700;
-    color: var(--text); font-variant-numeric: tabular-nums;
-    letter-spacing: 0.5px; min-width: 46px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 18px; font-weight: 700;
+    color: var(--text); letter-spacing: 1px; min-width: 52px;
   }
   .timer-display.running { color: var(--accent); }
   .timer-display.warning { color: var(--warning); }
@@ -184,25 +204,6 @@
   }
   .progress-label { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
 
-  /* Interview banner */
-  .interview-banner {
-    display: none;
-    background: linear-gradient(135deg, #4F46E5, #7C3AED);
-    color: white; border-radius: var(--radius);
-    padding: 12px 18px; margin-bottom: 16px;
-    align-items: center; justify-content: space-between; gap: 12px;
-  }
-  .interview-banner.visible { display: flex; }
-  .interview-banner strong { font-weight: 700; }
-  .interview-banner span { font-size: 13px; }
-  .btn-next-step {
-    font-size: 12px; font-weight: 700; padding: 7px 16px;
-    border-radius: 7px; border: none;
-    background: rgba(255,255,255,0.18); color: white;
-    cursor: pointer; transition: background 0.15s; white-space: nowrap;
-    letter-spacing: 0.2px;
-  }
-  .btn-next-step:hover { background: rgba(255,255,255,0.3); }
 
   /* Meta card */
   .meta-card {
@@ -235,9 +236,10 @@
   /* ─── STEP CARD ─── */
   .step-card {
     background: var(--surface);
-    border: 1.5px solid var(--border);
+    border: 1px solid var(--border);
     border-radius: var(--radius);
     margin-bottom: 10px; overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
   }
   .step-card:hover { border-color: var(--border-hover); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
@@ -416,6 +418,29 @@
   .notes-textarea::placeholder { color: #D4D4D8; }
   .notes-textarea:focus { border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
 
+  /* Structured fields (AS-IS / TO-BE / etc.) */
+  .sf-block { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+  .sf-field { display: flex; flex-direction: column; gap: 4px; }
+  .sf-label {
+    font-size: 12px; font-weight: 700; color: var(--accent);
+    display: flex; align-items: center; gap: 6px;
+    padding: 4px 8px; background: var(--accent-light);
+    border-radius: 6px; border-left: 3px solid var(--accent);
+  }
+  .sf-label .sf-tag {
+    font-size: 10px; font-weight: 600; padding: 1px 5px;
+    background: var(--accent); color: white; border-radius: 3px;
+  }
+  .sf-textarea {
+    width: 100%; min-height: 70px; padding: 9px 12px;
+    border: 1.5px solid var(--accent-mid); border-radius: var(--radius-sm);
+    font-family: 'Inter', sans-serif; font-size: 13px;
+    color: var(--text); background: var(--accent-light);
+    resize: vertical; transition: all 0.15s; outline: none; line-height: 1.6;
+  }
+  .sf-textarea::placeholder { color: var(--accent-mid); }
+  .sf-textarea:focus { border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+
   /* Step footer */
   .step-footer {
     display: flex; align-items: center; justify-content: space-between;
@@ -556,6 +581,7 @@
   <div class="header">
     <div class="header-top">
       <div>
+        <a href="index.html" style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--text-muted);text-decoration:none;margin-bottom:6px;opacity:0.7;transition:opacity .15s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">← Главная</a>
         <div class="header-title">Сбор требований</div>
         <div class="header-sub">Шпаргалка BA — отмечай шаги и фиксируй по ходу разговора</div>
       </div>
@@ -565,7 +591,6 @@
           <button class="btn-timer" id="timerBtn" onclick="toggleTimer()">Старт</button>
           <button class="btn-timer" onclick="resetTimer()" title="Сбросить">↺</button>
         </div>
-        <button class="btn-secondary" id="interviewBtn" onclick="toggleInterviewMode()">🎯 Режим собеса</button>
         <button class="btn-danger" onclick="resetAll()">Сбросить</button>
       </div>
     </div>
@@ -575,11 +600,6 @@
     <div class="progress-label" id="progressLabel">0 из 5 шагов выполнено</div>
   </div>
 
-  <!-- Interview banner -->
-  <div class="interview-banner" id="interviewBanner">
-    <span>🎯 <strong>Режим собеседования</strong> — <span id="bannerStep">Понять проблему</span></span>
-    <button class="btn-next-step" onclick="interviewNextStep()">Следующий шаг →</button>
-  </div>
 
   <!-- Meta -->
   <div class="meta-card surface-el">
@@ -632,6 +652,12 @@
           <button class="btn-template" onclick="fillTemplate(1)">+ Шаблон</button>
         </div>
         <textarea class="notes-textarea" id="notes-1" placeholder="Фиксируй ответы стейкхолдера здесь..."></textarea>
+        <div class="sf-block">
+          <div class="sf-field">
+            <div class="sf-label">AS-IS <span class="sf-tag">Как работает СЕЙЧАС</span></div>
+            <textarea class="sf-textarea" id="asis-1" placeholder="Опиши текущий процесс до изменений — со всеми болями и костылями..."></textarea>
+          </div>
+        </div>
         <div class="step-footer">
           <div class="questions-progress" id="qp-1"></div>
           <button class="btn-step-undone" onclick="markStep(1, false)">↩ Вернуть</button>
@@ -740,6 +766,20 @@
           <button class="btn-template" onclick="fillTemplate(4)">+ Шаблон</button>
         </div>
         <textarea class="notes-textarea" id="notes-4" placeholder="Что входит, что нет, дедлайны..."></textarea>
+        <div class="sf-block">
+          <div class="sf-field">
+            <div class="sf-label">TO-BE <span class="sf-tag">Как должно работать ПОСЛЕ</span></div>
+            <textarea class="sf-textarea" id="tobe-4" placeholder="Опиши будущее состояние системы/процесса — как будто это уже работает..."></textarea>
+          </div>
+          <div class="sf-field">
+            <div class="sf-label">Допущения <span class="sf-tag">Что принимаем как данность?</span></div>
+            <textarea class="sf-textarea" id="assumptions-4" placeholder="Что считаем истиной, но не проверили? Например: данные о пользователях уже хранятся в системе..."></textarea>
+          </div>
+          <div class="sf-field">
+            <div class="sf-label">Критерии приёмки <span class="sf-tag">При каких условиях готово?</span></div>
+            <textarea class="sf-textarea" id="acceptance-4" placeholder="При каких конкретных условиях фича считается выполненной? Например: менеджер видит историю в течение 3 секунд..."></textarea>
+          </div>
+        </div>
         <div class="step-footer">
           <div class="questions-progress" id="qp-4"></div>
           <button class="btn-step-undone" onclick="markStep(4, false)">↩ Вернуть</button>
@@ -839,7 +879,6 @@
 
   let state = loadState();
   let timerInterval = null, timerSeconds = 0, timerRunning = false;
-  let interviewMode = false, interviewStep = 1;
 
   function init() {
     ['feature','stakeholder','team','decider'].forEach(k => {
@@ -861,13 +900,20 @@
         state[`notes_${i}`] = this.value; saveState(); updateSummary();
       });
     }
+    // Structured fields
+    const sfIds = ['asis-1','tobe-4','assumptions-4','acceptance-4'];
+    sfIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (state[`sf_${id}`]) el.value = state[`sf_${id}`];
+      el.addEventListener('input', function() { state[`sf_${id}`] = this.value; saveState(); });
+    });
     (state.risks || []).forEach(r => renderRisk(r.text, r.closed, r.id));
     if (state.timerSeconds) { timerSeconds = state.timerSeconds; updateTimerDisplay(); }
     updateProgress(); updateSummary(); updateRisksEmpty();
   }
 
   function toggleStep(n) {
-    if (interviewMode && n !== interviewStep) return;
     document.getElementById(`step-${n}`).classList.toggle('open');
   }
 
@@ -929,7 +975,6 @@
     }
     state[`step_${n}_done`] = done;
     saveState(); updateProgress();
-    if (interviewMode && done) { interviewStep = Math.min(interviewStep + 1, 5); applyInterviewMode(); }
   }
 
   function updateProgress() {
@@ -996,7 +1041,20 @@
       const askedQ = document.querySelectorAll(`#q-${i} .question-item.asked`).length;
       const done = state[`step_${i}_done`] ? 'выполнен' : 'не выполнен';
       text += `${stepTitles[i]} [${done}, вопросов задано: ${askedQ}/${totalQ}]\n`;
-      text += notes ? `${notes}\n\n` : `(заметок нет)\n\n`;
+      text += notes ? `${notes}\n` : `(заметок нет)\n`;
+      if (i === 1) {
+        const asis = (state['sf_asis-1'] || '').trim();
+        if (asis) text += `AS-IS (как работает сейчас): ${asis}\n`;
+      }
+      if (i === 4) {
+        const tobe = (state['sf_tobe-4'] || '').trim();
+        const assump = (state['sf_assumptions-4'] || '').trim();
+        const accept = (state['sf_acceptance-4'] || '').trim();
+        if (tobe) text += `TO-BE (как должно работать после): ${tobe}\n`;
+        if (assump) text += `Допущения: ${assump}\n`;
+        if (accept) text += `Критерии приёмки: ${accept}\n`;
+      }
+      text += '\n';
     }
 
     const risks = state.risks || [];
@@ -1125,38 +1183,21 @@
     el.className = 'timer-display' + (timerRunning ? (timerSeconds >= 2700 ? ' warning' : ' running') : '');
   }
 
-  // Interview mode
-  const STEP_SHORT = ['Понять проблему','Метрики','Данные и риски','Скоуп','Следующие шаги'];
-
-  function toggleInterviewMode() {
-    interviewMode = !interviewMode;
-    const btn = document.getElementById('interviewBtn');
-    const banner = document.getElementById('interviewBanner');
-    if (interviewMode) {
-      interviewStep = 1; btn.classList.add('active');
-      btn.textContent = '✕ Выйти из режима'; banner.classList.add('visible');
-      applyInterviewMode();
-    } else {
-      btn.classList.remove('active'); btn.textContent = '🎯 Режим собеса';
-      banner.classList.remove('visible'); document.body.classList.remove('interview-mode');
-      for (let i = 1; i <= 5; i++) document.getElementById(`step-${i}`).classList.remove('locked','active-step','open');
-    }
+  // Dark theme
+  function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+    localStorage.setItem('ba_theme', isDark ? 'light' : 'dark');
   }
-
-  function applyInterviewMode() {
-    document.body.classList.add('interview-mode');
-    document.getElementById('bannerStep').textContent = STEP_SHORT[interviewStep - 1];
-    for (let i = 1; i <= 5; i++) {
-      const card = document.getElementById(`step-${i}`);
-      card.classList.remove('locked','active-step','open');
-      if (i === interviewStep) { card.classList.add('active-step','open'); }
-      else { card.classList.add('locked'); }
-    }
-  }
-
-  function interviewNextStep() {
-    if (interviewStep < 5) { interviewStep++; applyInterviewMode(); }
-    else { showToast('Все шаги пройдены 🎉'); }
+  const savedTheme = localStorage.getItem('ba_theme');
+  if (savedTheme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('themeBtn');
+      if (btn) btn.textContent = '☀️';
+    });
   }
 
   function resetAll() {
@@ -1166,5 +1207,6 @@
 
   init();
 </script>
+<button class="btn-theme-fixed" id="themeBtn" onclick="toggleTheme()">🌙</button>
 </body>
 </html>

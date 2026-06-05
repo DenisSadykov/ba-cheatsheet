@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сбор требований - Grid / BA</title>
+<style>
+  :root {
+    --text: #1A1A2E;
+    --text-mid: #6B7280;
+    --text-light: #9CA3AF;
+    --bg: #F5F4F2;
+    --white: #FFFFFF;
+    --border: #E5E7EB;
+
+    --c1: #7C3AED; --c1-light: #EDE9FE; --c1-border: #C4B5FD;
+    --c2: #0EA5E9; --c2-light: #E0F2FE; --c2-border: #7DD3FC;
+    --c3: #10B981; --c3-light: #D1FAE5; --c3-border: #6EE7B7;
+    --c4: #F59E0B; --c4-light: #FEF3C7; --c4-border: #FCD34D;
+    --c5: #EF4444; --c5-light: #FEE2E2; --c5-border: #FCA5A5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── ШАПКА ── */
+  .topbar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .logo { font-size: 15px; font-weight: 800; white-space: nowrap; }
+  .logo span { color: var(--c1); }
+
+  .meta-input {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 13px;
+    color: var(--text);
+    background: var(--bg);
+    outline: none;
+    flex: 1;
+    max-width: 240px;
+    font-family: inherit;
+  }
+  .meta-input:focus { border-color: var(--c1-border); background: var(--white); }
+  .meta-input::placeholder { color: var(--text-light); }
+
+  .timer-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .timer {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    min-width: 72px;
+    letter-spacing: 1px;
+  }
+  .timer.yellow { color: #D97706; }
+  .timer.red    { color: #DC2626; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+  .btn {
+    border: none; border-radius: 6px;
+    padding: 6px 12px; font-size: 13px; font-weight: 600;
+    cursor: pointer; white-space: nowrap;
+    font-family: inherit; transition: all .15s;
+  }
+  .btn-outline {
+    background: var(--bg); border: 1px solid var(--border); color: var(--text-mid);
+  }
+  .btn-outline:hover { border-color: var(--c1-border); color: var(--c1); background: var(--c1-light); }
+  .btn-primary { background: var(--c1); color: white; }
+  .btn-primary:hover { background: #6D28D9; }
+
+  /* ── ПРОГРЕСС ── */
+  .progress-wrap {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 6px 20px 8px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .progress-track {
+    flex: 1; height: 5px; background: var(--border);
+    border-radius: 3px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--c1), #A78BFA);
+    border-radius: 3px;
+    transition: width .4s ease;
+  }
+  .progress-fill.done { background: var(--c3); }
+  .progress-label { font-size: 12px; color: var(--text-light); white-space: nowrap; }
+
+  /* ── KANBAN ── */
+  .board {
+    flex: 1;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 16px 20px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .column {
+    flex: 1 1 0;
+    min-width: 200px;
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    border-left: 1px solid var(--col-accent, var(--border));
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 130px);
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  }
+  .col-1 { --col-accent: var(--c1); }
+  .col-2 { --col-accent: var(--c2); }
+  .col-3 { --col-accent: var(--c3); }
+  .col-4 { --col-accent: var(--c4); }
+  .col-5 { --col-accent: var(--c5); }
+
+  /* Заголовок колонки */
+  .col-head {
+    padding: 10px 0 0;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: stretch;
+    min-height: 54px;
+  }
+
+  .col-head-left {
+    flex: 0 0 72%;
+    padding: 4px 12px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .col-head-sep {
+    width: 1px;
+    background: var(--border);
+    flex-shrink: 0;
+    margin: 4px 0 10px;
+  }
+
+  .col-head-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px 10px;
+  }
+
+  .col-title {
+    font-size: 14px; font-weight: 700;
+    color: var(--text); margin-bottom: 2px;
+  }
+
+  .col-hint {
+    font-size: 11px; color: var(--text-light);
+    line-height: 1.4;
+  }
+
+  /* Счётчик */
+  .col-counter {
+    font-size: 15px; font-weight: 700;
+    color: var(--text-light);
+    letter-spacing: -0.3px;
+    text-align: center;
+    line-height: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 10px;
+    white-space: nowrap;
+  }
+
+  /* Поля внутри колонки */
+  .col-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 12px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .field-label {
+    font-size: 12px; font-weight: 600;
+    color: var(--text-mid);
+    text-transform: none;
+    letter-spacing: 0;
+    display: flex; align-items: flex-start; gap: 5px;
+    min-height: 30px;
+    line-height: 1.4;
+  }
+
+  .field-label .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .field textarea {
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 7px 9px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text);
+    background: var(--bg);
+    resize: none;
+    outline: none;
+    font-family: inherit;
+    height: 68px; /* одинаковая высота для всех полей */
+    transition: border-color .15s, background .15s;
+  }
+
+  .field textarea:focus {
+    border-color: var(--focus-color, var(--c1-border));
+    background: var(--white);
+    box-shadow: 0 0 0 3px var(--focus-glow, rgba(124,58,237,0.1));
+  }
+  .col-1 .field textarea:focus { --focus-glow: rgba(124,58,237,0.1); }
+  .col-2 .field textarea:focus { --focus-glow: rgba(14,165,233,0.1); }
+  .col-3 .field textarea:focus { --focus-glow: rgba(16,185,129,0.1); }
+  .col-4 .field textarea:focus { --focus-glow: rgba(245,158,11,0.1); }
+  .col-5 .field textarea:focus { --focus-glow: rgba(239,68,68,0.1); }
+
+  .field textarea::placeholder { color: var(--text-light); font-size: 12px; }
+  .field textarea.has-content { background: var(--white); border-color: var(--border); }
+
+  /* Итоговое поле */
+  .field-summary textarea {
+    background: var(--sum-bg, var(--c1-light));
+    border-color: var(--sum-border, var(--c1-border));
+    color: var(--sum-color, var(--c1));
+    height: 68px;
+    font-weight: 500;
+  }
+  .field-summary textarea:focus {
+    background: white;
+    border-color: var(--sum-border, var(--c1-border));
+  }
+  .field-summary textarea::placeholder { color: var(--sum-ph, var(--c1-border)); }
+
+  /* AS-IS / TO-BE структурные поля */
+  .field-structured { }
+  .field-structured .field-label { font-weight: 700; }
+  .field-structured textarea {
+    background: var(--sf-bg, #F5F3FF) !important;
+    border-color: var(--sf-border, #C4B5FD) !important;
+    color: var(--sf-color, #5B21B6) !important;
+  }
+  .field-structured textarea::placeholder { color: var(--sf-ph, #C4B5FD) !important; }
+  .field-structured textarea:focus { background: white !important; }
+  .col-4 .field-structured { --sf-bg: #FFFBEB; --sf-border: #FCD34D; --sf-color: #92400E; --sf-ph: #FCD34D; }
+
+  /* Цвета по колонкам */
+  .col-1 { --focus-color: var(--c1-border); --sum-bg: var(--c1-light); --sum-border: var(--c1-border); --sum-color: var(--c1); --sum-ph: var(--c1-border); }
+  .col-2 { --focus-color: var(--c2-border); --sum-bg: var(--c2-light); --sum-border: var(--c2-border); --sum-color: #0369A1; --sum-ph: var(--c2-border); }
+  .col-3 { --focus-color: var(--c3-border); --sum-bg: var(--c3-light); --sum-border: var(--c3-border); --sum-color: #065F46; --sum-ph: var(--c3-border); }
+  .col-4 { --focus-color: var(--c4-border); --sum-bg: var(--c4-light); --sum-border: var(--c4-border); --sum-color: #92400E; --sum-ph: var(--c4-border); }
+  .col-5 { --focus-color: var(--c5-border); --sum-bg: var(--c5-light); --sum-border: var(--c5-border); --sum-color: #991B1B; --sum-ph: var(--c5-border); }
+
+
+  /* Кастомные поля */
+  .add-field-section {
+    border-top: 1px dashed var(--border);
+    padding-top: 10px; margin-top: 4px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .add-field-row {
+    display: flex; gap: 6px; align-items: center; margin-bottom: 8px;
+  }
+  .add-field-input {
+    flex: 1; border: 1px solid var(--border); border-radius: 6px;
+    padding: 5px 8px; font-size: 12px; font-family: inherit;
+    color: var(--text); background: var(--bg); outline: none;
+  }
+  .add-field-input:focus { border-color: var(--focus-color, #C4B5FD); background: white; }
+  .add-field-input::placeholder { color: var(--text-light); }
+  .btn-add-field {
+    border: none; border-radius: 6px; padding: 5px 10px;
+    font-size: 12px; font-weight: 600; cursor: pointer;
+    background: var(--bg); border: 1px solid var(--border);
+    color: var(--text-mid); white-space: nowrap; font-family: inherit;
+    transition: all .15s;
+  }
+  .btn-add-field:hover { background: var(--accent-light, #EDE9FE); color: var(--c1); border-color: var(--c1-border); }
+
+  .custom-field { display: flex; flex-direction: column; gap: 4px; }
+  .custom-field-head {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .custom-field-label {
+    font-size: 12px; font-weight: 600; color: var(--text-mid);
+    text-transform: none; letter-spacing: 0;
+    min-height: 30px; display: flex; align-items: flex-start; line-height: 1.4;
+  }
+  .btn-del-field {
+    border: none; background: none; cursor: pointer;
+    font-size: 14px; color: var(--text-light); line-height: 1;
+    padding: 0 2px;
+  }
+  .btn-del-field:hover { color: #EF4444; }
+
+  /* Тост */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: #1F2937; color: white;
+    padding: 10px 16px; border-radius: 8px;
+    font-size: 13px; font-weight: 500;
+    opacity: 0; transform: translateY(8px);
+    transition: all .25s; pointer-events: none; z-index: 1000;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+
+  /* ─── DARK THEME ─── */
+  [data-theme="dark"] { --text:#F4F4F5; --text-mid:#A1A1AA; --text-light:#52525B; --bg:#0F0F13; --white:#1A1A24; --border:#27272A; }
+  [data-theme="dark"] body { background:var(--bg); }
+  [data-theme="dark"] .topbar, [data-theme="dark"] .progress-wrap { background:#1A1A24; border-color:var(--border); }
+  [data-theme="dark"] .column { background:var(--white); border-color:var(--border); box-shadow:0 2px 8px rgba(0,0,0,0.3); }
+  [data-theme="dark"] .col-head { border-color:var(--border); }
+  [data-theme="dark"] .col-head-sep { background:var(--border); }
+  [data-theme="dark"] .col-title { color:var(--text); }
+  [data-theme="dark"] .field textarea { background:#0F0F13; border-color:var(--border); color:var(--text); }
+  [data-theme="dark"] .field textarea::placeholder { color:var(--text-light); }
+  [data-theme="dark"] .field textarea:focus { background:#1A1A24; }
+  /* В тёмной теме цветные поля приглушены */
+  [data-theme="dark"] .field-summary textarea {
+    background: rgba(255,255,255,0.04) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    color: var(--text) !important;
+  }
+  [data-theme="dark"] .field-structured textarea {
+    background: rgba(255,255,255,0.04) !important;
+    border-color: rgba(255,255,255,0.12) !important;
+    color: var(--text) !important;
+  }
+  [data-theme="dark"] .col-counter {
+    background: rgba(255,255,255,0.05);
+    border-color: var(--border);
+  }
+  [data-theme="dark"] .add-field-input { background:#0F0F13; border-color:var(--border); color:var(--text); }
+  [data-theme="dark"] .btn-add-field { background:#0F0F13; border-color:var(--border); color:var(--text-mid); }
+  [data-theme="dark"] .meta-input { background:#0F0F13; border-color:var(--border); color:var(--text); }
+  [data-theme="dark"] .logo span { color:#A78BFA; }
+  [data-theme="dark"] .progress-track { background:var(--border); }
+  /* Восстанавливаем цветные левые линии колонок */
+  [data-theme="dark"] .col-1 { border-left-color: var(--c1) !important; }
+  [data-theme="dark"] .col-2 { border-left-color: var(--c2) !important; }
+  [data-theme="dark"] .col-3 { border-left-color: var(--c3) !important; }
+  [data-theme="dark"] .col-4 { border-left-color: var(--c4) !important; }
+  [data-theme="dark"] .col-5 { border-left-color: var(--c5) !important; }
+
+  /* Scrollbar */
+  .col-body::-webkit-scrollbar { width: 4px; }
+  .col-body::-webkit-scrollbar-track { background: transparent; }
+  .col-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .board::-webkit-scrollbar { height: 6px; }
+  .board::-webkit-scrollbar-track { background: var(--bg); }
+  .board::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ШАПКА -->
+<div class="topbar">
+  <a href="index.html" class="btn btn-outline" style="text-decoration:none;font-size:18px;padding:5px 10px" title="На главную">←</a>
+  <div class="logo">Сбор <span>требований</span></div>
+  <input class="meta-input" id="featName" placeholder="Фича / задача..." style="max-width:280px">
+  <input class="meta-input" id="stakeholder" placeholder="Стейкхолдер...">
+  <div class="timer-wrap">
+    <div class="timer" id="timerDisplay">00:00</div>
+    <button class="btn btn-outline" id="timerBtn" onclick="toggleTimer()">Старт</button>
+    <button class="btn btn-outline" onclick="resetTimer()" title="Сбросить таймер" style="font-size:16px;padding:5px 10px">↺</button>
+    <div style="width:1px;height:24px;background:var(--border);flex-shrink:0"></div>
+    <button class="btn btn-outline" style="color:#EF4444;border-color:#FCA5A5;font-size:16px;padding:5px 10px" onclick="clearBoard()" title="Очистить доску">🗑</button>
+    <div style="width:1px;height:24px;background:var(--border);flex-shrink:0"></div>
+    <button class="btn btn-primary" onclick="copyAll()">📋 Скопировать итог</button>
+    <button class="btn btn-outline" id="themeBtn" onclick="toggleTheme()" style="font-size:16px;padding:5px 11px">🌙</button>
+  </div>
+</div>
+
+<!-- ПРОГРЕСС -->
+<div class="progress-wrap">
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">0 из 5 шагов выполнено</div>
+</div>
+
+<!-- KANBAN BOARD -->
+<div class="board">
+
+  <!-- ШАГ 1: КОНТЕКСТ -->
+  <div class="column col-1" id="col1">
+    <div class="col-head">
+      <div class="col-head-left">
+        <div class="col-title">🎯 Контекст</div>
+        <div class="col-hint">Что хотят сделать и почему</div>
+      </div>
+      <div class="col-head-sep"></div>
+      <div class="col-head-right">
+        <div class="col-counter" id="counter1">—</div>
+      </div>
+    </div>
+    <div class="col-body">
+      <div class="field">
+        <div class="field-label"><span class="dot" style="background:var(--c1)"></span>Что хотят сделать?</div>
+        <textarea id="f1_1" placeholder="Фича, изменение, задача..." oninput="onInput(this,1)"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="dot" style="background:var(--c1)"></span>Какая боль / проблема сейчас?</div>
+        <textarea id="f1_2" placeholder="Что не работает, что раздражает..." oninput="onInput(this,1)"></textarea>
+      </div>
+      <div class="field field-structured">
+        <div class="field-label"><span class="dot" style="background:var(--c1)"></span>AS-IS — как работает сейчас?</div>
+        <textarea id="f1_asis" placeholder="Текущий процесс со всеми болями — до изменений..." oninput="onInput(this,1)"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="dot" style="background:var(--c1)"></span>Почему важно сейчас?</div>
+        <textarea id="f1_3" placeholder="Дедлайн, бизнес-причина..." oninput="onInput(this,1)"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="dot" style="background:var(--c1)"></span>Что точно НЕ входит в скоуп?</div>
+        <textarea id="f1_4" placeholder="Границы задачи..." oninput="onInput(this,1)"></textarea>
+      </div>
+      <div class="add-field-section" id="custom-fields-1"></div>
+      <div class="add-field-row">
+        <input class="add-field-input" id="new-label-1" placeholder="Название нового поля..." onkeydown="if(event.key==='Enter')addCustomField(1)">
+        <button class="btn-add-field" onclick="addCustomField(1)">+</button>
+      </div>
+      <div class="field field-summary">
+        <div class="field-label"><span class="dot" style="background:var(--c1)"></span>Вывод по шагу</div>
+        <textarea id="f1_sum" placeholder="Главное что понял..." oninput="onInput(this,1)"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ШАГ 2: СТЕЙКХОЛДЕРЫ -->
+  <div class="column col-2" id="col2">
+    <div class="col-head">
+      <div class="col-head-left">
+        <div class="col-title">👥 Стейкхолдеры</div>
+        <div class="col-hint">Кто участвует и кто решает</div>
+      </div>
+      <div class="col-head-sep"></div>
+      <div class="col-head-right">
+        <div class="col-counter" id="counter2">—</div>
+      </div>
+    </div>
+    <div class="col-body">
+      <div class="field">
+        <div class="field-label"><span class="dot" style="background:var(--c2)"></span>Кто инициирует / заказывает?</div>
+        <textarea id="f2_1" placeholder="Имя, роль, отдел..." oninput="onInput(this,2)"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="dot" style="background:var(--c2)"></span>Кто принимает финальное решение?</div>
+        <textarea id="f2_2" placeholder="Кто скажет «одобряю»..." oninput="onInput(this,2)"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="dot" style="background:var(--c2)"></span>Кто ещё влияет / будет затронут?</div>
+        <textarea id="f2_3" placeholder="Смежные команды, юристы, IT..." oninput="onInput(this,2)"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="dot" style="background:var(--c2)"></span>Конфликты интересов?</div>
+        <textarea id="f2_4" placeholder="Кто против, у кого другие цели..." oninput="onInput(this,2)"></textarea>
+      </div>
+      <div class="add-field-section" id="custom-fields-2"></div>
+      <div class="add-field-row">
+        <input class="add-field-input" id="new-label-2" placeholder="Название нового поля..." onkeydown="if(event.key==='Enter')addCustomField(2)">
+        <button class="btn-add-field" onclick="addCustomField(2)">+</button>
+      </div>
+      <div class="field field-summary">
+        <div class="field-label"><span class="dot" style="background:var(--c2)"></span>Вывод по шагу</div>
+        <textarea id="f2_sum" placeholder="Кто главный, что учесть..." oninput="onInput(this,2)"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ШАГ 3: ДАННЫЕ -->
+  <div class="column col-3" id="col3">
+    <div class="col-head">
+      <div class="col-head-left">
+        <div class="col-title">🗄 Данные и источники</div>
+        <div class="col-hint">Откуда данные и кто нужен</div>
+      </div>
+      <div class="col-head-sep"></div>
+      <div class="col-head-right">
+        <div class="col-counter" id="counter3">—</div>
+      </div>
+    </div>
+    <div class="col-body">
+      <div class="field">
+        <div class="field-label"><span class="dot" style="background:var(--c3)"></span>Какие данные нужны для реализации?</div>
+        <textarea id="f3_1" placeholder="Типы данных, объём..." oninput="onInput(this,3)"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="dot" style="background:var(--c3)"></span>Откуда берём данные?</div>
+        <textarea id="f3_2" placeholder="БД, API, ручной ввод, сторонний сервис..." oninput="onInput(this,3)"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="dot" style="background:var(--c3)"></span>Кто владеет данными / нужен доступ?</div>
+        <textarea id="f3_3" placeholder="Команда, система, подрядчик..." oninput="onInput(this,3)"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="dot" style="background:var(--c3)"></span>Есть ли проблемы с данными?</div>
+        <textarea id="f3_4" placeholder="Нет доступа, устаревшие, неполные..." oninput="onInput(this,3)"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="dot" style="background:var(--c3)"></span>Технические / бюджетные ограничения?</div>
+        <textarea id="f3_5" placeholder="Стек, сроки, бюджет, интеграции..." oninput="onInput(this,3)"></textarea>
+      </div>
+      <div class="add-field-section" id="custom-fields-3"></div>
+      <div class="add-field-row">
+        <input class="add-field-input" id="new-label-3" placeholder="Название нового поля..." onkeydown="if(event.key==='Enter')addCustomField(3)">
+        <button class="btn-add-field" onclick="addCustomField(3)">+</button>
+      </div>
+      <div class="field field-summary">
+        <div class="field-label"><span class="dot" style="background:var(--c3)"></span>Вывод по шагу</div>
+        <textarea id="f3_sum" placeholder="Данные есть / не хватает..." oninput="onInput(this,3)"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ШАГ 4: ТРЕБОВАНИЯ -->
+  <div class="column col-4" id="col4">
+    <div class="col-head">
+      <div class="col-head-left">
+        <div class="col-title">📋 Требования</div>
+        <div class="col-hint">Что должна делать система</div>
+      </div>
+      <div class="col-head-sep"></div>
+      <div class="col-head-right">
+        <div class="col-counter" id="counter4">—</div>
+      </div>
+    </div>
+    <div class="col-body">
+      <div class="field">
+        <div class="field-label"><span class="dot" style="background:var(--c4)"></span>Что должна делать система (must have)?</div>
+        <textarea id="f4_1" placeholder="Обязательные функции..." oninput="onInput(this,4)"></textarea>
+      </div>
+      <div class="field field-structured">
+        <div class="field-label"><span class="dot" style="background:var(--c4)"></span>TO-BE — как должно работать после?</div>
+        <textarea id="f4_tobe" placeholder="Будущее состояние — описывай как будто уже работает..." oninput="onInput(this,4)"></textarea>
+      </div>
+      <div class="field field-structured">
+        <div class="field-label"><span class="dot" style="background:var(--c4)"></span>Допущения — что принимаем как данность?</div>
+        <textarea id="f4_assum" placeholder="Что считаем истиной, но не проверили..." oninput="onInput(this,4)"></textarea>
+      </div>
+      <div class="field field-structured">
+        <div class="field-label"><span class="dot" style="background:var(--c4)"></span>Критерии приёмки — при каких условиях готово?</div>
+        <textarea id="f4_accept" placeholder="Конкретные условия когда фича считается выполненной..." oninput="onInput(this,4)"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="dot" style="background:var(--c4)"></span>Что было бы хорошо (nice to have)?</div>
+        <textarea id="f4_2" placeholder="Желательно, но не критично..." oninput="onInput(this,4)"></textarea>
+      </div>
+      <div class="add-field-section" id="custom-fields-4"></div>
+      <div class="add-field-row">
+        <input class="add-field-input" id="new-label-4" placeholder="Название нового поля..." onkeydown="if(event.key==='Enter')addCustomField(4)">
+        <button class="btn-add-field" onclick="addCustomField(4)">+</button>
+      </div>
+      <div class="field field-summary">
+        <div class="field-label"><span class="dot" style="background:var(--c4)"></span>Вывод по шагу</div>
+        <textarea id="f4_sum" placeholder="Ключевые требования..." oninput="onInput(this,4)"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ШАГ 5: РИСКИ -->
+  <div class="column col-5" id="col5">
+    <div class="col-head">
+      <div class="col-head-left">
+        <div class="col-title">⚡ Риски и шаги</div>
+        <div class="col-hint">Что может пойти не так</div>
+      </div>
+      <div class="col-head-sep"></div>
+      <div class="col-head-right">
+        <div class="col-counter" id="counter5">—</div>
+      </div>
+    </div>
+    <div class="col-body">
+      <div class="field">
+        <div class="field-label"><span class="dot" style="background:var(--c5)"></span>Что может пойти не так?</div>
+        <textarea id="f5_1" placeholder="Технические, бизнес, процессные риски..." oninput="onInput(this,5)"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="dot" style="background:var(--c5)"></span>Что нужно уточнить ещё?</div>
+        <textarea id="f5_2" placeholder="Открытые вопросы, белые пятна..." oninput="onInput(this,5)"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="dot" style="background:var(--c5)"></span>Следующий шаг — что и кто?</div>
+        <textarea id="f5_3" placeholder="Действие, ответственный..." oninput="onInput(this,5)"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label"><span class="dot" style="background:var(--c5)"></span>Срок следующего шага?</div>
+        <textarea id="f5_4" placeholder="Дата, дедлайн..." oninput="onInput(this,5)"></textarea>
+      </div>
+      <div class="add-field-section" id="custom-fields-5"></div>
+      <div class="add-field-row">
+        <input class="add-field-input" id="new-label-5" placeholder="Название нового поля..." onkeydown="if(event.key==='Enter')addCustomField(5)">
+        <button class="btn-add-field" onclick="addCustomField(5)">+</button>
+      </div>
+      <div class="field field-summary">
+        <div class="field-label"><span class="dot" style="background:var(--c5)"></span>Вывод по шагу</div>
+        <textarea id="f5_sum" placeholder="Главный риск и ближайшее действие..." oninput="onInput(this,5)"></textarea>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── ТАЙМЕР ──
+let seconds = 0, running = false, interval = null;
+
+function toggleTimer() {
+  if (running) {
+    clearInterval(interval); running = false;
+    document.getElementById('timerBtn').textContent = 'Старт';
+  } else {
+    interval = setInterval(() => { seconds++; updateTimer(); save(); }, 1000);
+    running = true;
+    document.getElementById('timerBtn').textContent = 'Пауза';
+  }
+}
+
+function resetTimer() {
+  clearInterval(interval); running = false; seconds = 0;
+  document.getElementById('timerBtn').textContent = 'Старт';
+  updateTimer();
+}
+
+function updateTimer() {
+  const m = String(Math.floor(seconds/60)).padStart(2,'0');
+  const s = String(seconds%60).padStart(2,'0');
+  const el = document.getElementById('timerDisplay');
+  el.textContent = `${m}:${s}`;
+  el.className = 'timer';
+  if (seconds >= 3600) el.classList.add('red');
+  else if (seconds >= 1800) el.classList.add('yellow');
+}
+
+// ── СЧЁТЧИК ЗАПОЛНЕННЫХ ПОЛЕЙ ──
+function updateCounter(col) {
+  const colEl = document.getElementById(`col${col}`);
+  const textareas = colEl.querySelectorAll('textarea:not(.field-summary textarea)');
+  const filled = Array.from(textareas).filter(ta => ta.value.trim()).length;
+  const total = textareas.length;
+  const el = document.getElementById(`counter${col}`);
+  if (!el) return;
+  const colColors = {1:'var(--c1)',2:'var(--c2)',3:'var(--c3)',4:'var(--c4)',5:'var(--c5)'};
+  const colBg = {1:'rgba(124,58,237,0.08)',2:'rgba(14,165,233,0.08)',3:'rgba(16,185,129,0.08)',4:'rgba(245,158,11,0.08)',5:'rgba(239,68,68,0.08)'};
+  const isDone = filled === total && total > 0;
+  const hasAny = filled > 0;
+  const numColor = isDone ? 'var(--c3)' : (hasAny ? colColors[col] : 'var(--text-light)');
+  el.innerHTML = `<span style="color:${numColor};font-weight:800">${filled}</span><span style="color:var(--text-light);font-weight:400;margin:0 2px">/</span><span style="color:var(--text-light)">${total}</span>`;
+  el.style.borderColor = hasAny ? colColors[col] : 'var(--border)';
+  el.style.background = hasAny ? colBg[col] : 'var(--bg)';
+  // прогресс-бар: колонки где все основные поля заполнены (без поля Вывод)
+  let activeCols = 0;
+  for (let i = 1; i <= 5; i++) {
+    const tas = document.querySelectorAll(`#col${i} .col-body .field:not(.field-summary) textarea`);
+    if (tas.length > 0 && Array.from(tas).every(t => t.value.trim())) activeCols++;
+  }
+  document.getElementById('progressFill').style.width = (activeCols/5*100) + '%';
+  document.getElementById('progressFill').className = 'progress-fill' + (activeCols===5?' done':'');
+  document.getElementById('progressLabel').textContent =
+    activeCols === 5 ? '✓ Все колонки заполнены' : `${activeCols} из 5 колонок заполнено`;
+}
+
+// ── КАСТОМНЫЕ ПОЛЯ ──
+const customFields = {1:[],2:[],3:[],4:[],5:[]};
+
+function addCustomField(col, labelText, value, id) {
+  const input = document.getElementById(`new-label-${col}`);
+  const label = labelText || (input ? input.value.trim() : '');
+  if (!label) return;
+  const fieldId = id || `custom_${col}_${Date.now()}`;
+  const container = document.getElementById(`custom-fields-${col}`);
+  const colors = {1:'var(--c1)',2:'var(--c2)',3:'var(--c3)',4:'var(--c4)',5:'var(--c5)'};
+  const div = document.createElement('div');
+  div.className = 'field custom-field';
+  div.dataset.id = fieldId;
+  div.innerHTML = `
+    <div class="custom-field-head">
+      <div class="field-label"><span class="dot" style="background:${colors[col]}"></span>${label}</div>
+      <button class="btn-del-field" onclick="removeCustomField(${col},'${fieldId}')">×</button>
+    </div>
+    <textarea placeholder="Заполни во время созвона..." oninput="onInput(this,${col})">${value||''}</textarea>`;
+  container.appendChild(div);
+  if (!labelText) {
+    customFields[col].push({id: fieldId, label});
+    if (input) input.value = '';
+    save();
+  }
+  updateCounter(col);
+  div.querySelector('textarea').addEventListener('input', () => save());
+}
+
+function removeCustomField(col, fieldId) {
+  const container = document.getElementById(`custom-fields-${col}`);
+  const el = container.querySelector(`[data-id="${fieldId}"]`);
+  if (el) el.remove();
+  customFields[col] = customFields[col].filter(f => f.id !== fieldId);
+  save(); updateCounter(col);
+}
+
+// ── ПОЛЯ ──
+function onInput(el, col) {
+  el.classList.toggle('has-content', !!el.value.trim());
+  if (col) updateCounter(col);
+  save();
+}
+
+// ── КОПИРОВАНИЕ ──
+const stepTitles = ['Контекст','Стейкхолдеры','Данные и источники','Требования','Риски и шаги'];
+const fieldLabels = {
+  f1_1:'Что хотят сделать',f1_2:'Боль',f1_asis:'AS-IS (как сейчас)',f1_3:'Почему сейчас',f1_4:'Не входит в скоуп',f1_sum:'Вывод',
+  f2_1:'Инициатор',f2_2:'Кто решает',f2_3:'Кто влияет',f2_4:'Конфликты',f2_sum:'Вывод',
+  f3_1:'Нужные данные',f3_2:'Источники',f3_3:'Владелец данных',f3_4:'Проблемы с данными',f3_5:'Ограничения',f3_sum:'Вывод',
+  f4_1:'Must have',f4_tobe:'TO-BE (как должно быть)',f4_assum:'Допущения',f4_accept:'Критерии приёмки',f4_2:'Nice to have',f4_sum:'Вывод',
+  f5_1:'Риски',f5_2:'Открытые вопросы',f5_3:'Следующий шаг',f5_4:'Срок',f5_sum:'Вывод',
+};
+
+function copyAll() {
+  const feat = document.getElementById('featName').value || '—';
+  const stk  = document.getElementById('stakeholder').value || '—';
+  const m = String(Math.floor(seconds/60)).padStart(2,'0');
+  const s = String(seconds%60).padStart(2,'0');
+
+  let text = `═══ СБОР ТРЕБОВАНИЙ ═══\n`;
+  text += `Фича: ${feat}\nСтейкхолдер: ${stk}\nВремя: ${m}:${s}\n\n`;
+
+  for (let i = 1; i <= 5; i++) {
+    text += `── ШАГ ${i}: ${stepTitles[i-1].toUpperCase()} ──\n`;
+    Object.entries(fieldLabels).filter(([id]) => id.startsWith(`f${i}_`)).forEach(([id, label]) => {
+      const el = document.getElementById(id);
+      if (el && el.value.trim()) text += `  ${label}: ${el.value.trim()}\n`;
+    });
+    (customFields[i] || []).forEach(f => {
+      const ta = document.querySelector(`[data-id="${f.id}"] textarea`);
+      if (ta && ta.value.trim()) text += `  ${f.label}: ${ta.value.trim()}\n`;
+    });
+    text += '\n';
+  }
+
+  text += `═══ ПРОМПТ ДЛЯ ИИ ═══\n`;
+  text += `Выше — данные со встречи по сбору требований.\n`;
+  text += `Проанализируй:\n1. Есть ли противоречия в требованиях?\n`;
+  text += `2. Что важное могло остаться невыясненным?\n`;
+  text += `3. Какие риски стоит проработать первым?\n`;
+  text += `4. Есть ли конфликты между стейкхолдерами?`;
+
+  try {
+    navigator.clipboard.writeText(text).then(()=>toast('Скопировано ✓')).catch(()=>fallback(text));
+  } catch(e) { fallback(text); }
+}
+
+function fallback(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  document.execCommand('copy'); document.body.removeChild(ta);
+  toast('Скопировано ✓');
+}
+
+function clearBoard() {
+  if (!confirm('Очистить всю доску? Все данные встречи будут удалены.')) return;
+
+  // Мета-поля
+  document.getElementById('featName').value = '';
+  document.getElementById('stakeholder').value = '';
+
+  // Все стандартные текстареа
+  document.querySelectorAll('textarea').forEach(ta => {
+    ta.value = '';
+    ta.classList.remove('has-content');
+  });
+
+  // Кастомные поля — удалить все
+  for (let i = 1; i <= 5; i++) {
+    const container = document.getElementById(`custom-fields-${i}`);
+    if (container) container.innerHTML = '';
+    customFields[i] = [];
+    updateCounter(i);
+  }
+
+  // Таймер
+  resetTimer();
+
+  // localStorage
+  localStorage.removeItem('ba_kanban_v2');
+
+  // Прогресс
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('progressFill').className = 'progress-fill';
+  document.getElementById('progressLabel').textContent = '0 из 5 колонок заполнено';
+
+  toast('Доска очищена');
+}
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+// ── localStorage ──
+function save() {
+  const data = {
+    feat: document.getElementById('featName').value,
+    stk:  document.getElementById('stakeholder').value,
+    seconds, fields: {}, custom: {}
+  };
+  Object.keys(fieldLabels).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) data.fields[id] = el.value;
+  });
+  for (let i = 1; i <= 5; i++) {
+    data.custom[i] = customFields[i].map(f => ({
+      id: f.id, label: f.label,
+      value: document.querySelector(`[data-id="${f.id}"] textarea`)?.value || ''
+    }));
+  }
+  localStorage.setItem('ba_kanban_v2', JSON.stringify(data));
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem('ba_kanban_v2');
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    document.getElementById('featName').value = d.feat || '';
+    document.getElementById('stakeholder').value = d.stk || '';
+    seconds = d.seconds || 0; updateTimer();
+    Object.entries(d.fields||{}).forEach(([id,val]) => {
+      const el = document.getElementById(id);
+      if (el) { el.value=val; el.classList.toggle('has-content',!!val.trim()); }
+    });
+    for (let i = 1; i <= 5; i++) {
+      (d.custom?.[i] || []).forEach(f => {
+        customFields[i].push({id: f.id, label: f.label});
+        addCustomField(i, f.label, f.value, f.id);
+      });
+      updateCounter(i);
+    }
+  } catch(e) {}
+}
+
+load();
+for (let i = 1; i <= 5; i++) updateCounter(i);
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+  localStorage.setItem('ba_theme', isDark ? 'light' : 'dark');
+}
+const _t = localStorage.getItem('ba_theme');
+if (_t === 'dark') {
+  document.documentElement.setAttribute('data-theme', 'dark');
+  document.addEventListener('DOMContentLoaded', () => {
+    const b = document.getElementById('themeBtn'); if (b) b.textContent = '☀️';
+  });
+}
+document.getElementById('featName').addEventListener('input', save);
+document.getElementById('stakeholder').addEventListener('input', save);
+</script>
+</body>
+</html>
