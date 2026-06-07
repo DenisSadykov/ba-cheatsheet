@@ -33,13 +33,33 @@
 
   [data-theme="dark"] {
     --bg: #0F0F13; --surface: #1A1A24; --text: #F4F4F5;
-    --text-muted: #A1A1AA; --text-xs: #52525B;
+    --text-muted: #A1A1AA; --text-xs: #94A3B8;
     --border: #27272A; --border-hover: #3F3F46;
-    --accent: #94A3B8; --accent-light: #1E293B; --accent-mid: #475569;
+    --accent: #CBD5E1; --accent-light: #1E293B; --accent-mid: #94A3B8;
     --success-light: #052e16; --success-border: #166534;
     --warning-light: #1c1a00; --warning-border: #854d0e;
     --danger-light: #1c0a0a;
   }
+
+  [data-theme="dark"] input::placeholder,
+  [data-theme="dark"] textarea::placeholder { color: #64748B !important; }
+
+  [data-theme="dark"] .add-item-input,
+  [data-theme="dark"] .add-task-input,
+  [data-theme="dark"] .task-name-input,
+  [data-theme="dark"] .notes-textarea,
+  [data-theme="dark"] .tail-who,
+  [data-theme="dark"] .tail-what,
+  [data-theme="dark"] .tail-when,
+  [data-theme="dark"] .qa-answer-input { color: #E2E8F0; }
+
+  [data-theme="dark"] .add-item-input,
+  [data-theme="dark"] .add-task-input,
+  [data-theme="dark"] .notes-textarea { background: #0F0F18; border-color: #27272A; }
+
+  [data-theme="dark"] .tails-hint { color: #64748B; }
+  [data-theme="dark"] .sp-label { color: #94A3B8; }
+  [data-theme="dark"] .meta-select { background: #1A1A24; color: #E2E8F0; border-color: #3F3F46; }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -416,6 +436,10 @@
   .empty-state .emoji { font-size: 40px; margin-bottom: 12px; }
   .empty-state p { color: var(--text-xs); font-size: 13px; margin-top: 6px; }
 </style>
+<script>
+  const _t = localStorage.getItem('ba_theme');
+  if (_t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+</script>
 </head>
 <body>
 
@@ -488,8 +512,14 @@
   function toggleTheme() {
     const html = document.documentElement;
     const isDark = html.getAttribute('data-theme') === 'dark';
-    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    const next = isDark ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
     document.querySelector('.btn-theme-fixed').textContent = isDark ? '🌙' : '☀️';
+    localStorage.setItem('ba_theme', next);
+  }
+
+  if (localStorage.getItem('ba_theme') === 'dark') {
+    document.querySelector('.btn-theme-fixed').textContent = '☀️';
   }
 
   function addTask() {
