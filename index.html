@@ -27,6 +27,9 @@
     --c-grid: #0EA5E9;
     --c-grid-light: #E0F2FE;
     --c-grid-border: #7DD3FC;
+    --c-groom: #475569;
+    --c-groom-light: #F8FAFC;
+    --c-groom-border: #CBD5E1;
   }
 
   [data-theme="dark"] {
@@ -44,6 +47,8 @@
     --c-prob-border: rgba(234,88,12,0.3);
     --c-grid-light: rgba(14,165,233,0.12);
     --c-grid-border: rgba(14,165,233,0.3);
+    --c-groom-light: rgba(71,85,105,0.12);
+    --c-groom-border: rgba(71,85,105,0.3);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -208,6 +213,11 @@
   .tool-arrow { font-size: 18px; opacity: 0.25; transition: all .15s; align-self: center; flex-shrink: 0; }
   .tool-card:hover .tool-arrow { opacity: 1; transform: translateX(3px); }
   .tool-problem .tool-arrow { color: var(--c-prob); }
+  .tool-grooming { border-left: 2px solid var(--c-groom); }
+  .tool-grooming .tool-title { color: var(--c-groom); }
+  .tool-grooming .tool-tag { background: var(--c-groom-light); color: var(--c-groom); border-color: var(--c-groom-border); }
+  .tool-grooming .tool-arrow { color: var(--c-groom); }
+  .tool-grooming:hover { border-color: var(--c-groom-border); border-left-color: var(--c-groom); }
 
   /* Footer */
   .footer { text-align: center; font-size: 12px; color: var(--text-xs); margin-top: 8px; }
@@ -270,6 +280,23 @@
           <span class="tool-tag">Приоритизация</span>
           <span class="tool-tag">Участники</span>
           <span class="tool-tag">Время решения</span>
+        </div>
+      </div>
+      <div class="tool-arrow">→</div>
+    </a>
+  </div>
+
+  <!-- Груминг бэклога -->
+  <div class="section">
+    <a class="tool-card tool-grooming" href="grooming.html">
+      <div class="tool-icon">📋</div>
+      <div class="tool-body">
+        <div class="tool-title">Груминг бэклога</div>
+        <div class="tool-desc">Разбирай задачи по одной — фиксируй критерии приёмки, вопросы и хвосты прямо на встрече</div>
+        <div class="tool-tags">
+          <span class="tool-tag">Вопросы и ответы</span>
+          <span class="tool-tag">Story points</span>
+          <span class="tool-tag">Хвосты</span>
         </div>
       </div>
       <div class="tool-arrow">→</div>
