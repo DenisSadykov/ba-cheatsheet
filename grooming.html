@@ -519,6 +519,7 @@
   }
 
   if (localStorage.getItem('ba_theme') === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
     document.querySelector('.btn-theme-fixed').textContent = '☀️';
   }
 
