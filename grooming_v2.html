@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Груминг бэклога / BA</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%230891B2'/><polygon points='36,8 20,36 30,36 26,56 46,28 34,28' fill='white'/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F1F6F8;
+    --glass-bg: rgba(255,255,255,0.68);
+    --glass-bg-hover: rgba(255,255,255,0.82);
+    --glass-border: rgba(255,255,255,0.82);
+    --glass-border-hover: rgba(255,255,255,0.96);
+    --glass-shadow: 0 2px 0 rgba(255,255,255,0.88) inset, 0 4px 20px rgba(0,120,160,0.07), 0 1px 4px rgba(0,0,0,0.05);
+    --glass-shadow-hover: 0 2px 0 rgba(255,255,255,0.95) inset, 0 14px 38px rgba(0,120,160,0.11), 0 4px 12px rgba(0,0,0,0.07);
+    --text: #18181B;
+    --text-muted: #5A5A78;
+    --text-xs: rgba(50,50,90,0.42);
+    --accent: #0891B2;
+    --accent-hover: #0E7490;
+    --success: #16A34A; --success-light: rgba(22,163,74,0.10); --success-border: rgba(22,163,74,0.30);
+    --warning: #D97706; --warning-light: rgba(217,119,6,0.10); --warning-border: rgba(217,119,6,0.30);
+    --danger: #DC2626; --danger-light: rgba(220,38,38,0.10); --danger-border: rgba(220,38,38,0.30);
+    --radius: 18px; --radius-sm: 10px;
+    --blob1: rgba(8,145,178,0.14); --blob2: rgba(6,182,212,0.10); --blob3: rgba(16,185,129,0.07); --blob4: rgba(217,119,6,0.07);
+  }
+
+  body.dark {
+    --bg: #0D1117;
+    --glass-bg: rgba(255,255,255,0.055);
+    --glass-bg-hover: rgba(255,255,255,0.09);
+    --glass-border: rgba(255,255,255,0.10);
+    --glass-border-hover: rgba(255,255,255,0.18);
+    --glass-shadow: 0 1px 0 rgba(255,255,255,0.07) inset, 0 4px 20px rgba(0,0,0,0.35), 0 1px 4px rgba(0,0,0,0.25);
+    --glass-shadow-hover: 0 1px 0 rgba(255,255,255,0.10) inset, 0 14px 38px rgba(0,0,0,0.45), 0 4px 12px rgba(0,0,0,0.35);
+    --text: #E6EDF3; --text-muted: rgba(180,195,220,0.75); --text-xs: rgba(160,180,210,0.38);
+    --success-light: rgba(22,163,74,0.12); --success-border: rgba(22,163,74,0.25);
+    --warning-light: rgba(217,119,6,0.12); --warning-border: rgba(217,119,6,0.25);
+    --danger-light: rgba(220,38,38,0.12); --danger-border: rgba(220,38,38,0.25);
+    --blob1: rgba(8,145,178,0.22); --blob2: rgba(6,182,212,0.16); --blob3: rgba(16,185,129,0.13); --blob4: rgba(217,119,6,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0 20px 80px;
+    position: relative;
+    overflow-x: hidden;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ── MESH BACKGROUND ── */
+  .mesh { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .blob {
+    position: absolute; border-radius: 50%;
+    filter: blur(80px); opacity: 1;
+    animation: drift 18s ease-in-out infinite alternate;
+  }
+  .blob-1 { width: 520px; height: 520px; background: var(--blob1); top: -120px; left: -100px; animation-duration: 20s; }
+  .blob-2 { width: 380px; height: 380px; background: var(--blob2); top: 40%; right: -80px; animation-duration: 25s; animation-delay: -6s; }
+  .blob-3 { width: 300px; height: 300px; background: var(--blob3); bottom: 10%; left: 30%; animation-duration: 22s; animation-delay: -10s; }
+  .blob-4 { width: 260px; height: 260px; background: var(--blob4); top: 60%; left: 10%; animation-duration: 28s; animation-delay: -4s; }
+
+  @keyframes drift {
+    0% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(30px,-20px) scale(1.04); }
+    66% { transform: translate(-20px,30px) scale(0.97); }
+    100% { transform: translate(15px,10px) scale(1.02); }
+  }
+
+  .grain {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    opacity: 0.35;
+  }
+
+  /* ── TOP NAV ── */
+  .top-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 0 20px;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .back-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 16px; border-radius: 99px;
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px) saturate(160%);
+    box-shadow: var(--glass-shadow);
+    font-size: 13px; font-weight: 600; color: var(--text-muted);
+    text-decoration: none; transition: all 0.2s;
+  }
+  .back-pill:hover { background: var(--glass-bg-hover); color: var(--text); border-color: var(--glass-border-hover); transform: translateX(-2px); }
+
+  .theme-btn {
+    width: 38px; height: 38px; border-radius: var(--radius-sm);
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px) saturate(160%);
+    box-shadow: var(--glass-shadow);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted); transition: all 0.2s;
+  }
+  .theme-btn:hover { background: var(--glass-bg-hover); border-color: var(--glass-border-hover); transform: scale(1.08); }
+
+  .icon-moon { display: block; }
+  .icon-sun { display: none; }
+  body.dark .icon-moon { display: none; }
+  body.dark .icon-sun { display: block; color: #FCD34D; }
+  body.dark .theme-btn { background: rgba(252,211,77,0.12); border-color: rgba(252,211,77,0.30); box-shadow: 0 0 10px rgba(252,211,77,0.25), 0 0 24px rgba(252,211,77,0.10); }
+
+  /* ── CONTAINER ── */
+  .container { max-width: 780px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* ── HEADER ── */
+  .header { margin-bottom: 28px; animation: fadeUp 0.4s 0.06s ease both; }
+  .header-top-row {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 10px; margin-bottom: 6px;
+  }
+  .header h1 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 26px; font-weight: 800; letter-spacing: -0.04em; color: var(--text);
+    display: flex; align-items: center;
+  }
+  .header h1::before {
+    content: ''; display: inline-block;
+    width: 6px; height: 22px;
+    background: linear-gradient(180deg, #0891B2, #22D3EE);
+    border-radius: 3px; margin-right: 12px;
+    vertical-align: middle; position: relative; top: -1px;
+    flex-shrink: 0;
+  }
+  .header-sub { font-size: 13.5px; color: var(--text-muted); margin-top: 6px; line-height: 1.5; }
+
+  /* ── TIMER ── */
+  .timer-row { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
+
+  .timer-pill {
+    display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px;
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    border-radius: 12px; box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); transition: all 0.3s;
+  }
+  .timer-pill.green { border-color: var(--success); border-width: 2px; background: rgba(220,255,235,0.54); box-shadow: 0 0 0 3px rgba(22,163,74,0.10), var(--glass-shadow); }
+  .timer-pill.yellow { border-color: var(--warning); border-width: 2px; background: rgba(255,243,220,0.54); box-shadow: 0 0 0 3px rgba(217,119,6,0.10), var(--glass-shadow); }
+  .timer-pill.red { border-color: var(--danger); border-width: 2px; background: rgba(255,228,228,0.54); box-shadow: 0 0 0 3px rgba(220,38,38,0.10), var(--glass-shadow); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+  body.dark .timer-pill.green { background: rgba(22,163,74,0.16); }
+  body.dark .timer-pill.yellow { background: rgba(217,119,6,0.16); }
+  body.dark .timer-pill.red { background: rgba(220,38,38,0.16); }
+
+  .timer-display {
+    font-family: 'SF Mono','Fira Code',monospace;
+    font-size: 15px; font-weight: 700; letter-spacing: 0.5px;
+    color: var(--text); min-width: 44px; transition: color 0.3s;
+  }
+  .timer-pill.green .timer-display { color: var(--success); }
+  .timer-pill.yellow .timer-display { color: var(--warning); }
+  .timer-pill.red .timer-display { color: var(--danger); }
+
+  .btn-timer {
+    font-size: 11.5px; font-weight: 600; padding: 4px 10px;
+    border-radius: 7px; border: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.45); color: var(--text-muted);
+    cursor: pointer; transition: all 0.15s; font-family: inherit;
+  }
+  .btn-timer:hover { background: var(--glass-bg-hover); border-color: var(--accent); color: var(--accent); }
+  .btn-timer.active { background: var(--danger); border-color: var(--danger); color: white; }
+
+  .btn-timer-icon {
+    font-size: 11.5px; font-weight: 600; padding: 4px 10px;
+    border-radius: 7px; border: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.45); color: var(--text-muted);
+    cursor: pointer; transition: all 0.15s; font-family: inherit;
+  }
+  .btn-timer-icon:hover { background: var(--accent); border-color: var(--accent); color: white; }
+
+  /* ── ADD TASK BAR ── */
+  .add-task-bar {
+    display: flex; gap: 8px; margin-bottom: 20px;
+    animation: fadeUp 0.4s 0.12s ease both;
+  }
+  .add-task-input {
+    flex: 1; padding: 10px 14px; border-radius: var(--radius-sm);
+    background: rgba(255,255,255,0.62); border: 1px solid rgba(0,0,0,0.18);
+    backdrop-filter: blur(12px);
+    font-size: 13.5px; color: var(--text); font-family: inherit;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+  }
+  .add-task-input:focus { outline: none; border-color: var(--accent); background: rgba(255,255,255,0.82); box-shadow: 0 0 0 3px rgba(8,145,178,0.10); }
+  .add-task-input::placeholder { color: var(--text-xs); }
+
+  .btn-add {
+    padding: 10px 18px; border-radius: var(--radius-sm);
+    background: var(--glass-bg); color: var(--text);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    box-shadow: var(--glass-shadow);
+    font-size: 13.5px; font-weight: 600; cursor: pointer;
+    transition: all .18s; font-family: inherit; white-space: nowrap;
+  }
+  .btn-add:hover { background: var(--glass-bg-hover); transform: translateY(-1px); box-shadow: var(--glass-shadow-hover); }
+  .btn-add:active { transform: translateY(0); }
+
+  /* ── TASK LIST ── */
+  .task-list {
+    display: flex; flex-direction: column; gap: 8px;
+    animation: fadeUp 0.4s 0.18s ease both;
+  }
+
+  /* ── STRIP ── */
+  .task-strip {
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow); backdrop-filter: blur(20px) saturate(160%);
+    border-radius: var(--radius); padding: 13px 16px;
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer; transition: all .2s;
+    border-left: 1.5px solid var(--accent);
+  }
+  .task-strip:hover { border-color: var(--glass-border-hover); box-shadow: var(--glass-shadow-hover); transform: translateY(-1px); }
+  .task-strip.status-ready { border-left-color: var(--success); }
+  .task-strip.status-meeting { border-left-color: var(--warning); }
+  .task-strip.status-backlog { border-left-color: var(--text-xs); }
+  .task-strip.status-active { border-left-color: var(--accent); }
+
+  .strip-name { font-size: 13.5px; font-weight: 600; color: var(--text); flex: 1; }
+  .strip-sp {
+    font-size: 11.5px; font-weight: 700; color: var(--accent);
+    background: rgba(8,145,178,0.10); padding: 2px 8px; border-radius: 6px;
+    border: 1px solid rgba(8,145,178,0.25);
+  }
+  .strip-status {
+    font-size: 11.5px; font-weight: 600; padding: 3px 10px;
+    border-radius: 99px; white-space: nowrap;
+  }
+  .strip-status.active { background: rgba(8,145,178,0.10); color: var(--accent); }
+  .strip-status.ready { background: var(--success-light); color: var(--success); }
+  .strip-status.meeting { background: var(--warning-light); color: var(--warning); }
+  .strip-status.backlog { background: rgba(0,0,0,0.06); color: var(--text-muted); }
+  .strip-chevron { color: var(--text-xs); font-size: 11px; transition: color .15s; }
+  .task-strip:hover .strip-chevron { color: var(--accent); }
+  .strip-delete {
+    font-size: 18px; color: var(--text-xs); cursor: pointer;
+    background: none; border: none; padding: 0 4px; line-height: 1;
+    transition: color .15s; flex-shrink: 0;
+  }
+  .strip-delete:hover { color: var(--danger); }
+
+  /* ── CARD ── */
+  .task-card {
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow); backdrop-filter: blur(20px) saturate(160%);
+    border-radius: var(--radius);
+    border-left: 1.5px solid var(--accent);
+    overflow: hidden;
+  }
+  .task-card-header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--glass-border);
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .task-name-row { display: flex; align-items: center; gap: 10px; }
+  .task-name-input {
+    flex: 1; font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15.5px; font-weight: 700; letter-spacing: -0.025em;
+    color: var(--text); border: none; background: transparent;
+    padding: 0; outline: none;
+  }
+  .task-name-input::placeholder { color: var(--text-xs); }
+  .task-meta-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+  .meta-select {
+    padding: 5px 10px 5px 10px; padding-right: 28px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(0,0,0,0.15); background: rgba(255,255,255,0.62);
+    font-size: 13px; font-weight: 500; color: var(--text); font-family: inherit;
+    cursor: pointer; outline: none; appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23A1A1AA' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center;
+    transition: border-color .15s, background-color .15s;
+    backdrop-filter: blur(8px);
+  }
+  .meta-select:focus { border-color: var(--accent); }
+
+  .priority-select-high {
+    background-color: rgba(220,38,38,0.08); color: #DC2626; border-color: rgba(220,38,38,0.25);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23DC2626' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center;
+  }
+  .priority-select-medium {
+    background-color: rgba(217,119,6,0.08); color: #D97706; border-color: rgba(217,119,6,0.25);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23D97706' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center;
+  }
+  .priority-select-low {
+    background-color: rgba(22,163,74,0.08); color: #16A34A; border-color: rgba(22,163,74,0.25);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2316A34A' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center;
+  }
+  body.dark .priority-select-high { background-color: rgba(220,38,38,0.12); color: #f87171; border-color: rgba(220,38,38,0.30); }
+  body.dark .priority-select-medium { background-color: rgba(217,119,6,0.12); color: #fbbf24; border-color: rgba(217,119,6,0.30); }
+  body.dark .priority-select-low { background-color: rgba(22,163,74,0.12); color: #4ade80; border-color: rgba(22,163,74,0.30); }
+
+  .sp-select { width: 70px; text-align: center; }
+  .sp-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+
+  .priority-badge { padding: 4px 12px; border-radius: 99px; font-size: 12px; font-weight: 600; }
+  .priority-high { background: rgba(220,38,38,0.08); color: #DC2626; }
+  .priority-medium { background: rgba(217,119,6,0.08); color: #D97706; }
+  .priority-low { background: rgba(22,163,74,0.08); color: #16A34A; }
+  body.dark .priority-high { background: rgba(220,38,38,0.14); color: #f87171; }
+  body.dark .priority-medium { background: rgba(217,119,6,0.14); color: #fbbf24; }
+  body.dark .priority-low { background: rgba(22,163,74,0.14); color: #4ade80; }
+
+  .collapse-btn {
+    padding: 5px 12px; border-radius: 99px;
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 2px 0 rgba(255,255,255,0.88) inset, 0 2px 8px rgba(0,0,0,0.08);
+    font-size: 12px; color: var(--text-muted); cursor: pointer;
+    font-family: inherit; transition: all .15s; margin-left: auto;
+  }
+  .collapse-btn:hover { background: var(--glass-bg-hover); border-color: var(--accent); color: var(--accent); }
+
+  /* ── TASK BODY ── */
+  .task-body { padding: 20px; display: flex; flex-direction: column; gap: 22px; }
+  .section-divider { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .section-label {
+    font-size: 12px; font-weight: 700;
+    color: var(--text-muted); white-space: nowrap; flex-shrink: 0;
+  }
+  .section-line { flex: 1; height: 1px; background: rgba(0,0,0,0.08); border-radius: 99px; }
+  body.dark .section-line { background: rgba(255,255,255,0.08); }
+
+  /* ── CRITERIA ── */
+  .criteria-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+  .criteria-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-radius: var(--radius-sm);
+    background: rgba(8,145,178,0.06); border: 1px solid rgba(8,145,178,0.20);
+  }
+  .criteria-bullet { color: var(--accent); font-size: 14px; flex-shrink: 0; }
+  .criteria-text { flex: 1; font-size: 14px; color: var(--text); }
+  .criteria-delete {
+    font-size: 16px; color: var(--text-xs); cursor: pointer;
+    background: none; border: none; padding: 0; transition: color .15s;
+  }
+  .criteria-delete:hover { color: var(--danger); }
+
+  /* ── Q&A ── */
+  .qa-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .qa-item {
+    border: 1px solid rgba(0,0,0,0.10); border-radius: var(--radius-sm);
+    background: rgba(255,255,255,0.52); overflow: hidden; transition: all .15s;
+  }
+  .qa-item.answered { background: rgba(22,163,74,0.06); border-color: var(--success-border); }
+  .qa-question-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; }
+  .q-check {
+    width: 18px; height: 18px; border-radius: 4px;
+    border: 2px solid rgba(0,0,0,0.18); cursor: pointer; flex-shrink: 0;
+    margin-top: 2px; display: flex; align-items: center; justify-content: center;
+    transition: all .15s; background: rgba(255,255,255,0.62); font-size: 11px; color: white;
+  }
+  .q-check.checked { background: var(--success); border-color: var(--success); }
+  .q-text { flex: 1; font-size: 14px; color: var(--text); line-height: 1.4; }
+  .qa-item.answered .q-text { text-decoration: line-through; opacity: 0.6; }
+  .q-delete {
+    font-size: 16px; color: var(--text-xs); cursor: pointer;
+    background: none; border: none; padding: 0; transition: color .15s;
+  }
+  .q-delete:hover { color: var(--danger); }
+  .qa-answer-row {
+    border-top: 1px solid var(--success-border);
+    background: rgba(22,163,74,0.08); padding: 8px 12px 8px 40px;
+  }
+  .qa-answer-input {
+    width: 100%; border: none; background: transparent;
+    font-size: 13px; color: var(--text); font-family: inherit; outline: none;
+  }
+  .qa-answer-input::placeholder { color: var(--text-xs); }
+
+  /* ── DECISIONS ── */
+  .decisions-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+  .decision-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: var(--radius-sm);
+    background: rgba(22,163,74,0.06); border: 1px solid var(--success-border);
+  }
+  .decision-bullet { color: var(--success); font-size: 14px; flex-shrink: 0; }
+  .decision-text { flex: 1; font-size: 14px; color: var(--text); }
+  .decision-delete {
+    font-size: 16px; color: var(--text-xs); cursor: pointer;
+    background: none; border: none; padding: 0; transition: color .15s;
+  }
+  .decision-delete:hover { color: var(--danger); }
+
+  /* ── ADD ROW ── */
+  .add-item-row { display: flex; gap: 8px; }
+  .add-item-input {
+    flex: 1; padding: 9px 12px; border-radius: var(--radius-sm);
+    background: rgba(255,255,255,0.62); border: 1px solid rgba(0,0,0,0.18);
+    font-size: 13px; color: var(--text); font-family: inherit;
+    transition: border-color .15s, background .15s, box-shadow .15s;
+  }
+  .add-item-input:focus { outline: none; border-color: var(--accent); background: rgba(255,255,255,0.82); box-shadow: 0 0 0 3px rgba(8,145,178,0.08); }
+  .add-item-input::placeholder { color: var(--text-xs); }
+
+  .btn-add-item {
+    width: 34px; height: 34px; border-radius: 6px; flex-shrink: 0;
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    color: var(--accent); font-size: 18px; font-weight: 400; line-height: 1;
+    cursor: pointer; font-family: inherit; transition: all .15s;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--glass-shadow);
+  }
+  .btn-add-item:hover { background: var(--glass-bg-hover); border-color: var(--accent); }
+
+  /* ── TAILS ── */
+  .tails-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+  .tail-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px; border-radius: var(--radius-sm);
+    background: rgba(217,119,6,0.06); border: 1px solid var(--warning-border);
+  }
+  .tail-who, .tail-what, .tail-when {
+    padding: 4px 8px; border: none; background: transparent;
+    font-size: 13px; color: var(--text); font-family: inherit;
+    outline: none; border-bottom: 1px solid rgba(0,0,0,0.12); transition: border-color .15s;
+  }
+  .tail-who { width: 100px; }
+  .tail-what { flex: 1; }
+  .tail-when { width: 110px; }
+  .tail-who:focus, .tail-what:focus, .tail-when:focus { border-bottom-color: var(--accent); }
+  .tail-sep { color: var(--text-xs); font-size: 12px; }
+  .tail-delete {
+    font-size: 16px; color: var(--text-xs); cursor: pointer;
+    background: none; border: none; padding: 0; transition: color .15s;
+  }
+  .tail-delete:hover { color: var(--danger); }
+  .tails-hint { font-size: 11px; color: var(--text-xs); margin-bottom: 8px; }
+
+  /* ── NOTES ── */
+  .notes-textarea {
+    width: 100%; min-height: 80px; padding: 10px 12px;
+    background: rgba(255,255,255,0.62); border: 1px solid rgba(0,0,0,0.18);
+    border-radius: var(--radius-sm);
+    color: var(--text); font-family: inherit;
+    font-size: 14px; line-height: 1.5; resize: vertical; outline: none;
+    transition: border-color .15s, background .15s, box-shadow .15s;
+  }
+  .notes-textarea:focus { border-color: var(--accent); background: rgba(255,255,255,0.82); box-shadow: 0 0 0 3px rgba(8,145,178,0.08); }
+  .notes-textarea::placeholder { color: var(--text-xs); }
+
+  /* ── OUTCOME ── */
+  .outcome-section { border-top: 1px solid var(--glass-border); padding-top: 18px; }
+  .outcome-label { font-size: 12.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 10px; }
+  .outcome-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn-outcome {
+    padding: 8px 15px; border-radius: 99px;
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 2px 0 rgba(255,255,255,0.88) inset, 0 2px 8px rgba(0,0,0,0.08);
+    font-size: 12.5px; font-weight: 600; cursor: pointer;
+    font-family: inherit; transition: all .2s; color: var(--text-muted);
+    display: flex; align-items: center; gap: 7px;
+  }
+  .btn-outcome .o-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--glass-border); transition: background .2s; flex-shrink: 0;
+  }
+  .btn-outcome:hover { background: var(--glass-bg-hover); transform: translateY(-1px); }
+
+  .btn-outcome.selected-ready {
+    border-color: var(--success); background: rgba(220,255,235,0.54); color: var(--success);
+    box-shadow: 0 0 0 3px rgba(22,163,74,0.10);
+  }
+  .btn-outcome.selected-ready .o-dot { background: var(--success); }
+
+  .btn-outcome.selected-meeting {
+    border-color: var(--warning); background: rgba(255,243,220,0.54); color: var(--warning);
+    box-shadow: 0 0 0 3px rgba(217,119,6,0.10);
+  }
+  .btn-outcome.selected-meeting .o-dot { background: var(--warning); }
+
+  .btn-outcome.selected-backlog {
+    border-color: rgba(0,0,0,0.20); background: rgba(0,0,0,0.05); color: var(--text-muted);
+  }
+  .btn-outcome.selected-backlog .o-dot { background: rgba(0,0,0,0.20); }
+
+  /* ── COPY BUTTON ── */
+  .btn-copy {
+    padding: 7px 14px; border-radius: var(--radius-sm);
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    font-size: 12.5px; font-weight: 600; cursor: pointer;
+    font-family: inherit; transition: all .15s; color: var(--text-muted);
+    box-shadow: var(--glass-shadow);
+  }
+  .btn-copy:hover { background: var(--glass-bg-hover); border-color: var(--accent); color: var(--accent); }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(8px);
+    background: #18181B; color: white; font-size: 13px; font-weight: 500;
+    padding: 10px 20px; border-radius: 10px;
+    opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 9999;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── EMPTY ── */
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); font-size: 15px; }
+  .empty-state .emoji { font-size: 40px; margin-bottom: 12px; }
+  .empty-state p { color: var(--text-xs); font-size: 13px; margin-top: 6px; }
+
+  /* ── DARK MODE OVERRIDES ── */
+  body.dark .task-strip, body.dark .task-card { background: rgba(255,255,255,0.055); border-color: rgba(255,255,255,0.10); }
+  body.dark .add-item-input, body.dark .notes-textarea, body.dark .add-task-input { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.10); color: var(--text); }
+  body.dark .criteria-item { background: rgba(8,145,178,0.12); border-color: rgba(8,145,178,0.25); }
+  body.dark .qa-item { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); }
+  body.dark .qa-item.answered { background: rgba(22,163,74,0.10); }
+  body.dark .qa-answer-row { background: rgba(22,163,74,0.10); }
+  body.dark .decision-item { background: rgba(22,163,74,0.10); border-color: rgba(22,163,74,0.25); }
+  body.dark .tail-item { background: rgba(217,119,6,0.10); border-color: rgba(217,119,6,0.25); }
+  body.dark .btn-outcome { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.12); }
+  body.dark .btn-outcome.selected-ready { background: rgba(22,163,74,0.14); border-color: #16A34A; }
+  body.dark .btn-outcome.selected-meeting { background: rgba(217,119,6,0.14); border-color: #D97706; }
+  body.dark .meta-select { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.12); color: var(--text); }
+  body.dark input::placeholder, body.dark textarea::placeholder { color: rgba(160,180,210,0.30) !important; }
+  body.dark .tail-who, body.dark .tail-what, body.dark .tail-when, body.dark .qa-answer-input { color: var(--text); }
+  body.dark .q-check { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15); }
+  body.dark .tails-hint { color: rgba(160,180,210,0.30); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .top-nav { animation: fadeUp 0.4s ease both; }
+  .header { animation: fadeUp 0.4s 0.06s ease both; }
+  .add-task-bar { animation: fadeUp 0.4s 0.12s ease both; }
+  .task-list { animation: fadeUp 0.4s 0.18s ease both; }
+</style>
+<script>
+  const _t = localStorage.getItem('ba-theme');
+  if (_t === 'dark') document.body ? document.body.classList.add('dark') : document.addEventListener('DOMContentLoaded', () => document.body.classList.add('dark'));
+</script>
+</head>
+<body>
+
+<div class="mesh"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div><div class="blob blob-4"></div></div>
+<div class="grain"></div>
+
+<div class="container">
+  <nav class="top-nav">
+    <a href="index.html" class="back-pill">← Главная</a>
+    <button class="theme-btn" id="themeBtn">
+      <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </nav>
+
+  <div class="header">
+    <div class="header-top-row">
+      <h1>Груминг бэклога</h1>
+      <button class="btn-copy" onclick="exportGrooming()">📋 Скопировать итог</button>
+    </div>
+    <div class="header-sub">Разбирай задачи по одной — фиксируй вопросы с ответами, критерии приёмки и хвосты</div>
+    <div class="timer-row">
+      <div class="timer-pill" id="timerPill">
+        <span class="timer-display" id="timerDisplay">00:00</span>
+        <button class="btn-timer" id="timerBtn" onclick="startTimer()">▶ Старт</button>
+        <button class="btn-timer-icon" onclick="resetTimer()" title="Сбросить таймер">↺</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="add-task-bar">
+    <input class="add-task-input" id="newTaskInput" type="text"
+      placeholder="Название задачи, например TASK-241: Лимиты на переводы"
+      onkeydown="if(event.key==='Enter') addTask()">
+    <button class="btn-add" onclick="addTask()">+ Задача</button>
+  </div>
+
+  <div class="task-list" id="taskList">
+    <div class="empty-state">
+      <div class="emoji">📋</div>
+      Добавь первую задачу из бэклога
+      <p>Активная задача раскрыта на весь экран, остальные свёрнуты в полоску</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Скопировано в буфер ✓</div>
+
+<script>
+  // Theme init
+  if (localStorage.getItem('ba-theme') === 'dark') document.body.classList.add('dark');
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('ba-theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+  });
+
+  let tasks = [];
+  let timerInterval = null;
+  let timerSeconds = 0;
+  let timerRunning = false;
+  let activeTaskId = null;
+
+  function uid() { return Date.now() + Math.random().toString(36).slice(2); }
+
+  function startTimer() {
+    const btn = document.getElementById('timerBtn');
+    if (timerRunning) {
+      clearInterval(timerInterval); timerRunning = false;
+      btn.textContent = '▶ Старт'; btn.classList.remove('active');
+    } else {
+      timerRunning = true;
+      btn.textContent = 'Стоп'; btn.classList.add('active');
+      timerInterval = setInterval(() => { timerSeconds++; updateTimerDisplay(); }, 1000);
+    }
+  }
+  function resetTimer() {
+    clearInterval(timerInterval); timerRunning = false; timerSeconds = 0;
+    const btn = document.getElementById('timerBtn');
+    if (btn) { btn.textContent = '▶ Старт'; btn.classList.remove('active'); }
+    updateTimerDisplay();
+  }
+  function updateTimerDisplay() {
+    const m = Math.floor(timerSeconds/60).toString().padStart(2,'0');
+    const s = (timerSeconds%60).toString().padStart(2,'0');
+    document.getElementById('timerDisplay').textContent = m+':'+s;
+    const pill = document.getElementById('timerPill');
+    pill.className = 'timer-pill';
+    if (timerSeconds === 0 && !timerRunning) return;
+    if (timerSeconds < 1800) pill.classList.add('green');
+    else if (timerSeconds < 3600) pill.classList.add('yellow');
+    else pill.classList.add('red');
+  }
+
+  function addTask() {
+    const input = document.getElementById('newTaskInput');
+    const name = input.value.trim();
+    if (!name) return;
+    const task = {
+      id: uid(), name, priority: 'high', storyPoints: '?',
+      criteria: [], qas: [], decisions: [], tails: [], notes: '', outcome: null
+    };
+    tasks.push(task);
+    input.value = '';
+    activeTaskId = task.id;
+    render();
+  }
+
+  function toggleTask(id) {
+    activeTaskId = activeTaskId === id ? null : id;
+    render();
+  }
+
+  function deleteTask(id) {
+    const t = tasks.find(t => t.id === id);
+    if (!confirm(`Удалить задачу "${t.name}"?`)) return;
+    tasks = tasks.filter(t => t.id !== id);
+    if (activeTaskId === id) activeTaskId = null;
+    render();
+  }
+
+  function updateTaskName(id, val) { tasks.find(t=>t.id===id).name = val; }
+
+  function updateTaskField(id, field, val) {
+    tasks.find(t=>t.id===id)[field] = val;
+    if (field === 'outcome') render();
+  }
+
+  function updatePriority(id, select) {
+    const val = select.value;
+    tasks.find(t=>t.id===id).priority = val;
+    select.className = `meta-select priority-select-${val}`;
+  }
+
+  // ── КРИТЕРИИ ──
+  function addCriteria(id) {
+    const input = document.getElementById('cInput_'+id);
+    const val = input.value.trim();
+    if (!val) return;
+    tasks.find(t=>t.id===id).criteria.push({ id: uid(), text: val });
+    input.value = '';
+    renderTaskCard(id);
+  }
+  function deleteCriteria(taskId, cId) {
+    const t = tasks.find(t=>t.id===taskId);
+    t.criteria = t.criteria.filter(c=>c.id!==cId);
+    renderTaskCard(taskId);
+  }
+
+  // ── Q&A ──
+  function addQA(id) {
+    const input = document.getElementById('qInput_'+id);
+    const val = input.value.trim();
+    if (!val) return;
+    tasks.find(t=>t.id===id).qas.push({ id: uid(), question: val, answer: '', done: false });
+    input.value = '';
+    renderTaskCard(id);
+  }
+  function toggleQA(taskId, qaId) {
+    const qa = tasks.find(t=>t.id===taskId).qas.find(q=>q.id===qaId);
+    if (qa) qa.done = !qa.done;
+    renderTaskCard(taskId);
+  }
+  function updateQAAnswer(taskId, qaId, val) {
+    const qa = tasks.find(t=>t.id===taskId).qas.find(q=>q.id===qaId);
+    if (qa) qa.answer = val;
+  }
+  function deleteQA(taskId, qaId) {
+    const t = tasks.find(t=>t.id===taskId);
+    t.qas = t.qas.filter(q=>q.id!==qaId);
+    renderTaskCard(taskId);
+  }
+
+  // ── РЕШЕНИЯ ──
+  function addDecision(id) {
+    const input = document.getElementById('decInput_'+id);
+    const val = input.value.trim();
+    if (!val) return;
+    tasks.find(t=>t.id===id).decisions.push({ id: uid(), text: val });
+    input.value = '';
+    renderTaskCard(id);
+  }
+  function deleteDecision(taskId, dId) {
+    const t = tasks.find(t=>t.id===taskId);
+    t.decisions = t.decisions.filter(d=>d.id!==dId);
+    renderTaskCard(taskId);
+  }
+
+  // ── ХВОСТЫ ──
+  function addTail(id) {
+    tasks.find(t=>t.id===id).tails.push({ id: uid(), who: '', what: '', when: '' });
+    renderTaskCard(id);
+    setTimeout(() => {
+      const inputs = document.querySelectorAll('.tail-who');
+      if (inputs.length) inputs[inputs.length-1].focus();
+    }, 50);
+  }
+  function updateTail(taskId, tailId, field, val) {
+    const tail = tasks.find(t=>t.id===taskId).tails.find(tl=>tl.id===tailId);
+    if (tail) tail[field] = val;
+  }
+  function deleteTail(taskId, tailId) {
+    const t = tasks.find(t=>t.id===taskId);
+    t.tails = t.tails.filter(tl=>tl.id!==tailId);
+    renderTaskCard(taskId);
+  }
+
+  function setOutcome(taskId, outcome) {
+    const t = tasks.find(t=>t.id===taskId);
+    t.outcome = t.outcome === outcome ? null : outcome;
+    render();
+  }
+
+  // ── RENDER HELPERS ──
+  function getStatusLabel(outcome) {
+    if (!outcome) return { text: 'В разборе', cls: 'active' };
+    if (outcome === 'ready') return { text: '✅ Готова', cls: 'ready' };
+    if (outcome === 'meeting') return { text: '📅 Нужна встреча', cls: 'meeting' };
+    return { text: '🔄 В бэклог', cls: 'backlog' };
+  }
+  function getStripCls(outcome) {
+    if (!outcome) return 'status-active';
+    if (outcome === 'ready') return 'status-ready';
+    if (outcome === 'meeting') return 'status-meeting';
+    return 'status-backlog';
+  }
+  function getPriorityCls(p) {
+    return p==='high'?'priority-high':p==='medium'?'priority-medium':'priority-low';
+  }
+  function getPriorityLabel(p) {
+    return p==='high'?'High':p==='medium'?'Medium':'Low';
+  }
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function renderStrip(t) {
+    const status = getStatusLabel(t.outcome);
+    const spHtml = t.storyPoints !== '?' ? `<span class="strip-sp">${escHtml(t.storyPoints)} SP</span>` : '';
+    const priCls = getPriorityCls(t.priority);
+    const priLabel = getPriorityLabel(t.priority);
+    return `<div class="task-strip ${getStripCls(t.outcome)}">
+      <div style="flex:1;display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;" onclick="toggleTask('${t.id}')">
+        <span class="strip-name">${escHtml(t.name)}</span>
+        <span class="priority-badge ${priCls}" style="flex-shrink:0">${priLabel}</span>
+        ${spHtml}
+        <span class="strip-status ${status.cls}">${status.text}</span>
+      </div>
+      <button class="strip-delete" onclick="deleteTask('${t.id}')" title="Удалить задачу">×</button>
+      <span class="strip-chevron" style="cursor:pointer" onclick="toggleTask('${t.id}')">▼</span>
+    </div>`;
+  }
+
+  function renderCard(t) {
+    const status = getStatusLabel(t.outcome);
+
+    const criteriaHtml = t.criteria.map(c => `
+      <div class="criteria-item">
+        <span class="criteria-bullet">◆</span>
+        <span class="criteria-text">${escHtml(c.text)}</span>
+        <button class="criteria-delete" onclick="deleteCriteria('${t.id}','${c.id}')">×</button>
+      </div>`).join('');
+
+    const qaHtml = t.qas.map(q => `
+      <div class="qa-item ${q.done ? 'answered' : ''}">
+        <div class="qa-question-row">
+          <div class="q-check ${q.done ? 'checked' : ''}" onclick="toggleQA('${t.id}','${q.id}')">${q.done ? '✓' : ''}</div>
+          <span class="q-text">${escHtml(q.question)}</span>
+          <button class="q-delete" onclick="deleteQA('${t.id}','${q.id}')">×</button>
+        </div>
+        <div class="qa-answer-row">
+          <input class="qa-answer-input" placeholder="Ответ..." value="${escHtml(q.answer)}"
+            oninput="updateQAAnswer('${t.id}','${q.id}',this.value)">
+        </div>
+      </div>`).join('');
+
+    const decisionsHtml = t.decisions.map(d => `
+      <div class="decision-item">
+        <span class="decision-bullet">✓</span>
+        <span class="decision-text">${escHtml(d.text)}</span>
+        <button class="decision-delete" onclick="deleteDecision('${t.id}','${d.id}')">×</button>
+      </div>`).join('');
+
+    const tailsHtml = t.tails.map(tl => `
+      <div class="tail-item">
+        <input class="tail-who" placeholder="Кто" value="${escHtml(tl.who)}" oninput="updateTail('${t.id}','${tl.id}','who',this.value)">
+        <span class="tail-sep">—</span>
+        <input class="tail-what" placeholder="Что сделает" value="${escHtml(tl.what)}" oninput="updateTail('${t.id}','${tl.id}','what',this.value)">
+        <span class="tail-sep">до</span>
+        <input class="tail-when" placeholder="Срок" value="${escHtml(tl.when)}" oninput="updateTail('${t.id}','${tl.id}','when',this.value)">
+        <button class="tail-delete" onclick="deleteTail('${t.id}','${tl.id}')">×</button>
+      </div>`).join('');
+
+    const oBtnReady = `btn-outcome${t.outcome==='ready'?' selected-ready':''}`;
+    const oBtnMeeting = `btn-outcome${t.outcome==='meeting'?' selected-meeting':''}`;
+    const oBtnBacklog = `btn-outcome${t.outcome==='backlog'?' selected-backlog':''}`;
+
+    return `<div class="task-card" id="card_${t.id}">
+      <div class="task-card-header">
+        <div class="task-name-row">
+          <input class="task-name-input" value="${escHtml(t.name)}" placeholder="Название задачи"
+            oninput="updateTaskName('${t.id}',this.value)">
+          <button class="collapse-btn" onclick="toggleTask('${t.id}')">Свернуть ↑</button>
+          <button class="collapse-btn" style="color:var(--danger);border-color:var(--danger);opacity:0.6;" onclick="deleteTask('${t.id}')">Удалить</button>
+        </div>
+        <div class="task-meta-row">
+          <select class="meta-select priority-select-${t.priority}" onchange="updatePriority('${t.id}',this)">
+            <option value="high" ${t.priority==='high'?'selected':''}>High</option>
+            <option value="medium" ${t.priority==='medium'?'selected':''}>Medium</option>
+            <option value="low" ${t.priority==='low'?'selected':''}>Low</option>
+          </select>
+          <span class="sp-label">SP:</span>
+          <select class="meta-select sp-select" onchange="updateTaskField('${t.id}','storyPoints',this.value)">
+            <option value="?" ${t.storyPoints==='?'?'selected':''}>—</option>
+            <option value="1" ${t.storyPoints==='1'?'selected':''}>1</option>
+            <option value="2" ${t.storyPoints==='2'?'selected':''}>2</option>
+            <option value="3" ${t.storyPoints==='3'?'selected':''}>3</option>
+            <option value="5" ${t.storyPoints==='5'?'selected':''}>5</option>
+            <option value="8" ${t.storyPoints==='8'?'selected':''}>8</option>
+            <option value="13" ${t.storyPoints==='13'?'selected':''}>13</option>
+            <option value="21" ${t.storyPoints==='21'?'selected':''}>21</option>
+          </select>
+          <span class="strip-status ${status.cls}" style="margin-left:auto">${status.text}</span>
+        </div>
+      </div>
+
+      <div class="task-body">
+
+        <div>
+          <div class="section-divider"><div class="section-label">Критерии приёмки</div><div class="section-line"></div></div>
+          <div class="criteria-list">${criteriaHtml}</div>
+          <div class="add-item-row">
+            <input class="add-item-input" id="cInput_${t.id}" placeholder="Добавить критерий..."
+              onkeydown="if(event.key==='Enter') addCriteria('${t.id}')">
+            <button class="btn-add-item" onclick="addCriteria('${t.id}')">+</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-divider"><div class="section-label">Вопросы и ответы</div><div class="section-line"></div></div>
+          <div class="qa-list">${qaHtml}</div>
+          <div class="add-item-row">
+            <input class="add-item-input" id="qInput_${t.id}" placeholder="Добавить вопрос..."
+              onkeydown="if(event.key==='Enter') addQA('${t.id}')">
+            <button class="btn-add-item" onclick="addQA('${t.id}')">+</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-divider"><div class="section-label">Решения</div><div class="section-line"></div></div>
+          <div class="decisions-list">${decisionsHtml}</div>
+          <div class="add-item-row">
+            <input class="add-item-input" id="decInput_${t.id}" placeholder="Зафиксировать решение..."
+              onkeydown="if(event.key==='Enter') addDecision('${t.id}')">
+            <button class="btn-add-item" onclick="addDecision('${t.id}')">+</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-divider"><div class="section-label">Хвосты</div><div class="section-line"></div></div>
+          <div class="tails-hint">Кто / Что делает / Срок</div>
+          <div class="tails-list">${tailsHtml}</div>
+          <button class="btn-add-item" onclick="addTail('${t.id}')" title="Добавить хвост">+</button>
+        </div>
+
+        <div>
+          <div class="section-divider"><div class="section-label">Заметки</div><div class="section-line"></div></div>
+          <textarea class="notes-textarea" placeholder="Свободные заметки — контекст, ссылки, технические детали..."
+            oninput="tasks.find(t=>t.id==='${t.id}').notes=this.value">${escHtml(t.notes)}</textarea>
+        </div>
+
+        <div class="outcome-section">
+          <div class="outcome-label">Итог по задаче:</div>
+          <div class="outcome-btns">
+            <button class="${oBtnReady}" onclick="setOutcome('${t.id}','ready')"><span class="o-dot"></span>Готова к разработке</button>
+            <button class="${oBtnMeeting}" onclick="setOutcome('${t.id}','meeting')"><span class="o-dot"></span>Нужна встреча</button>
+            <button class="${oBtnBacklog}" onclick="setOutcome('${t.id}','backlog')"><span class="o-dot"></span>Вернуть в бэклог</button>
+          </div>
+        </div>
+
+      </div>
+    </div>`;
+  }
+
+  function renderTaskCard(id) {
+    const t = tasks.find(t=>t.id===id);
+    if (!t) return;
+    const el = document.getElementById('card_'+id);
+    if (el) el.outerHTML = renderCard(t);
+  }
+
+  function render() {
+    const list = document.getElementById('taskList');
+    if (tasks.length === 0) {
+      list.innerHTML = `<div class="empty-state"><div class="emoji">📋</div>Добавь первую задачу из бэклога<p>Активная задача раскрыта на весь экран, остальные свёрнуты в полоску</p></div>`;
+      return;
+    }
+    list.innerHTML = tasks.map(t => t.id===activeTaskId ? renderCard(t) : renderStrip(t)).join('');
+  }
+
+  render();
+
+  // ── ЭКСПОРТ ──
+  function exportGrooming() {
+    if (tasks.length === 0) { alert('Нет задач для копирования.'); return; }
+    let text = `╔══════════════════════════════════════╗\n   ГРУМИНГ БЭКЛОГА\n╚══════════════════════════════════════╝\n\n`;
+    text += `Задач разобрано: ${tasks.length}\n`;
+    text += `Дата: ${new Date().toLocaleDateString('ru-RU')}\n\n`;
+
+    tasks.forEach((t, i) => {
+      const statusMap = { ready: 'Готова к разработке', meeting: 'Нужна встреча', backlog: 'Вернуть в бэклог' };
+      const status = statusMap[t.outcome] || 'Не закрыта';
+      const sp = t.storyPoints !== '?' ? t.storyPoints + ' SP' : 'не оценена';
+
+      text += `${'─'.repeat(40)}\n`;
+      text += `${i+1}. ${t.name.toUpperCase()}\n`;
+      text += `   Приоритет: ${t.priority === 'high' ? 'High' : t.priority === 'medium' ? 'Medium' : 'Low'} | Story points: ${sp} | Итог: ${status}\n\n`;
+
+      if (t.criteria.length) {
+        text += `КРИТЕРИИ ПРИЁМКИ:\n`;
+        t.criteria.forEach(c => { text += `  ◆ ${c.text}\n`; });
+        text += '\n';
+      }
+
+      if (t.qas.length) {
+        text += `ВОПРОСЫ И ОТВЕТЫ:\n`;
+        t.qas.forEach(q => {
+          text += `  ? ${q.question}\n`;
+          if (q.answer) text += `  → ${q.answer}\n`;
+        });
+        text += '\n';
+      }
+
+      if (t.decisions.length) {
+        text += `РЕШЕНИЯ:\n`;
+        t.decisions.forEach(d => { text += `  ✓ ${d.text}\n`; });
+        text += '\n';
+      }
+
+      if (t.tails.length) {
+        text += `ХВОСТЫ:\n`;
+        t.tails.forEach(tl => {
+          const parts = [tl.who, tl.what, tl.when].filter(Boolean);
+          if (parts.length) text += `  → ${parts.join(' — ')}\n`;
+        });
+        text += '\n';
+      }
+
+      if (t.notes) { text += `ЗАМЕТКИ:\n${t.notes}\n\n`; }
+    });
+
+    text += `${'═'.repeat(40)}\n`;
+    text += `🤖 ПРОМПТ ДЛЯ АНАЛИЗА С ИИ\n`;
+    text += `${'═'.repeat(40)}\n`;
+    text += `Выше — итоги груминга бэклога.\n\n`;
+    text += `Пожалуйста, проанализируй:\n`;
+    text += `1. Какие критерии приёмки могут быть неполными или неточными?\n`;
+    text += `2. Есть ли незакрытые вопросы которые могут заблокировать разработку?\n`;
+    text += `3. Какие хвосты наиболее критичны и почему?\n`;
+    text += `4. Какие риски я мог упустить при оценке задач?`;
+
+    copyToClipboard(text.trim());
+  }
+
+  function copyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(showToast).catch(() => fallbackCopy(text));
+    } else { fallbackCopy(text); }
+  }
+
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try { document.execCommand('copy'); showToast(); } catch(e) { alert('Не удалось скопировать.'); }
+    document.body.removeChild(ta);
+  }
+
+  function showToast() {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+</script>
+</body>
+</html>

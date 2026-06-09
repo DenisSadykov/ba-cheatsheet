@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сбор требований - По шагам / BA</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%236366F1'/><polygon points='36,8 20,36 30,36 26,56 46,28 34,28' fill='white'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #F0EEF8;
+  --glass-bg:           rgba(255,255,255,0.68);
+  --glass-bg-hover:     rgba(255,255,255,0.82);
+  --glass-border:       rgba(255,255,255,0.82);
+  --glass-border-hover: rgba(255,255,255,0.96);
+  --glass-shadow:       0 2px 0 rgba(255,255,255,0.88) inset, 0 4px 20px rgba(80,60,180,0.07), 0 1px 4px rgba(0,0,0,0.05);
+  --glass-shadow-hover: 0 2px 0 rgba(255,255,255,0.95) inset, 0 14px 38px rgba(80,60,180,0.11), 0 4px 12px rgba(0,0,0,0.07);
+  --text:       #18181B;
+  --text-muted: #5A5A78;
+  --text-xs:    rgba(50,50,90,0.42);
+  --accent:      #6366F1;
+  --accent-hover:#4F46E5;
+  --success: #16A34A;
+  --success-light: rgba(22,163,74,0.10);
+  --success-border: rgba(22,163,74,0.30);
+  --warning: #D97706;
+  --warning-light: rgba(217,119,6,0.10);
+  --warning-border: rgba(217,119,6,0.30);
+  --danger: #DC2626;
+  --danger-light: rgba(220,38,38,0.10);
+  --danger-border: rgba(220,38,38,0.30);
+  --radius: 18px;
+  --radius-sm: 10px;
+  --blob1: rgba(99,102,241,0.14);
+  --blob2: rgba(139,92,246,0.10);
+  --blob3: rgba(37,99,235,0.07);
+  --blob4: rgba(217,119,6,0.07);
+}
+
+body.dark {
+  --bg: #0D1117;
+  --glass-bg:           rgba(255,255,255,0.055);
+  --glass-bg-hover:     rgba(255,255,255,0.09);
+  --glass-border:       rgba(255,255,255,0.10);
+  --glass-border-hover: rgba(255,255,255,0.18);
+  --glass-shadow:       0 1px 0 rgba(255,255,255,0.07) inset, 0 4px 20px rgba(0,0,0,0.35), 0 1px 4px rgba(0,0,0,0.25);
+  --glass-shadow-hover: 0 1px 0 rgba(255,255,255,0.12) inset, 0 16px 48px rgba(0,0,0,0.50), 0 4px 16px rgba(0,0,0,0.30);
+  --text: #E6EDF3;
+  --text-muted: rgba(180,195,220,0.75);
+  --text-xs: rgba(160,180,210,0.38);
+  --success-light: rgba(22,163,74,0.12); --success-border: rgba(22,163,74,0.25);
+  --warning-light: rgba(217,119,6,0.12); --warning-border: rgba(217,119,6,0.25);
+  --danger-light: rgba(220,38,38,0.12);  --danger-border: rgba(220,38,38,0.25);
+  --blob1: rgba(120,110,255,0.22);
+  --blob2: rgba(139,92,246,0.16);
+  --blob3: rgba(59,130,246,0.13);
+  --blob4: rgba(217,119,6,0.10);
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 0 20px 80px;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+  overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* ── MESH ── */
+.mesh { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.blob { position: absolute; border-radius: 50%; filter: blur(80px); will-change: transform; }
+.blob-1 { width: 520px; height: 520px; background: var(--blob1); top: -180px; left: -120px; animation: drift1 20s ease-in-out infinite alternate; }
+.blob-2 { width: 380px; height: 380px; background: var(--blob2); bottom: -120px; right: -100px; animation: drift2 24s ease-in-out infinite alternate; }
+.blob-3 { width: 280px; height: 280px; background: var(--blob3); bottom: 100px; left: 80px; animation: drift3 18s ease-in-out infinite alternate; }
+.blob-4 { width: 220px; height: 220px; background: var(--blob4); top: 35%; right: 10%; animation: drift1 22s ease-in-out infinite alternate-reverse; }
+@keyframes drift1 { from{transform:translate(0,0) scale(1)} to{transform:translate(28px,18px) scale(1.06)} }
+@keyframes drift2 { from{transform:translate(0,0) scale(1)} to{transform:translate(-22px,-16px) scale(1.08)} }
+@keyframes drift3 { from{transform:translate(0,0) scale(1)} to{transform:translate(18px,-26px) scale(1.04)} }
+
+.grain {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+.container { max-width: 780px; margin: 0 auto; position: relative; z-index: 1; }
+
+/* ── TOP NAV ── */
+.top-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 28px 0 20px;
+}
+.back-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px 6px 10px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: 99px; box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%);
+  text-decoration: none; color: var(--text);
+  font-size: 13px; font-weight: 600; transition: all 0.2s;
+}
+.back-pill:hover { background: var(--glass-bg-hover); transform: translateX(-2px); }
+
+.theme-btn {
+  width: 36px; height: 36px; border-radius: 11px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 15px; transition: all 0.2s;
+}
+.theme-btn:hover { background: var(--glass-bg-hover); transform: scale(1.08); }
+.icon-moon { display:block; color: var(--text-muted); }
+.icon-sun { display:none; }
+body.dark .icon-moon { display:none; }
+body.dark .icon-sun { display:block; color: #FCD34D; }
+body.dark #themeBtn {
+  background: rgba(252,211,77,0.12);
+  border-color: rgba(252,211,77,0.30);
+  box-shadow: 0 0 10px rgba(252,211,77,0.25), 0 0 24px rgba(252,211,77,0.10), var(--glass-shadow);
+}
+
+/* ── HEADER ── */
+.header { margin-bottom: 18px; }
+.header-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 28px; font-weight: 800; letter-spacing: -0.05em; color: var(--text); line-height: 1.15;
+  margin-bottom: 6px;
+}
+.header-title::before {
+  content: '';
+  display: inline-block; width: 6px; height: 22px;
+  background: linear-gradient(180deg, #6366F1, #8B5CF6);
+  border-radius: 3px; margin-right: 12px;
+  vertical-align: middle; position: relative; top: -1px;
+}
+.header-sub { font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px; padding-left: 18px; }
+
+.header-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+
+/* Timer */
+.timer-wrap {
+  display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: 12px; box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); transition: all 0.3s;
+}
+.timer-wrap.green { border-color: var(--success); border-width: 2px; background: rgba(220,255,235,0.54); box-shadow: 0 0 0 3px rgba(22,163,74,0.10), var(--glass-shadow); }
+.timer-wrap.yellow { border-color: var(--warning); border-width: 2px; background: rgba(255,243,220,0.54); box-shadow: 0 0 0 3px rgba(217,119,6,0.10), var(--glass-shadow); }
+.timer-wrap.red { border-color: var(--danger); border-width: 2px; background: rgba(255,228,228,0.54); box-shadow: 0 0 0 3px rgba(220,38,38,0.10), var(--glass-shadow); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+.timer-display {
+  font-family: 'SF Mono','Fira Code',monospace;
+  font-size: 15px; font-weight: 700; letter-spacing: 0.5px;
+  color: var(--text); min-width: 44px; transition: color 0.3s;
+}
+.timer-wrap.green .timer-display { color: var(--success); }
+.timer-wrap.yellow .timer-display { color: var(--warning); }
+.timer-wrap.red .timer-display { color: var(--danger); }
+.btn-timer {
+  font-size: 11.5px; font-weight: 600; padding: 4px 10px;
+  border-radius: 7px; border: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.45); color: var(--text-muted);
+  cursor: pointer; transition: all 0.15s; font-family: inherit;
+}
+.btn-timer:hover { background: var(--accent); border-color: var(--accent); color: white; }
+.btn-timer.active { background: var(--danger); border-color: var(--danger); color: white; }
+
+.btn-secondary {
+  font-size: 13px; font-weight: 500; padding: 7px 14px;
+  border-radius: var(--radius-sm); border: 1px solid var(--glass-border);
+  background: var(--glass-bg); color: var(--text-muted);
+  cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 5px;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.btn-secondary:hover { background: var(--glass-bg-hover); color: var(--text); }
+
+.btn-danger {
+  font-size: 13px; font-weight: 500; padding: 0 16px;
+  height: 38px; align-self: stretch;
+  border-radius: var(--radius-sm); border: 1px solid var(--glass-border);
+  background: var(--glass-bg); color: var(--text-muted);
+  cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.btn-danger:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-light); }
+
+/* Progress */
+.progress-track { background: rgba(0,0,0,0.09); border-radius: 99px; height: 5px; overflow: hidden; }
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #8B5CF6);
+  border-radius: 99px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1), background 0.5s;
+}
+.progress-fill.all-done { background: linear-gradient(90deg, #16A34A, #22C55E); }
+.progress-label { font-size: 11.5px; color: var(--text-xs); margin-top: 5px; }
+
+/* ── META CARD ── */
+.meta-card {
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-radius: var(--radius); padding: 18px 20px; margin-bottom: 12px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.meta-card:hover { border-color: var(--glass-border-hover); box-shadow: var(--glass-shadow-hover); }
+
+.meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 560px) { .meta-grid { grid-template-columns: 1fr; } }
+
+.meta-field { display: flex; flex-direction: column; gap: 5px; }
+.meta-label {
+  font-size: 12px; font-weight: 700;
+  color: var(--text-muted);
+}
+.meta-input {
+  font-family: 'Inter', sans-serif; font-size: 13.5px;
+  color: var(--text); border: 1px solid rgba(0,0,0,0.18);
+  border-radius: var(--radius-sm); padding: 8px 11px;
+  background: rgba(255,255,255,0.62); outline: none; transition: all 0.15s;
+}
+.meta-input:focus { border-color: var(--accent); background: rgba(255,255,255,0.80); box-shadow: 0 0 0 3px rgba(99,102,241,0.10); }
+.meta-input::placeholder { color: var(--text-xs); }
+
+/* ── STEP CARDS ── */
+.step-card {
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-radius: var(--radius); margin-bottom: 10px; overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.step-card:hover { border-color: var(--glass-border-hover); box-shadow: var(--glass-shadow-hover); }
+.step-card.completed { border: 2px solid var(--success); background: rgba(220,255,235,0.54); box-shadow: 0 0 0 3px rgba(22,163,74,0.10); }
+.step-card.open { border-left: 3px solid var(--accent); background: rgba(255,255,255,0.58); }
+
+.step-header { display: flex; align-items: center; gap: 14px; padding: 16px 18px; cursor: pointer; user-select: none; }
+
+.step-number { position: relative; flex-shrink: 0; }
+.step-number-inner {
+  width: 36px; height: 36px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  background: rgba(99,102,241,0.12); color: var(--accent);
+  border: 1.5px solid rgba(99,102,241,0.25); flex-shrink: 0; transition: all 0.2s;
+}
+.step-card.completed .step-number-inner {
+  background: linear-gradient(135deg, #16A34A, #22C55E); color: white; border-color: transparent; font-size: 15px;
+}
+
+.step-title-wrap { flex: 1; min-width: 0; }
+.step-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px; font-weight: 700; letter-spacing: -0.02em; color: var(--text);
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.step-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+.step-badge {
+  font-size: 10.5px; font-weight: 600; padding: 2px 8px; border-radius: 99px;
+  background: rgba(99,102,241,0.10); color: var(--accent); border: 1px solid rgba(99,102,241,0.22);
+}
+.step-card.completed .step-badge { background: var(--success-light); color: var(--success); border-color: var(--success-border); }
+.step-toggle { font-size: 16px; color: var(--text-xs); transition: transform 0.25s; flex-shrink: 0; }
+.step-card.open .step-toggle { transform: rotate(180deg); }
+.step-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--glass-border); }
+.step-card.open .step-body { display: block; }
+
+/* Questions */
+.questions-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.9px; color: var(--text-xs); margin: 16px 0 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.questions-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.question-wrap {
+  display: flex; flex-direction: column; border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.10); background: rgba(255,255,255,0.52); transition: all 0.15s; overflow: hidden;
+}
+.question-wrap:hover { border-color: var(--accent); background: rgba(255,255,255,0.75); }
+.question-wrap.hint-open { border-color: var(--accent); background: rgba(255,255,255,0.75); }
+.question-wrap.asked-wrap { background: var(--success-light); border-color: var(--success-border); }
+.question-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13px; color: var(--text); line-height: 1.5;
+  padding: 9px 12px; background: transparent; border: none; cursor: pointer; transition: color 0.15s;
+}
+.question-wrap:hover .question-item { color: var(--accent); }
+.question-wrap.asked-wrap .question-item { color: var(--success); text-decoration: line-through; opacity: 0.75; }
+.question-check {
+  width: 16px; height: 16px; border-radius: 5px; flex-shrink: 0; margin-top: 1px;
+  border: 1.5px solid rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center;
+  font-size: 10px; transition: all 0.15s; background: rgba(255,255,255,0.55);
+}
+.question-wrap:hover .question-check { border-color: var(--accent); }
+.question-wrap.asked-wrap .question-check { background: var(--success); border-color: var(--success); color: white; }
+.question-text { flex: 1; }
+.btn-info {
+  width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; margin-top: 1px;
+  border: 1.5px solid rgba(0,0,0,0.12); background: rgba(255,255,255,0.48);
+  color: var(--text-muted); font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.15s; font-style: italic; font-family: Georgia, serif;
+}
+.question-wrap:hover .btn-info { border-color: var(--accent); color: var(--accent); }
+.btn-info.active { border-color: var(--accent); color: var(--accent); }
+.question-hint { display: none; font-size: 12px; color: var(--text-muted); padding: 0 12px 9px 38px; line-height: 1.5; font-style: italic; }
+.question-hint.visible { display: block; }
+
+/* Custom questions */
+.custom-q-section { margin-top: 10px; }
+.custom-q-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px; color: var(--text-xs); margin-bottom: 7px; }
+.add-question-row { display: flex; gap: 7px; margin-bottom: 6px; }
+.add-question-input {
+  flex: 1; padding: 8px 12px; border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.18); background: rgba(255,255,255,0.62);
+  font-family: inherit; font-size: 13px; color: var(--text); outline: none; transition: all 0.15s;
+}
+.add-question-input:focus { border-color: var(--accent); background: rgba(255,255,255,0.80); box-shadow: 0 0 0 3px rgba(99,102,241,0.10); }
+.add-question-input::placeholder { color: var(--text-xs); }
+.btn-add-q {
+  padding: 8px 13px; border-radius: 10px;
+  border: 1px solid rgba(99,102,241,0.28); background: rgba(99,102,241,0.09);
+  color: var(--accent); font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s; font-family: inherit;
+}
+.btn-add-q:hover { background: var(--accent); color: white; border-color: var(--accent); }
+.custom-question-item {
+  display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--accent); line-height: 1.5;
+  padding: 9px 12px; border-radius: 10px; background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.20);
+  cursor: pointer; transition: border-color 0.15s;
+}
+.custom-question-item:hover { border-color: var(--accent); }
+.custom-question-item.asked { background: var(--success-light); border-color: var(--success-border); color: var(--success); text-decoration: line-through; opacity: 0.65; }
+.custom-question-item.asked .question-check { background: var(--success); border-color: var(--success); color: white; }
+.custom-question-item .question-check { border-color: rgba(99,102,241,0.30); background: transparent; }
+.custom-q-del { background: none; border: none; color: var(--accent); opacity: 0.4; cursor: pointer; font-size: 16px; margin-left: auto; padding: 0 2px; transition: opacity 0.15s; }
+.custom-q-del:hover { opacity: 1; color: var(--danger); }
+
+/* Notes */
+.notes-header { display: flex; align-items: center; justify-content: space-between; margin: 14px 0 7px; }
+.notes-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px; color: var(--text-xs); }
+.btn-template {
+  font-size: 11px; font-weight: 600; padding: 4px 10px;
+  border-radius: 6px; border: 1px solid var(--glass-border);
+  background: var(--glass-bg); color: var(--text-muted);
+  cursor: pointer; transition: all 0.15s; letter-spacing: 0.2px;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.btn-template:hover { border-color: var(--accent); color: var(--accent); background: rgba(99,102,241,0.08); }
+.notes-textarea {
+  width: 100%; min-height: 82px; padding: 10px 12px; border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.18); background: rgba(255,255,255,0.62);
+  font-family: inherit; font-size: 13px; color: var(--text); resize: vertical; outline: none; line-height: 1.6; transition: all 0.15s;
+}
+.notes-textarea:focus { border-color: var(--accent); background: rgba(255,255,255,0.80); box-shadow: 0 0 0 3px rgba(99,102,241,0.10); }
+.notes-textarea::placeholder { color: var(--text-xs); }
+
+/* Structured fields (AS-IS / TO-BE / etc.) */
+.sf-block { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+.sf-field { display: flex; flex-direction: column; gap: 4px; }
+.sf-label {
+  font-size: 12px; font-weight: 700; color: var(--accent);
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 8px; background: rgba(99,102,241,0.10);
+  border-radius: 6px; border-left: 3px solid var(--accent);
+}
+.sf-label .sf-tag {
+  font-size: 10px; font-weight: 600; padding: 1px 5px;
+  background: var(--accent); color: white; border-radius: 3px;
+}
+.sf-textarea {
+  width: 100%; min-height: 70px; padding: 9px 12px;
+  border: 1.5px solid rgba(99,102,241,0.22); border-radius: var(--radius-sm);
+  font-family: 'Inter', sans-serif; font-size: 13px;
+  color: var(--text); background: rgba(99,102,241,0.06);
+  resize: vertical; transition: all 0.15s; outline: none; line-height: 1.6;
+}
+.sf-textarea::placeholder { color: rgba(99,102,241,0.40); }
+.sf-textarea:focus { border-color: var(--accent); background: rgba(255,255,255,0.80); box-shadow: 0 0 0 3px rgba(99,102,241,0.10); }
+
+/* Step footer */
+.step-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; gap: 10px; }
+.btn-step-done {
+  flex: 1; font-size: 13px; font-weight: 700; padding: 10px; border-radius: var(--radius-sm); border: none;
+  background: linear-gradient(135deg, var(--accent), #8B5CF6); color: white; cursor: pointer; transition: all 0.2s;
+}
+.btn-step-done:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(99,102,241,0.35); }
+.btn-step-done:active { transform: translateY(0); }
+.btn-step-undone {
+  font-size: 12px; font-weight: 500; padding: 10px 14px; border-radius: var(--radius-sm);
+  border: 1px solid var(--glass-border); background: rgba(255,255,255,0.38); color: var(--text-muted);
+  cursor: pointer; transition: all 0.15s; display: none;
+}
+.btn-step-undone:hover { background: rgba(255,255,255,0.62); color: var(--text); }
+.step-card.completed .btn-step-done { display: none; }
+.step-card.completed .btn-step-undone { display: inline-flex; }
+.questions-progress { font-size: 12px; color: var(--text-muted); }
+
+/* Risk tag */
+.risk-tag {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 10px; font-weight: 700; padding: 2px 7px;
+  border-radius: 99px; background: rgba(217,119,6,0.10); color: #92400E;
+  border: 1px solid rgba(217,119,6,0.28); letter-spacing: 0.3px;
+}
+
+/* ── RISKS ── */
+.risks-card {
+  background: rgba(255,243,220,0.54); border: 2px solid var(--warning);
+  border-radius: var(--radius); padding: 18px 20px; margin-bottom: 10px;
+  box-shadow: 0 0 0 3px rgba(217,119,6,0.10);
+  backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%);
+}
+.risks-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.risks-title {
+  font-size: 13px; font-weight: 700; color: var(--text-muted);
+  display: flex; align-items: center; gap: 8px;
+}
+.btn-add-risk {
+  font-size: 12px; font-weight: 600; padding: 6px 13px;
+  border-radius: var(--radius-sm); border: 1.5px solid rgba(217,119,6,0.30);
+  background: rgba(217,119,6,0.10); color: #92400E; cursor: pointer; transition: all 0.15s;
+}
+.btn-add-risk:hover { background: rgba(217,119,6,0.18); border-color: var(--warning); }
+
+.risks-list { display: flex; flex-direction: column; gap: 7px; }
+.risk-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.72); border: 1px solid rgba(0,0,0,0.12);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  transition: background 0.2s, border-color 0.2s;
+}
+.risk-item.is-closed { background: rgba(220,255,235,0.60); border-color: var(--success-border); }
+.risk-item.is-closed input { color: var(--success); }
+.risk-item input {
+  flex: 1; border: none; background: transparent;
+  font-family: 'Inter', sans-serif; font-size: 13px; color: var(--text); outline: none;
+}
+.risk-item input::placeholder { color: var(--text-xs); }
+.risk-status {
+  font-size: 10.5px; font-weight: 700; padding: 3px 9px;
+  border-radius: 99px; cursor: pointer; white-space: nowrap;
+  border: 1.5px solid; transition: all 0.15s; letter-spacing: 0.2px;
+}
+.risk-status.open { background: rgba(217,119,6,0.10); color: #92400E; border-color: rgba(217,119,6,0.30); }
+.risk-status.closed { background: var(--success-light); color: var(--success); border-color: var(--success-border); }
+.risk-del {
+  font-size: 18px; color: #D97706; cursor: pointer;
+  opacity: 0.4; transition: opacity 0.15s; border: none;
+  background: none; line-height: 1; padding: 0 2px;
+}
+.risk-del:hover { opacity: 1; color: var(--danger); }
+.risks-empty { font-size: 13px; color: #D97706; opacity: 0.5; font-style: italic; }
+
+/* ── SECTION DIVIDER ── */
+.section-divider { display: flex; align-items: center; gap: 12px; margin: 22px 0 14px; }
+.section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px; color: var(--text-xs); white-space: nowrap; }
+.section-line { flex: 1; height: 1px; background: rgba(0,0,0,0.10); border-radius: 99px; }
+
+/* ── SUMMARY ── */
+.summary-card {
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-radius: var(--radius); padding: 18px 20px; margin-top: 4px;
+}
+.summary-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.summary-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
+.summary-empty { font-size: 13px; color: var(--text-muted); font-style: italic; }
+.summary-list { display: flex; flex-direction: column; gap: 8px; }
+.summary-item {
+  font-size: 13px; color: var(--text); padding: 10px 14px;
+  background: rgba(255,255,255,0.38); border-radius: 10px;
+  border-left: 3px solid var(--accent); white-space: pre-wrap; line-height: 1.6;
+}
+.summary-item-step { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(8px);
+  background: rgba(24,24,27,0.92); color: white; font-size: 13px; font-weight: 500;
+  padding: 10px 20px; border-radius: 12px;
+  opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 9999;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+.top-nav { animation: fadeUp 0.4s ease both; }
+.header { animation: fadeUp 0.4s 0.06s ease both; }
+.meta-card { animation: fadeUp 0.4s 0.12s ease both; }
+#steps-container .step-card:nth-child(1) { animation: fadeUp 0.4s 0.18s ease both; }
+#steps-container .step-card:nth-child(2) { animation: fadeUp 0.4s 0.24s ease both; }
+#steps-container .step-card:nth-child(3) { animation: fadeUp 0.4s 0.30s ease both; }
+#steps-container .step-card:nth-child(4) { animation: fadeUp 0.4s 0.36s ease both; }
+#steps-container .step-card:nth-child(5) { animation: fadeUp 0.4s 0.42s ease both; }
+.risks-card { animation: fadeUp 0.4s 0.48s ease both; }
+.summary-card { animation: fadeUp 0.4s 0.54s ease both; }
+
+@media (max-width:560px) { body { padding: 0 16px 60px; } .priority-grid { flex-direction:column; } }
+
+/* ══ DARK MODE OVERRIDES ══ */
+body.dark .question-wrap { border-color: rgba(255,255,255,0.08); background: rgba(255,255,255,0.04); }
+body.dark .question-wrap:hover { border-color: rgba(255,255,255,0.14); background: rgba(255,255,255,0.08); }
+body.dark .question-wrap.asked-wrap { background: rgba(22,163,74,0.12); border-color: rgba(22,163,74,0.30); }
+body.dark .notes-textarea, body.dark .meta-input, body.dark .add-question-input { border-color: rgba(255,255,255,0.10); background: rgba(255,255,255,0.05); color: var(--text); }
+body.dark .notes-textarea:focus, body.dark .meta-input:focus, body.dark .add-question-input:focus { border-color: var(--accent); background: rgba(255,255,255,0.09); }
+body.dark .sf-textarea { background: rgba(255,255,255,0.05) !important; border-color: rgba(255,255,255,0.12) !important; color: var(--text) !important; }
+body.dark .sf-label { background: rgba(99,102,241,0.14) !important; color: #A5B4FC !important; border-color: rgba(99,102,241,0.30) !important; }
+body.dark .step-card.completed { background: rgba(22,163,74,0.12); }
+body.dark .step-card.open { background: rgba(255,255,255,0.07); }
+body.dark .timer-wrap.green { background: rgba(22,163,74,0.16); }
+body.dark .timer-wrap.yellow { background: rgba(217,119,6,0.16); }
+body.dark .timer-wrap.red { background: rgba(220,38,38,0.16); }
+body.dark .risks-card { background: rgba(217,119,6,0.14); }
+body.dark .risk-item { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.10); }
+body.dark .risk-item input { color: var(--text); }
+body.dark .summary-item { background: rgba(255,255,255,0.06); }
+body.dark .custom-question-item { background: rgba(99,102,241,0.12); border-color: rgba(99,102,241,0.25); }
+body.dark #themeBtn { background: rgba(252,211,77,0.12); border-color: rgba(252,211,77,0.30); box-shadow: 0 0 10px rgba(252,211,77,0.25), 0 0 24px rgba(252,211,77,0.10), var(--glass-shadow); }
+body.dark .icon-sun { color: #FCD34D; }
+body.dark .progress-track { background: rgba(255,255,255,0.09); }
+body.dark .section-line { background: rgba(255,255,255,0.08); }
+</style>
+</head>
+<body>
+
+<div class="mesh">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="blob blob-4"></div>
+</div>
+<div class="grain"></div>
+
+<div class="container">
+
+  <nav class="top-nav">
+    <a href="index.html" class="back-pill">← Главная</a>
+    <button class="theme-btn" id="themeBtn">
+      <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </nav>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-title">Сбор требований</div>
+    <div class="header-sub">Шпаргалка BA — отмечай шаги и фиксируй по ходу разговора</div>
+    <div class="header-actions">
+      <div class="timer-wrap" id="timerWrap">
+        <div class="timer-display" id="timerDisplay">00:00</div>
+        <button class="btn-timer" id="timerBtn" onclick="toggleTimer()">Старт</button>
+        <button class="btn-timer" onclick="resetTimer()" title="Сбросить">↺</button>
+      </div>
+      <button class="btn-danger" onclick="resetAll()">Сбросить</button>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="progress-label" id="progressLabel">0 из 5 шагов выполнено</div>
+  </div>
+
+  <!-- Meta -->
+  <div class="meta-card">
+    <div class="meta-grid">
+      <div class="meta-field">
+        <div class="meta-label">Название фичи / проекта</div>
+        <input class="meta-input" id="meta-feature" type="text" placeholder="Например: Система рейтинга курьеров">
+      </div>
+      <div class="meta-field">
+        <div class="meta-label">Стейкхолдер — имя и роль</div>
+        <input class="meta-input" id="meta-stakeholder" type="text" placeholder="Иван, Product Manager">
+      </div>
+      <div class="meta-field">
+        <div class="meta-label">Команда / отдел</div>
+        <input class="meta-input" id="meta-team" type="text" placeholder="Мобильное приложение">
+      </div>
+      <div class="meta-field">
+        <div class="meta-label">Кто принимает финальное решение?</div>
+        <input class="meta-input" id="meta-decider" type="text" placeholder="Стейкхолдер или его руководитель?">
+      </div>
+    </div>
+  </div>
+
+  <!-- Steps -->
+  <div id="steps-container">
+
+    <div class="step-card" id="step-1" data-step="1">
+      <div class="step-header" onclick="toggleStep(1)">
+        <div class="step-number">
+          <div class="step-number-inner"><span class="step-number-text">1</span></div>
+        </div>
+        <div class="step-title-wrap">
+          <div class="step-title">Понять проблему, а не фичу <span class="step-badge">Зачем?</span></div>
+          <div class="step-subtitle">Стейкхолдер приходит с решением — докопайся до проблемы</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Вопросы</div>
+        <ul class="questions-list" id="q-1">
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какую проблему мы решаем этой фичей?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Стейкхолдер часто приходит с готовым решением, минуя проблему. Этот вопрос возвращает разговор к корню.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Кто конкретно с этим сталкивается и как часто?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Помогает понять масштаб — решаем боль 1000 пользователей или одного руководителя.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Как люди обходятся без этого сейчас?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Если обходятся легко — проблема не критична. Если с трудом — высокий приоритет.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Почему это важно именно сейчас?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Выявляет скрытый дедлайн или внешний триггер — конкурент запустил фичу, регулятор требует, CEO увидел.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Есть ли жалобы, отзывы или данные, подтверждающие проблему?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Отличает реальную боль от предположения. Без данных — это гипотеза, не факт.</div></li>
+        </ul>
+        <div class="custom-q-section"><div class="custom-q-label">Свой вопрос</div><div class="add-question-row"><input class="add-question-input" id="cq-1" placeholder="Добавь вопрос специфичный для этого кейса..."><button class="btn-add-q" onclick="addCustomQ(1)">+ Добавить</button></div><ul class="questions-list" id="cq-list-1"></ul></div>
+        <div class="notes-header">
+          <div class="notes-label">Заметки</div>
+          <button class="btn-template" onclick="fillTemplate(1)">+ Шаблон</button>
+        </div>
+        <textarea class="notes-textarea" id="notes-1" placeholder="Фиксируй ответы стейкхолдера здесь..."></textarea>
+        <div class="sf-block">
+          <div class="sf-field">
+            <div class="sf-label">AS-IS <span class="sf-tag">Как работает СЕЙЧАС</span></div>
+            <textarea class="sf-textarea" id="asis-1" placeholder="Опиши текущий процесс до изменений — со всеми болями и костылями..."></textarea>
+          </div>
+        </div>
+        <div class="step-footer">
+          <div class="questions-progress" id="qp-1"></div>
+          <button class="btn-step-undone" onclick="markStep(1, false)">↩ Вернуть</button>
+          <button class="btn-step-done" onclick="markStep(1, true)">Шаг выполнен ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card" id="step-2" data-step="2">
+      <div class="step-header" onclick="toggleStep(2)">
+        <div class="step-number">
+          <div class="step-number-inner"><span class="step-number-text">2</span></div>
+        </div>
+        <div class="step-title-wrap">
+          <div class="step-title">Ожидаемый результат и метрики <span class="step-badge">Что измеряем?</span></div>
+          <div class="step-subtitle">Нужна конкретная цифра — не "стало лучше", а "выросло с X до Y"</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Вопросы</div>
+        <ul class="questions-list" id="q-2">
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Как мы поймём, что фича работает? Какая метрика?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Без метрики невозможно оценить успех. Часто стейкхолдер не думал об этом — помоги ему сформулировать.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какая конкретная цифра будет считаться успехом?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">"Стало лучше" — не метрика. "Конверсия выросла с 3% до 5%" — метрика.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Что изменится для пользователя после запуска?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Проверяет что фича реально меняет опыт, а не просто добавляет кнопку ради кнопки.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Что изменится для бизнеса?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Помогает связать фичу с бизнес-целью — без этого сложно обосновать приоритет.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Как эта метрика выглядит сейчас — есть ли базовая линия?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Без базовой линии ты не докажешь что фича сработала. Нужно зафиксировать точку отсчёта до запуска.</div></li>
+        </ul>
+        <div class="custom-q-section"><div class="custom-q-label">Свой вопрос</div><div class="add-question-row"><input class="add-question-input" id="cq-2" placeholder="Добавь вопрос специфичный для этого кейса..."><button class="btn-add-q" onclick="addCustomQ(2)">+ Добавить</button></div><ul class="questions-list" id="cq-list-2"></ul></div>
+        <div class="notes-header">
+          <div class="notes-label">Заметки</div>
+          <button class="btn-template" onclick="fillTemplate(2)">+ Шаблон</button>
+        </div>
+        <textarea class="notes-textarea" id="notes-2" placeholder="Фиксируй метрики и целевые цифры..."></textarea>
+        <div class="step-footer">
+          <div class="questions-progress" id="qp-2"></div>
+          <button class="btn-step-undone" onclick="markStep(2, false)">↩ Вернуть</button>
+          <button class="btn-step-done" onclick="markStep(2, true)">Шаг выполнен ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card" id="step-3" data-step="3">
+      <div class="step-header" onclick="toggleStep(3)">
+        <div class="step-number">
+          <div class="step-number-inner"><span class="step-number-text">3</span></div>
+        </div>
+        <div class="step-title-wrap">
+          <div class="step-title">Откуда данные и кто нам нужен? <span class="step-badge">⚠ Самый важный</span></div>
+          <div class="step-subtitle">Проверь: данные есть, дата-аналитик подключён, юридика чистая — иначе фича не взлетит</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Вопросы <span class="risk-tag">⚠ риск</span></div>
+        <ul class="questions-list" id="q-3">
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какие данные нужны для работы этой фичи?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Большинство фич требуют данных для работы или измерения результата. Выясни что именно нужно до начала разработки.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Эти данные у нас уже есть? В каком виде и где хранятся?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Если данных нет — фича не взлетит. Это самый частый невидимый риск который обнаруживают уже в середине разработки.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Кто владелец данных — нужно ли согласование с другой командой?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Данные могут принадлежать другой команде. Согласование занимает время — выясни это на старте.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Данные чистые? Есть ли пропуски или аномалии?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Грязные данные дадут неверные результаты. Аналитик должен это проверить до разработки.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Нужно ли подключать дата-аналитика?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Аналитик скажет чистые ли данные, как их получить, сколько займёт. Подключай на старте — не в конце.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Если данных нет — сколько времени займёт начать их собирать?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Сбор данных может занять недели или месяцы. Это критично для оценки реального дедлайна.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Есть ли технические ограничения?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Архитектура системы может не позволить реализовать фичу быстро. Уточни у разработчиков до написания требований.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Есть ли юридические ограничения (персональные данные, налоги, compliance)?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Персональные данные, финансы, медицина — всё регулируется. Лучше узнать сейчас чем переделывать после разработки.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какие зависимости от других команд или систем?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Зависимость от другой команды — риск для дедлайна. Нужно согласовать заранее.</div></li>
+        </ul>
+        <div class="custom-q-section"><div class="custom-q-label">Свой вопрос</div><div class="add-question-row"><input class="add-question-input" id="cq-3" placeholder="Добавь вопрос специфичный для этого кейса..."><button class="btn-add-q" onclick="addCustomQ(3)">+ Добавить</button></div><ul class="questions-list" id="cq-list-3"></ul></div>
+        <div class="notes-header">
+          <div class="notes-label">Заметки</div>
+          <button class="btn-template" onclick="fillTemplate(3)">+ Шаблон</button>
+        </div>
+        <textarea class="notes-textarea" id="notes-3" placeholder="Где данные, кто владелец, открытые риски..."></textarea>
+        <div class="step-footer">
+          <div class="questions-progress" id="qp-3"></div>
+          <button class="btn-step-undone" onclick="markStep(3, false)">↩ Вернуть</button>
+          <button class="btn-step-done" onclick="markStep(3, true)">Шаг выполнен ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card" id="step-4" data-step="4">
+      <div class="step-header" onclick="toggleStep(4)">
+        <div class="step-number">
+          <div class="step-number-inner"><span class="step-number-text">4</span></div>
+        </div>
+        <div class="step-title-wrap">
+          <div class="step-title">Рамки задачи — скоуп и дедлайн <span class="step-badge">Что входит?</span></div>
+          <div class="step-subtitle">Что делаем сейчас, что потом, когда — и есть ли жёсткий дедлайн</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Вопросы</div>
+        <ul class="questions-list" id="q-4">
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Кто пользователи этой фичи? (физлица / юрлица / все?)</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Разные аудитории — разные сценарии и требования. Это влияет на скоуп и сложность.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Что точно входит в скоуп?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Без явного скоупа разработчики начнут делать "всё что логично" — и никогда не закончат.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Что точно не входит в скоуп?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Зафиксировать что НЕ делаем — так же важно как что делаем. Это защита от расползания скоупа.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">На каких платформах? (мобайл / веб / оба?)</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Разные платформы — разные команды и сроки. Уточни сразу чтобы не было сюрпризов.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Есть ли дедлайн? Жёсткий или мягкий?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Жёсткий дедлайн меняет приоритизацию и скоуп. Если привязан к маркетинговой кампании — это риск.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Привязан ли дедлайн к кампании или внешнему событию?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Если анонс уже запланирован — нужно подтвердить реалистичность сроков с разработчиками заранее.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какой приоритет относительно других задач?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Команда не может делать всё одновременно. Нужно понять что подвинется ради этой фичи.</div></li>
+        </ul>
+        <div class="custom-q-section"><div class="custom-q-label">Свой вопрос</div><div class="add-question-row"><input class="add-question-input" id="cq-4" placeholder="Добавь вопрос специфичный для этого кейса..."><button class="btn-add-q" onclick="addCustomQ(4)">+ Добавить</button></div><ul class="questions-list" id="cq-list-4"></ul></div>
+        <div class="notes-header">
+          <div class="notes-label">Заметки</div>
+          <button class="btn-template" onclick="fillTemplate(4)">+ Шаблон</button>
+        </div>
+        <textarea class="notes-textarea" id="notes-4" placeholder="Что входит, что нет, дедлайны..."></textarea>
+        <div class="sf-block">
+          <div class="sf-field">
+            <div class="sf-label">TO-BE <span class="sf-tag">Как должно работать ПОСЛЕ</span></div>
+            <textarea class="sf-textarea" id="tobe-4" placeholder="Опиши будущее состояние системы/процесса — как будто это уже работает..."></textarea>
+          </div>
+          <div class="sf-field">
+            <div class="sf-label">Допущения <span class="sf-tag">Что принимаем как данность?</span></div>
+            <textarea class="sf-textarea" id="assumptions-4" placeholder="Что считаем истиной, но не проверили? Например: данные о пользователях уже хранятся в системе..."></textarea>
+          </div>
+          <div class="sf-field">
+            <div class="sf-label">Критерии приёмки <span class="sf-tag">При каких условиях готово?</span></div>
+            <textarea class="sf-textarea" id="acceptance-4" placeholder="При каких конкретных условиях фича считается выполненной? Например: менеджер видит историю в течение 3 секунд..."></textarea>
+          </div>
+        </div>
+        <div class="step-footer">
+          <div class="questions-progress" id="qp-4"></div>
+          <button class="btn-step-undone" onclick="markStep(4, false)">↩ Вернуть</button>
+          <button class="btn-step-done" onclick="markStep(4, true)">Шаг выполнен ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card" id="step-5" data-step="5">
+      <div class="step-header" onclick="toggleStep(5)">
+        <div class="step-number">
+          <div class="step-number-inner"><span class="step-number-text">5</span></div>
+        </div>
+        <div class="step-title-wrap">
+          <div class="step-title">Зафиксировать и определить следующие шаги <span class="step-badge">Итог</span></div>
+          <div class="step-subtitle">Не уходи без чёткого списка — кто что делает до следующей встречи</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Чеклист перед завершением</div>
+        <ul class="questions-list" id="q-5">
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Зафиксировал все открытые вопросы и риски?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Открытые вопросы должны быть явно записаны — иначе они теряются и всплывают в середине разработки.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Договорились кто проверяет данные с дата-аналитиком?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Без конкретного ответственного это не будет сделано. Зафиксируй имя и срок.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Стейкхолдер знает что ему нужно уточнить?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Без чёткого "домашнего задания" стейкхолдер забудет. Проговори вслух и зафиксируй.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Назначен следующий созвон или дедлайн по уточнениям?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Договорённости без даты — не договорённости. Назначь сразу пока оба на звонке.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Если нашёл риск — предложил решение, а не просто констатировал?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">BA который только называет проблему — это репортёр. BA который предлагает решение — это партнёр бизнеса.</div></li>
+        </ul>
+        <div class="custom-q-section"><div class="custom-q-label">Свой вопрос</div><div class="add-question-row"><input class="add-question-input" id="cq-5" placeholder="Добавь пункт специфичный для этого кейса..."><button class="btn-add-q" onclick="addCustomQ(5)">+ Добавить</button></div><ul class="questions-list" id="cq-list-5"></ul></div>
+        <div class="notes-header">
+          <div class="notes-label">Следующие шаги</div>
+          <button class="btn-template" onclick="fillTemplate(5)">+ Шаблон</button>
+        </div>
+        <textarea class="notes-textarea" id="notes-5" placeholder="Кто что делает до следующей встречи..."></textarea>
+        <div class="step-footer">
+          <div class="questions-progress" id="qp-5"></div>
+          <button class="btn-step-undone" onclick="markStep(5, false)">↩ Вернуть</button>
+          <button class="btn-step-done" onclick="markStep(5, true)">Шаг выполнен ✓</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Risks -->
+  <div class="section-divider"><div class="section-line"></div><div class="section-label">Открытые риски</div><div class="section-line"></div></div>
+
+  <div class="risks-card">
+    <div class="risks-header">
+      <div class="risks-title">Риски встречи</div>
+      <button class="btn-add-risk" onclick="addRisk()">+ Добавить риск</button>
+    </div>
+    <div class="risks-list" id="risksList">
+      <div class="risks-empty" id="risksEmpty">Рисков пока нет — добавь если нашёл в ходе разговора</div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="section-divider"><div class="section-line"></div><div class="section-label">Итог встречи</div><div class="section-line"></div></div>
+
+  <div class="summary-card">
+    <div class="summary-header">
+      <div class="summary-title">Заметки по всем шагам</div>
+      <button class="btn-secondary" onclick="exportNotes()">📋 Скопировать итог</button>
+    </div>
+    <div id="summary-content">
+      <div class="summary-empty">Заполни заметки в шагах — они появятся здесь</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">Скопировано в буфер ✓</div>
+
+<script>
+  const STEP_NAMES = {
+    1: 'Шаг 1 — Проблема',
+    2: 'Шаг 2 — Метрики',
+    3: 'Шаг 3 — Данные и риски',
+    4: 'Шаг 4 — Скоуп',
+    5: 'Шаг 5 — Следующие шаги'
+  };
+
+  const TEMPLATES = {
+    1: `Проблема: \nКто страдает: \nЧастота: \nКак обходятся сейчас: \nПодтверждающие данные: `,
+    2: `Метрика успеха: \nЦелевая цифра: \nБазовая линия сейчас: \nЧто изменится для пользователя: \nЧто изменится для бизнеса: `,
+    3: `Нужные данные: \nГде хранятся: \nВладелец данных: \nЧистота данных: \nДата-аналитик нужен: \nТехнические ограничения: \nЮридические ограничения: \nЗависимости от других команд: `,
+    4: `Пользователи фичи: \nЧто входит в скоуп: \nЧто НЕ входит: \nПлатформы: \nДедлайн: \nПривязка к событию: \nПриоритет: `,
+    5: `Открытые вопросы: \nКто проверяет данные: \nЧто делает стейкхолдер до следующей встречи: \nЧто делаю я: \nДата следующей встречи: `
+  };
+
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem('ba_v2') || '{}'); }
+    catch { return {}; }
+  }
+  function saveState() { localStorage.setItem('ba_v2', JSON.stringify(state)); }
+
+  let state = loadState();
+  let timerInterval = null, timerSeconds = 0, timerRunning = false;
+
+  function init() {
+    ['feature','stakeholder','team','decider'].forEach(k => {
+      const el = document.getElementById(`meta-${k}`);
+      if (state[`meta_${k}`]) el.value = state[`meta_${k}`];
+      el.addEventListener('input', () => { state[`meta_${k}`] = el.value; saveState(); });
+    });
+    for (let i = 1; i <= 5; i++) {
+      if (state[`step_${i}_done`]) {
+        const card = document.getElementById(`step-${i}`);
+        card.classList.add('completed');
+        card.querySelector('.step-number-text').textContent = '✓';
+      }
+      if (state[`notes_${i}`]) document.getElementById(`notes-${i}`).value = state[`notes_${i}`];
+      document.querySelectorAll(`#q-${i} .question-item`).forEach((q, idx) => {
+        if (state[`q_${i}_${idx}`]) {
+          q.classList.add('asked');
+          q.closest('.question-wrap').classList.add('asked-wrap');
+          q.querySelector('.question-check').textContent = '✓';
+        }
+      });
+      document.getElementById(`notes-${i}`).addEventListener('input', function() {
+        state[`notes_${i}`] = this.value; saveState(); updateSummary();
+      });
+    }
+    // Structured fields
+    const sfIds = ['asis-1','tobe-4','assumptions-4','acceptance-4'];
+    sfIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (state[`sf_${id}`]) el.value = state[`sf_${id}`];
+      el.addEventListener('input', function() { state[`sf_${id}`] = this.value; saveState(); });
+    });
+    (state.risks || []).forEach(r => renderRisk(r.text, r.closed, r.id));
+    if (state.timerSeconds) { timerSeconds = state.timerSeconds; updateTimerDisplay(); }
+    updateProgress(); updateSummary(); updateRisksEmpty();
+  }
+
+  function toggleStep(n) {
+    document.getElementById(`step-${n}`).classList.toggle('open');
+  }
+
+  function toggleQuestion(el) {
+    const wrap = el.closest('.question-wrap');
+    const step = el.closest('.step-card').dataset.step;
+    const idx = Array.from(el.closest('.questions-list').children).indexOf(wrap);
+    el.classList.toggle('asked');
+    wrap.classList.toggle('asked-wrap', el.classList.contains('asked'));
+    el.querySelector('.question-check').textContent = el.classList.contains('asked') ? '✓' : '';
+    state[`q_${step}_${idx}`] = el.classList.contains('asked');
+    saveState(); updateQProgress(parseInt(step));
+  }
+
+  function toggleHint(e, btn) {
+    e.stopPropagation();
+    const wrap = btn.closest('.question-wrap');
+    const hint = wrap.querySelector('.question-hint');
+    if (!hint) return;
+    hint.classList.toggle('visible');
+    btn.classList.toggle('active');
+    wrap.classList.toggle('hint-open', hint.classList.contains('visible'));
+  }
+
+  function addCustomQ(stepNum) {
+    const input = document.getElementById(`cq-${stepNum}`);
+    const text = input.value.trim();
+    if (!text) return;
+    const list = document.getElementById(`cq-list-${stepNum}`);
+    const li = document.createElement('li');
+    li.innerHTML = `<div class="custom-question-item" onclick="this.classList.toggle('asked');this.querySelector('.question-check').textContent=this.classList.contains('asked')?'✓':''"><div class="question-check"></div><span class="question-text">${text}</span><button class="custom-q-del" onclick="event.stopPropagation();this.closest('li').remove()">×</button></div>`;
+    list.appendChild(li);
+    input.value = ''; input.focus();
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.classList.contains('add-question-input')) {
+      const match = e.target.id.match(/cq-(\d+)/);
+      if (match) addCustomQ(parseInt(match[1]));
+    }
+  });
+
+  function updateQProgress(n) {
+    const total = document.querySelectorAll(`#q-${n} .question-item`).length;
+    const done = document.querySelectorAll(`#q-${n} .question-item.asked`).length;
+    const el = document.getElementById(`qp-${n}`);
+    if (el) el.textContent = done > 0 ? `${done} / ${total} вопросов` : '';
+  }
+
+  function markStep(n, done) {
+    const card = document.getElementById(`step-${n}`);
+    const numText = card.querySelector('.step-number-text');
+    if (done) {
+      card.classList.add('completed'); card.classList.remove('open');
+      numText.textContent = '✓';
+    } else {
+      card.classList.remove('completed');
+      numText.textContent = n;
+    }
+    state[`step_${n}_done`] = done;
+    saveState(); updateProgress();
+  }
+
+  function updateProgress() {
+    let done = 0;
+    for (let i = 1; i <= 5; i++) if (state[`step_${i}_done`]) done++;
+    const fill = document.getElementById('progressFill');
+    fill.style.width = (done / 5 * 100) + '%';
+    fill.classList.toggle('all-done', done === 5);
+    document.getElementById('progressLabel').textContent = done === 5 ? '✓ Все шаги выполнены' : `${done} из 5 шагов выполнено`;
+    for (let i = 1; i <= 5; i++) updateQProgress(i);
+  }
+
+  function fillTemplate(n) {
+    const ta = document.getElementById(`notes-${n}`);
+    if (ta.value.trim() && !confirm('Заменить текущие заметки шаблоном?')) return;
+    ta.value = TEMPLATES[n]; state[`notes_${n}`] = ta.value;
+    saveState(); updateSummary(); ta.focus();
+  }
+
+  function updateSummary() {
+    const container = document.getElementById('summary-content');
+    const items = [];
+    for (let i = 1; i <= 5; i++) {
+      const notes = (state[`notes_${i}`] || '').trim();
+      if (notes) items.push({ step: STEP_NAMES[i], text: notes });
+    }
+    if (!items.length) {
+      container.innerHTML = '<div class="summary-empty">Заполни заметки в шагах — они появятся здесь</div>';
+    } else {
+      container.innerHTML = '<div class="summary-list">' +
+        items.map(it => `<div class="summary-item"><div class="summary-item-step">${it.step}</div>${it.text}</div>`).join('') +
+        '</div>';
+    }
+  }
+
+  function exportNotes() {
+    const feature = state.meta_feature || '—';
+    const stakeholder = state.meta_stakeholder || '—';
+    const team = state.meta_team || '—';
+    const decider = state.meta_decider || '—';
+
+    let text = '';
+    text += `╔══════════════════════════════════════╗\n`;
+    text += `   СБОР ТРЕБОВАНИЙ — ИТОГ ВСТРЕЧИ\n`;
+    text += `╚══════════════════════════════════════╝\n\n`;
+
+    text += `📋 ОБЩАЯ ИНФОРМАЦИЯ\n`;
+    text += `Фича / проект: ${feature}\n`;
+    text += `Стейкхолдер: ${stakeholder}\n`;
+    text += `Команда: ${team}\n`;
+    text += `Кто принимает решение: ${decider}\n\n`;
+
+    const stepTitles = {
+      1: '🔍 ШАГ 1 — ПРОБЛЕМА',
+      2: '📊 ШАГ 2 — МЕТРИКИ И РЕЗУЛЬТАТ',
+      3: '🗄 ШАГ 3 — ДАННЫЕ И ЗАВИСИМОСТИ',
+      4: '🎯 ШАГ 4 — СКОУП И ДЕДЛАЙН',
+      5: '✅ ШАГ 5 — СЛЕДУЮЩИЕ ШАГИ'
+    };
+
+    for (let i = 1; i <= 5; i++) {
+      const notes = (state[`notes_${i}`] || '').trim();
+      const totalQ = document.querySelectorAll(`#q-${i} .question-item`).length;
+      const askedQ = document.querySelectorAll(`#q-${i} .question-item.asked`).length;
+      const done = state[`step_${i}_done`] ? 'выполнен' : 'не выполнен';
+      text += `${stepTitles[i]} [${done}, вопросов задано: ${askedQ}/${totalQ}]\n`;
+      text += notes ? `${notes}\n` : `(заметок нет)\n`;
+      if (i === 1) {
+        const asis = (state['sf_asis-1'] || '').trim();
+        if (asis) text += `AS-IS (как работает сейчас): ${asis}\n`;
+      }
+      if (i === 4) {
+        const tobe = (state['sf_tobe-4'] || '').trim();
+        const assump = (state['sf_assumptions-4'] || '').trim();
+        const accept = (state['sf_acceptance-4'] || '').trim();
+        if (tobe) text += `TO-BE (как должно работать после): ${tobe}\n`;
+        if (assump) text += `Допущения: ${assump}\n`;
+        if (accept) text += `Критерии приёмки: ${accept}\n`;
+      }
+      text += '\n';
+    }
+
+    const risks = state.risks || [];
+    if (risks.length) {
+      text += `⚠️ РИСКИ\n`;
+      risks.forEach(r => {
+        if (r.text.trim()) text += `• [${r.closed ? '✓ закрыт' : '! открыт'}] ${r.text}\n`;
+      });
+      text += '\n';
+    }
+
+    text += `──────────────────────────────────────\n`;
+    text += `🤖 ПРОМПТ ДЛЯ АНАЛИЗА С ИИ\n`;
+    text += `──────────────────────────────────────\n`;
+    text += `Выше — данные собранные на встрече с стейкхолдером по фиче "${feature}".\n\n`;
+    text += `Пожалуйста, проанализируй:\n`;
+    text += `1. Какие риски я мог упустить?\n`;
+    text += `2. Есть ли противоречия или белые пятна в требованиях?\n`;
+    text += `3. Что стоит уточнить на следующей встрече?\n`;
+    text += `4. Достаточно ли данных для начала работы над фичей?`;
+
+    copyToClipboard(text.trim());
+  }
+
+  function copyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(showToast).catch(() => fallbackCopy(text));
+    } else {
+      fallbackCopy(text);
+    }
+  }
+
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    try { document.execCommand('copy'); showToast(); }
+    catch (e) { alert('Не удалось скопировать. Попробуй открыть файл через браузер.'); }
+    document.body.removeChild(ta);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    if (msg) t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => { t.classList.remove('show'); t.textContent = 'Скопировано в буфер ✓'; }, 2200);
+  }
+
+  // Risks
+  let riskIdCounter = Date.now();
+  function addRisk(text = '', closed = false, id = null) {
+    const rid = id || (++riskIdCounter);
+    if (!id) { if (!state.risks) state.risks = []; state.risks.push({ id: rid, text: '', closed: false }); saveState(); }
+    renderRisk(text, closed, rid); updateRisksEmpty();
+  }
+
+  function renderRisk(text, closed, id) {
+    const list = document.getElementById('risksList');
+    const item = document.createElement('div');
+    item.className = 'risk-item' + (closed ? ' is-closed' : '');
+    item.dataset.id = id;
+    item.innerHTML = `
+      <input type="text" placeholder="Опиши риск..." value="${text.replace(/"/g,'&quot;')}">
+      <button class="risk-status ${closed ? 'closed' : 'open'}" onclick="toggleRiskStatus(this)">${closed ? 'закрыт' : 'открыт'}</button>
+      <button class="risk-del" onclick="deleteRisk(this)" title="Удалить">×</button>`;
+    item.querySelector('input').addEventListener('input', function() { updateRisk(id, { text: this.value }); });
+    list.appendChild(item); updateRisksEmpty();
+  }
+
+  function toggleRiskStatus(btn) {
+    const item = btn.closest('.risk-item');
+    const id = parseInt(item.dataset.id);
+    const closed = btn.classList.contains('open');
+    btn.classList.toggle('open', !closed); btn.classList.toggle('closed', closed);
+    btn.textContent = closed ? 'закрыт' : 'открыт';
+    item.classList.toggle('is-closed', closed);
+    updateRisk(id, { closed });
+  }
+
+  function deleteRisk(btn) {
+    const item = btn.closest('.risk-item');
+    const id = parseInt(item.dataset.id);
+    state.risks = (state.risks || []).filter(r => r.id !== id);
+    saveState(); item.remove(); updateRisksEmpty();
+  }
+
+  function updateRisk(id, changes) {
+    const r = (state.risks || []).find(r => r.id === id);
+    if (r) Object.assign(r, changes); saveState();
+  }
+
+  function updateRisksEmpty() {
+    const empty = document.getElementById('risksEmpty');
+    if (empty) empty.style.display = document.querySelectorAll('.risk-item').length ? 'none' : 'block';
+  }
+
+  // Timer
+  function toggleTimer() {
+    if (timerRunning) {
+      clearInterval(timerInterval); timerRunning = false;
+      document.getElementById('timerBtn').textContent = 'Старт';
+      document.getElementById('timerBtn').classList.remove('active');
+    } else {
+      timerRunning = true;
+      document.getElementById('timerBtn').textContent = 'Стоп';
+      document.getElementById('timerBtn').classList.add('active');
+      timerInterval = setInterval(() => {
+        timerSeconds++; state.timerSeconds = timerSeconds; saveState(); updateTimerDisplay();
+      }, 1000);
+    }
+    updateTimerDisplay();
+  }
+
+  function resetTimer() {
+    clearInterval(timerInterval); timerRunning = false; timerSeconds = 0;
+    state.timerSeconds = 0; saveState(); updateTimerDisplay();
+    document.getElementById('timerBtn').textContent = 'Старт';
+    document.getElementById('timerBtn').classList.remove('active');
+  }
+
+  function updateTimerDisplay() {
+    const m = Math.floor(timerSeconds / 60), s = timerSeconds % 60;
+    document.getElementById('timerDisplay').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    const wrap = document.getElementById('timerWrap');
+    wrap.className = 'timer-wrap';
+    if (timerSeconds === 0 && !timerRunning) return;
+    if (timerSeconds < 1800) wrap.classList.add('green');
+    else if (timerSeconds < 3600) wrap.classList.add('yellow');
+    else wrap.classList.add('red');
+  }
+
+  function resetAll() {
+    if (!confirm('Сбросить все данные?')) return;
+    localStorage.removeItem('ba_v2'); state = {}; location.reload();
+  }
+
+  // Theme
+  const savedTheme = localStorage.getItem('ba-theme');
+  if (savedTheme === 'dark') document.body.classList.add('dark');
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('ba-theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+  });
+
+  init();
+</script>
+</body>
+</html>

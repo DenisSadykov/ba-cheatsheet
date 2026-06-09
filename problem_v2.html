@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Встреча по проблеме / BA Toolkit</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%23D97706'/><path d='m32 12-16 28h10l-3 12 19-28H30z' fill='white'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #EDE8E2;
+  --glass-bg:          rgba(255,255,255,0.68);
+  --glass-bg-hover:    rgba(255,255,255,0.82);
+  --glass-border:      rgba(255,255,255,0.82);
+  --glass-border-hover:rgba(255,255,255,0.96);
+  --glass-shadow:      0 2px 0 rgba(255,255,255,0.88) inset, 0 4px 20px rgba(160,80,0,0.07), 0 1px 4px rgba(0,0,0,0.05);
+  --glass-shadow-hover:0 2px 0 rgba(255,255,255,0.95) inset, 0 14px 38px rgba(160,80,0,0.11), 0 4px 12px rgba(0,0,0,0.07);
+  --text:       #18181B;
+  --text-muted: #5A5A78;
+  --text-xs:    rgba(50,50,90,0.42);
+  --accent:      #D97706;
+  --accent-hover:#B45309;
+  --success: #16A34A;
+  --success-light: rgba(22,163,74,0.10);
+  --success-border: rgba(22,163,74,0.30);
+  --warning: #D97706;
+  --warning-light: rgba(217,119,6,0.10);
+  --warning-border: rgba(217,119,6,0.30);
+  --danger: #DC2626;
+  --danger-light: rgba(220,38,38,0.10);
+  --danger-border: rgba(220,38,38,0.30);
+  --p1: #DC2626; --p1-light: rgba(220,38,38,0.08); --p1-mid: rgba(220,38,38,0.22);
+  --p2: #D97706; --p2-light: rgba(217,119,6,0.08);  --p2-mid: rgba(217,119,6,0.22);
+  --p3: #2563EB; --p3-light: rgba(37,99,235,0.08);  --p3-mid: rgba(37,99,235,0.22);
+  --radius: 18px;
+  --radius-sm: 10px;
+  --blob1: rgba(217,119,6,0.14);
+  --blob2: rgba(220,38,38,0.10);
+  --blob3: rgba(37,99,235,0.07);
+  --blob4: rgba(139,92,246,0.07);
+}
+
+body.dark {
+  --bg: #0D1117;
+  --glass-bg:          rgba(255,255,255,0.055);
+  --glass-bg-hover:    rgba(255,255,255,0.09);
+  --glass-border:      rgba(255,255,255,0.10);
+  --glass-border-hover:rgba(255,255,255,0.18);
+  --glass-shadow:      0 1px 0 rgba(255,255,255,0.07) inset, 0 4px 20px rgba(0,0,0,0.35), 0 1px 4px rgba(0,0,0,0.25);
+  --glass-shadow-hover:0 1px 0 rgba(255,255,255,0.12) inset, 0 16px 48px rgba(0,0,0,0.50), 0 4px 16px rgba(0,0,0,0.30);
+  --text: #E6EDF3;
+  --text-muted: rgba(180,195,220,0.75);
+  --text-xs: rgba(160,180,210,0.38);
+  --success-light: rgba(22,163,74,0.12); --success-border: rgba(22,163,74,0.25);
+  --warning-light: rgba(217,119,6,0.12); --warning-border: rgba(217,119,6,0.25);
+  --danger-light: rgba(220,38,38,0.12);  --danger-border: rgba(220,38,38,0.25);
+  --p1-light: rgba(220,38,38,0.12);  --p1-mid: rgba(220,38,38,0.28);
+  --p2-light: rgba(217,119,6,0.12);  --p2-mid: rgba(217,119,6,0.28);
+  --p3-light: rgba(37,99,235,0.12);  --p3-mid: rgba(37,99,235,0.28);
+  --blob1: rgba(245,130,0,0.22);
+  --blob2: rgba(220,38,38,0.16);
+  --blob3: rgba(59,130,246,0.13);
+  --blob4: rgba(160,100,255,0.13);
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 0 20px 80px;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+  overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* ── MESH ── */
+.mesh { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.blob { position: absolute; border-radius: 50%; filter: blur(80px); will-change: transform; }
+.blob-1 { width: 520px; height: 520px; background: var(--blob1); top: -180px; left: -120px; animation: drift1 20s ease-in-out infinite alternate; }
+.blob-2 { width: 380px; height: 380px; background: var(--blob2); bottom: -120px; right: -100px; animation: drift2 24s ease-in-out infinite alternate; }
+.blob-3 { width: 280px; height: 280px; background: var(--blob3); bottom: 100px; left: 80px; animation: drift3 18s ease-in-out infinite alternate; }
+.blob-4 { width: 220px; height: 220px; background: var(--blob4); top: 35%; right: 10%; animation: drift1 22s ease-in-out infinite alternate-reverse; }
+@keyframes drift1 { from{transform:translate(0,0) scale(1)} to{transform:translate(28px,18px) scale(1.06)} }
+@keyframes drift2 { from{transform:translate(0,0) scale(1)} to{transform:translate(-22px,-16px) scale(1.08)} }
+@keyframes drift3 { from{transform:translate(0,0) scale(1)} to{transform:translate(18px,-26px) scale(1.04)} }
+
+.grain {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+.container { max-width: 780px; margin: 0 auto; position: relative; z-index: 1; }
+
+/* ── TOP NAV ── */
+.top-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 28px 0 20px;
+  animation: fadeUp 0.4s ease both;
+}
+.back-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px 6px 10px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: 99px; box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%);
+  text-decoration: none; color: var(--text);
+  font-size: 13px; font-weight: 600; transition: all 0.2s;
+}
+.back-pill:hover { background: var(--glass-bg-hover); transform: translateX(-2px); }
+
+.theme-btn {
+  width: 36px; height: 36px; border-radius: 11px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 15px; transition: all 0.2s;
+}
+.theme-btn:hover { background: var(--glass-bg-hover); transform: scale(1.08); }
+.icon-moon { display:block; } .icon-sun { display:none; }
+body.dark .icon-moon { display:none; } body.dark .icon-sun { display:block; color: #FCD34D; }
+body.dark #themeBtn {
+  background: rgba(252,211,77,0.12);
+  border-color: rgba(252,211,77,0.30);
+  box-shadow: 0 0 10px rgba(252,211,77,0.25), 0 0 24px rgba(252,211,77,0.10), var(--glass-shadow);
+}
+body.dark #themeBtn:hover {
+  background: rgba(252,211,77,0.20);
+  border-color: rgba(252,211,77,0.50);
+  box-shadow: 0 0 14px rgba(252,211,77,0.35), 0 0 32px rgba(252,211,77,0.15);
+}
+
+/* ── HEADER ── */
+.header { margin-bottom: 18px; animation: fadeUp 0.4s 0.06s ease both; }
+.header-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 28px; font-weight: 800; letter-spacing: -0.05em; color: var(--text); line-height: 1.15;
+  margin-bottom: 6px;
+}
+.header-title::before {
+  content: '';
+  display: inline-block; width: 6px; height: 22px;
+  background: linear-gradient(180deg, var(--accent), #F59E0B);
+  border-radius: 3px; margin-right: 12px;
+  vertical-align: middle; position: relative; top: -1px;
+}
+.header-sub { font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px; padding-left: 18px; }
+
+.header-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+
+.timer-wrap {
+  display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: 12px; box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); transition: all 0.3s;
+}
+.timer-wrap.green { border-color: var(--success); border-width: 2px; background: rgba(220,255,235,0.54); box-shadow: 0 0 0 3px rgba(22,163,74,0.10), var(--glass-shadow); }
+.timer-wrap.yellow { border-color: var(--warning); border-width: 2px; background: rgba(255,243,220,0.54); box-shadow: 0 0 0 3px rgba(217,119,6,0.10), var(--glass-shadow); }
+.timer-wrap.red { border-color: var(--danger); border-width: 2px; background: rgba(255,228,228,0.54); box-shadow: 0 0 0 3px rgba(220,38,38,0.10), var(--glass-shadow); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+.timer-display {
+  font-family: 'SF Mono','Fira Code',monospace;
+  font-size: 15px; font-weight: 700; letter-spacing: 0.5px;
+  color: var(--text); min-width: 44px; transition: color 0.3s;
+}
+.timer-wrap.green .timer-display { color: var(--success); }
+.timer-wrap.yellow .timer-display { color: var(--warning); }
+.timer-wrap.red .timer-display { color: var(--danger); }
+.btn-timer {
+  font-size: 11.5px; font-weight: 600; padding: 4px 10px;
+  border-radius: 7px; border: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.45); color: var(--text-muted);
+  cursor: pointer; transition: all 0.15s; font-family: inherit;
+}
+.btn-timer:hover { background: var(--accent); border-color: var(--accent); color: white; }
+.btn-timer.active { background: var(--danger); border-color: var(--danger); color: white; }
+
+.btn-secondary {
+  font-size: 13px; font-weight: 500; padding: 7px 14px;
+  border-radius: var(--radius-sm); border: 1px solid var(--glass-border);
+  background: var(--glass-bg); color: var(--text-muted);
+  cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 5px;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.btn-secondary:hover { background: var(--glass-bg-hover); color: var(--text); }
+.btn-danger {
+  font-size: 13px; font-weight: 500; padding: 0 16px;
+  height: 38px; align-self: stretch;
+  border-radius: var(--radius-sm); border: 1px solid var(--glass-border);
+  background: var(--glass-bg); color: var(--text-muted);
+  cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.btn-danger:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-light); }
+
+/* Progress */
+.progress-track { background: rgba(0,0,0,0.09); border-radius: 99px; height: 5px; overflow: hidden; }
+body.dark .progress-track { background: rgba(255,255,255,0.09); }
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #F59E0B);
+  border-radius: 99px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1), background 0.5s;
+}
+.progress-fill.all-done { background: linear-gradient(90deg, #16A34A, #22C55E); }
+.progress-label { font-size: 11.5px; color: var(--text-xs); margin-top: 5px; }
+
+.resolution-banner {
+  display: none; margin-top: 10px; padding: 10px 16px;
+  background: var(--success-light); border: 1px solid var(--success-border);
+  border-radius: 12px; font-size: 13px; color: var(--success); font-weight: 600;
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  align-items: center; gap: 8px;
+}
+.resolution-banner.visible { display: flex; }
+
+/* ── PRIORITY CARD ── */
+.priority-card {
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-radius: var(--radius); padding: 18px 20px; margin-bottom: 10px;
+  transition: border-color 0.3s, background 0.3s;
+  animation: fadeUp 0.4s 0.12s ease both;
+}
+.priority-card.prio-p1 { border-color: var(--p1); border-width: 2px; background: rgba(255,228,228,0.54); box-shadow: 0 0 0 3px rgba(220,38,38,0.10), var(--glass-shadow); }
+.priority-card.prio-p2 { border-color: var(--p2); border-width: 2px; background: rgba(255,243,220,0.54); box-shadow: 0 0 0 3px rgba(217,119,6,0.10), var(--glass-shadow); }
+.priority-card.prio-p3 { border-color: var(--p3); border-width: 2px; background: rgba(228,236,255,0.54); box-shadow: 0 0 0 3px rgba(37,99,235,0.10), var(--glass-shadow); }
+.priority-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px; font-weight: 700;
+  color: var(--text-muted); margin-bottom: 12px;
+}
+.priority-grid { display: flex; gap: 8px; }
+.priority-btn {
+  flex: 1; padding: 10px 12px; border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.72);
+  cursor: pointer; transition: all 0.2s; text-align: left; font-family: inherit;
+  display: flex; align-items: flex-start; gap: 8px; min-width: 0;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+}
+.priority-btn:hover { background: rgba(255,255,255,0.90); border-color: rgba(0,0,0,0.18); }
+.priority-btn .p-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.priority-btn .p-content { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.priority-btn .p-label { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.priority-btn .p-desc { font-size: 11px; color: var(--text-muted); line-height: 1.3; }
+.priority-btn.p1 .p-label { color: var(--p1); }
+.priority-btn.p2 .p-label { color: var(--p2); }
+.priority-btn.p3 .p-label { color: var(--p3); }
+.priority-btn.selected.p1 { border-color: var(--p1); background: var(--p1-light); box-shadow: 0 0 0 2px var(--p1); }
+.priority-btn.selected.p2 { border-color: var(--p2); background: var(--p2-light); box-shadow: 0 0 0 2px var(--p2); }
+.priority-btn.selected.p3 { border-color: var(--p3); background: var(--p3-light); box-shadow: 0 0 0 2px var(--p3); }
+@media (max-width:560px) { .priority-grid { flex-direction:column; } }
+
+/* ── PARTICIPANTS ── */
+.participants-card {
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-radius: var(--radius); padding: 18px 20px; margin-bottom: 10px;
+  animation: fadeUp 0.4s 0.18s ease both;
+}
+.participants-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px; font-weight: 700;
+  color: var(--text-muted); margin-bottom: 12px;
+}
+.participants-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.participant-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 12px; border-radius: 99px; font-size: 12px; font-weight: 500;
+  cursor: pointer; border: 1px solid rgba(0,0,0,0.14);
+  background: rgba(255,255,255,0.72); color: var(--text-muted); transition: all 0.15s;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+}
+.participant-tag:hover { background: rgba(255,255,255,0.90); color: var(--text); border-color: rgba(0,0,0,0.20); }
+.participant-tag.active { border-color: var(--accent); background: rgba(217,119,6,0.10); color: var(--accent); font-weight: 600; }
+.participant-tag .tag-check { font-size: 10px; }
+.add-participant-row { display: flex; gap: 7px; }
+.add-participant-input {
+  flex: 1; padding: 8px 12px; border-radius: 10px;
+  border: 1px solid var(--glass-border); background: rgba(255,255,255,0.48);
+  font-family: inherit; font-size: 13px; color: var(--text); outline: none; transition: all 0.15s;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.add-participant-input:focus { border-color: var(--accent); background: rgba(255,255,255,0.80); box-shadow: 0 0 0 3px rgba(217,119,6,0.12); }
+.add-participant-input::placeholder { color: var(--text-xs); }
+.btn-add-participant {
+  padding: 8px 14px; border-radius: 10px;
+  border: 1px solid rgba(217,119,6,0.30); background: rgba(217,119,6,0.10);
+  color: var(--accent); font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s; font-family: inherit;
+}
+.btn-add-participant:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+/* ── STEP CARDS ── */
+.step-card {
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-radius: var(--radius); margin-bottom: 10px; overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.step-card:hover { border-color: var(--glass-border-hover); box-shadow: var(--glass-shadow-hover); }
+.step-card.completed { border-color: var(--success); border-width: 2px; background: rgba(220,255,235,0.54); box-shadow: 0 0 0 3px rgba(22,163,74,0.10), var(--glass-shadow); }
+.step-card.open { border-left: 3px solid var(--accent); background: rgba(255,255,255,0.58); }
+
+.step-header { display: flex; align-items: center; gap: 14px; padding: 16px 18px; cursor: pointer; user-select: none; }
+.step-number-inner {
+  width: 36px; height: 36px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  background: rgba(217,119,6,0.12); color: var(--accent);
+  border: 1.5px solid rgba(217,119,6,0.25); flex-shrink: 0; transition: all 0.2s;
+}
+.step-card.completed .step-number-inner {
+  background: linear-gradient(135deg, #16A34A, #22C55E); color: white; border-color: transparent; font-size: 15px;
+}
+.step-title-wrap { flex: 1; min-width: 0; }
+.step-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px; font-weight: 700; letter-spacing: -0.02em; color: var(--text);
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.step-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+.step-badge {
+  font-size: 10.5px; font-weight: 600; padding: 2px 8px; border-radius: 99px;
+  background: rgba(217,119,6,0.10); color: var(--accent); border: 1px solid rgba(217,119,6,0.22);
+}
+.step-card.completed .step-badge { background: var(--success-light); color: var(--success); border-color: var(--success-border); }
+.step-toggle { font-size: 16px; color: var(--text-xs); transition: transform 0.25s; flex-shrink: 0; }
+.step-card.open .step-toggle { transform: rotate(180deg); }
+.step-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--glass-border); }
+.step-card.open .step-body { display: block; }
+
+/* Questions */
+.questions-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.9px; color: var(--text-xs); margin: 16px 0 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.questions-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.question-wrap {
+  display: flex; flex-direction: column; border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.10); background: rgba(255,255,255,0.52); transition: all 0.15s; overflow: hidden;
+}
+.question-wrap:hover { border-color: var(--glass-border); background: rgba(255,255,255,0.58); }
+.question-wrap.hint-open { border-color: var(--glass-border); background: rgba(255,255,255,0.58); }
+.question-wrap.asked-wrap { background: var(--success-light); border-color: var(--success-border); }
+.question-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13px; color: var(--text); line-height: 1.5;
+  padding: 9px 12px; background: transparent; border: none; cursor: pointer; transition: color 0.15s;
+}
+.question-wrap:hover .question-item { color: var(--accent); }
+.question-wrap.asked-wrap .question-item { color: var(--success); text-decoration: line-through; opacity: 0.75; }
+.question-check {
+  width: 16px; height: 16px; border-radius: 5px; flex-shrink: 0; margin-top: 1px;
+  border: 1.5px solid rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center;
+  font-size: 10px; transition: all 0.15s; background: rgba(255,255,255,0.55);
+}
+.question-wrap:hover .question-check { border-color: var(--accent); }
+.question-wrap.asked-wrap .question-check { background: var(--success); border-color: var(--success); color: white; }
+.question-text { flex: 1; }
+.btn-info {
+  width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; margin-top: 1px;
+  border: 1.5px solid rgba(0,0,0,0.12); background: rgba(255,255,255,0.48);
+  color: var(--text-muted); font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.15s; font-style: italic; font-family: Georgia, serif;
+}
+.question-wrap:hover .btn-info { border-color: var(--accent); color: var(--accent); }
+.btn-info.active { border-color: var(--accent); color: var(--accent); }
+.question-hint { display: none; font-size: 12px; color: var(--text-muted); padding: 0 12px 9px 38px; line-height: 1.5; font-style: italic; }
+.question-hint.visible { display: block; }
+
+.custom-q-section { margin-top: 10px; }
+.custom-q-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px; color: var(--text-xs); margin-bottom: 7px; }
+.add-question-row { display: flex; gap: 7px; margin-bottom: 6px; }
+.add-question-input {
+  flex: 1; padding: 8px 12px; border-radius: 10px;
+  border: 1px solid var(--glass-border); background: rgba(255,255,255,0.48);
+  font-family: inherit; font-size: 13px; color: var(--text); outline: none; transition: all 0.15s;
+}
+.add-question-input:focus { border-color: var(--accent); background: rgba(255,255,255,0.80); }
+.add-question-input::placeholder { color: var(--text-xs); }
+.btn-add-q {
+  padding: 8px 13px; border-radius: 10px;
+  border: 1px solid rgba(217,119,6,0.28); background: rgba(217,119,6,0.09);
+  color: var(--accent); font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s; font-family: inherit;
+}
+.btn-add-q:hover { background: var(--accent); color: white; border-color: var(--accent); }
+.custom-question-item {
+  display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--accent); line-height: 1.5;
+  padding: 9px 12px; border-radius: 10px; background: rgba(217,119,6,0.08); border: 1px solid rgba(217,119,6,0.20);
+  cursor: pointer; transition: border-color 0.15s;
+}
+.custom-question-item:hover { border-color: var(--accent); }
+.custom-question-item.asked { background: var(--success-light); border-color: var(--success-border); color: var(--success); text-decoration: line-through; opacity: 0.65; }
+.custom-question-item.asked .question-check { background: var(--success); border-color: var(--success); color: white; }
+.custom-question-item .question-check { border-color: rgba(217,119,6,0.30); background: transparent; }
+.custom-q-del { background: none; border: none; color: var(--accent); opacity: 0.4; cursor: pointer; font-size: 16px; margin-left: auto; padding: 0 2px; transition: opacity 0.15s; }
+.custom-q-del:hover { opacity: 1; color: var(--danger); }
+
+.notes-header { display: flex; align-items: center; justify-content: space-between; margin: 14px 0 7px; }
+.notes-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px; color: var(--text-xs); }
+.notes-textarea {
+  width: 100%; min-height: 80px; padding: 10px 12px; border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.18); background: rgba(255,255,255,0.62);
+  font-family: inherit; font-size: 13px; color: var(--text); resize: vertical; outline: none; line-height: 1.6; transition: all 0.15s;
+}
+.notes-textarea:focus { border-color: var(--accent); background: rgba(255,255,255,0.80); box-shadow: 0 0 0 3px rgba(217,119,6,0.10); }
+.notes-textarea::placeholder { color: var(--text-xs); }
+
+.step-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; gap: 10px; }
+.btn-step-done {
+  flex: 1; font-size: 13px; font-weight: 700; padding: 10px; border-radius: var(--radius-sm); border: none;
+  background: linear-gradient(135deg, #D97706, #F59E0B); color: white; cursor: pointer; transition: all 0.2s;
+}
+.btn-step-done:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(217,119,6,0.35); }
+.btn-step-undone {
+  font-size: 12px; font-weight: 500; padding: 10px 14px; border-radius: var(--radius-sm);
+  border: 1px solid var(--glass-border); background: rgba(255,255,255,0.38); color: var(--text-muted);
+  cursor: pointer; transition: all 0.15s; display: none;
+}
+.btn-step-undone:hover { background: rgba(255,255,255,0.62); color: var(--text); }
+.step-card.completed .btn-step-done { display: none; }
+.step-card.completed .btn-step-undone { display: inline-flex; }
+.questions-progress { font-size: 12px; color: var(--text-muted); }
+
+/* ── SECTION DIVIDER ── */
+.section-divider { display: flex; align-items: center; gap: 12px; margin: 22px 0 14px; }
+.section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px; color: var(--text-xs); white-space: nowrap; }
+.section-line { flex: 1; height: 1px; background: rgba(0,0,0,0.10); border-radius: 99px; }
+body.dark .section-line { background: rgba(255,255,255,0.08); }
+
+/* ── SUMMARY ── */
+.summary-card {
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-radius: var(--radius); padding: 18px 20px; margin-top: 4px;
+}
+.summary-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.summary-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
+.summary-empty { font-size: 13px; color: var(--text-muted); font-style: italic; }
+.summary-list { display: flex; flex-direction: column; gap: 8px; }
+.summary-item {
+  font-size: 13px; color: var(--text); padding: 10px 14px;
+  background: rgba(255,255,255,0.38); border-radius: 10px;
+  border-left: 3px solid var(--accent); white-space: pre-wrap; line-height: 1.6;
+}
+.summary-item-step { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(8px);
+  background: rgba(24,24,27,0.92); color: white; font-size: 13px; font-weight: 500;
+  padding: 10px 20px; border-radius: 12px;
+  opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 9999;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+#steps-container .step-card:nth-child(1) { animation: fadeUp 0.4s 0.22s ease both; }
+#steps-container .step-card:nth-child(2) { animation: fadeUp 0.4s 0.28s ease both; }
+#steps-container .step-card:nth-child(3) { animation: fadeUp 0.4s 0.34s ease both; }
+#steps-container .step-card:nth-child(4) { animation: fadeUp 0.4s 0.40s ease both; }
+#steps-container .step-card:nth-child(5) { animation: fadeUp 0.4s 0.46s ease both; }
+#steps-container .step-card:nth-child(6) { animation: fadeUp 0.4s 0.52s ease both; }
+.summary-card { animation: fadeUp 0.4s 0.60s ease both; }
+
+@media (max-width:560px) { body { padding: 0 16px 60px; } }
+
+/* ══ DARK MODE OVERRIDES ══ */
+
+/* Participant tags */
+body.dark .participant-tag {
+  border-color: rgba(255,255,255,0.13);
+  background: rgba(255,255,255,0.07);
+  color: var(--text-muted);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+body.dark .participant-tag:hover {
+  background: rgba(255,255,255,0.13);
+  border-color: rgba(255,255,255,0.22);
+  color: var(--text);
+}
+body.dark .participant-tag.active {
+  background: rgba(217,119,6,0.18);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Priority buttons */
+body.dark .priority-btn {
+  border-color: rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.06);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.30);
+}
+body.dark .priority-btn:hover {
+  background: rgba(255,255,255,0.11);
+  border-color: rgba(255,255,255,0.18);
+}
+body.dark .priority-btn.selected.p1 { background: rgba(220,38,38,0.22); border-color: var(--p1); box-shadow: 0 0 0 2px var(--p1); }
+body.dark .priority-btn.selected.p2 { background: rgba(217,119,6,0.22); border-color: var(--p2); box-shadow: 0 0 0 2px var(--p2); }
+body.dark .priority-btn.selected.p3 { background: rgba(37,99,235,0.22); border-color: var(--p3); box-shadow: 0 0 0 2px var(--p3); }
+
+/* Priority card when selected */
+body.dark .priority-card.prio-p1 { background: rgba(220,38,38,0.14); box-shadow: 0 0 0 3px rgba(220,38,38,0.18), var(--glass-shadow); }
+body.dark .priority-card.prio-p2 { background: rgba(217,119,6,0.14); box-shadow: 0 0 0 3px rgba(217,119,6,0.18), var(--glass-shadow); }
+body.dark .priority-card.prio-p3 { background: rgba(37,99,235,0.14); box-shadow: 0 0 0 3px rgba(37,99,235,0.18), var(--glass-shadow); }
+
+/* Completed step */
+body.dark .step-card.completed { background: rgba(22,163,74,0.12); box-shadow: 0 0 0 3px rgba(22,163,74,0.14), var(--glass-shadow); }
+
+/* Open step */
+body.dark .step-card.open { background: rgba(255,255,255,0.06); }
+
+/* Timer states */
+body.dark .timer-wrap.green  { background: rgba(22,163,74,0.16);  box-shadow: 0 0 0 3px rgba(22,163,74,0.14),  var(--glass-shadow); }
+body.dark .timer-wrap.yellow { background: rgba(217,119,6,0.16);  box-shadow: 0 0 0 3px rgba(217,119,6,0.14),  var(--glass-shadow); }
+body.dark .timer-wrap.red    { background: rgba(220,38,38,0.16);  box-shadow: 0 0 0 3px rgba(220,38,38,0.14),  var(--glass-shadow); }
+
+/* Questions */
+body.dark .question-wrap {
+  border-color: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+}
+body.dark .question-wrap:hover {
+  border-color: rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.08);
+}
+body.dark .question-wrap.hint-open {
+  border-color: rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.08);
+}
+body.dark .question-wrap.asked-wrap {
+  background: rgba(22,163,74,0.12);
+  border-color: rgba(22,163,74,0.30);
+}
+body.dark .question-check {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.18);
+}
+
+/* Textareas & inputs */
+body.dark .notes-textarea {
+  border-color: rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.05);
+  color: var(--text);
+}
+body.dark .notes-textarea:focus {
+  background: rgba(255,255,255,0.09);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(217,119,6,0.15);
+}
+body.dark .add-question-input {
+  border-color: rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.05);
+  color: var(--text);
+}
+body.dark .add-question-input:focus {
+  border-color: var(--accent);
+  background: rgba(255,255,255,0.09);
+}
+body.dark .add-participant-input {
+  border-color: rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.05);
+  color: var(--text);
+}
+body.dark .add-participant-input:focus {
+  border-color: var(--accent);
+  background: rgba(255,255,255,0.09);
+  box-shadow: 0 0 0 3px rgba(217,119,6,0.15);
+}
+
+/* Timer inner buttons */
+body.dark .btn-timer {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.12);
+  color: var(--text-muted);
+}
+
+/* Summary & custom questions */
+body.dark .summary-item { background: rgba(255,255,255,0.06); }
+body.dark .custom-question-item { background: rgba(217,119,6,0.12); border-color: rgba(217,119,6,0.25); }
+
+</style>
+</head>
+<body>
+
+<div class="mesh">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="blob blob-4"></div>
+</div>
+<div class="grain"></div>
+
+<div class="container">
+
+  <nav class="top-nav">
+    <a href="index.html" class="back-pill">← Главная</a>
+    <button class="theme-btn" id="themeBtn">
+      <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </nav>
+
+  <div class="header">
+    <div class="header-title">Встреча про проблему</div>
+    <div class="header-sub">Локализуй, найди причину, прими решение — быстро</div>
+    <div class="header-actions">
+      <div class="timer-wrap" id="timerWrap">
+        <div class="timer-display" id="timerDisplay">00:00</div>
+        <button class="btn-timer" id="timerBtn" onclick="toggleTimer()">Старт</button>
+        <button class="btn-timer" onclick="resetTimer()" title="Сбросить">↺</button>
+      </div>
+      <button class="btn-danger" onclick="resetAll()">Сбросить</button>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-label" id="progressLabel">0 из 6 шагов выполнено</div>
+    <div class="resolution-banner" id="resolutionBanner">✓ Инцидент закрыт — время решения: <span id="resolutionTime">—</span></div>
+  </div>
+
+  <div class="priority-card" id="priorityCard">
+    <div class="priority-title">Уровень критичности — выбери перед началом</div>
+    <div class="priority-grid">
+      <button class="priority-btn p1" id="prio-p1" onclick="setPriority('p1')">
+        <span class="p-icon">🔴</span>
+        <div class="p-content"><span class="p-label">P1 — Критично</span><span class="p-desc">Всё сломалось, все затронуты</span></div>
+      </button>
+      <button class="priority-btn p2" id="prio-p2" onclick="setPriority('p2')">
+        <span class="p-icon">🟡</span>
+        <div class="p-content"><span class="p-label">P2 — Частичная</span><span class="p-desc">Часть пользователей, есть обходной путь</span></div>
+      </button>
+      <button class="priority-btn p3" id="prio-p3" onclick="setPriority('p3')">
+        <span class="p-icon">🔵</span>
+        <div class="p-content"><span class="p-label">P3 — Некритично</span><span class="p-desc">Косметика или редкий кейс</span></div>
+      </button>
+    </div>
+  </div>
+
+  <div class="participants-card">
+    <div class="participants-title">Кто подключён к решению</div>
+    <div class="participants-grid" id="participantsGrid">
+      <div class="participant-tag" onclick="toggleParticipant(this)" data-name="Разработка"><span class="tag-check"></span>Разработка</div>
+      <div class="participant-tag" onclick="toggleParticipant(this)" data-name="Тестирование"><span class="tag-check"></span>Тестирование</div>
+      <div class="participant-tag" onclick="toggleParticipant(this)" data-name="Поддержка"><span class="tag-check"></span>Поддержка</div>
+      <div class="participant-tag" onclick="toggleParticipant(this)" data-name="Маркетинг"><span class="tag-check"></span>Маркетинг</div>
+      <div class="participant-tag" onclick="toggleParticipant(this)" data-name="Аналитика"><span class="tag-check"></span>Аналитика</div>
+      <div class="participant-tag" onclick="toggleParticipant(this)" data-name="Финансы"><span class="tag-check"></span>Финансы</div>
+      <div class="participant-tag" onclick="toggleParticipant(this)" data-name="Юристы"><span class="tag-check"></span>Юристы</div>
+      <div class="participant-tag" onclick="toggleParticipant(this)" data-name="CTO / Руководство"><span class="tag-check"></span>CTO / Руководство</div>
+      <div class="participant-tag" onclick="toggleParticipant(this)" data-name="Продакт"><span class="tag-check"></span>Продакт</div>
+    </div>
+    <div class="add-participant-row">
+      <input class="add-participant-input" id="participantInput" placeholder="Добавить отдел или человека...">
+      <button class="btn-add-participant" onclick="addParticipant()">+ Добавить</button>
+    </div>
+  </div>
+
+  <div id="steps-container">
+
+    <div class="step-card" id="step-1" data-step="1">
+      <div class="step-header" onclick="toggleStep(1)">
+        <div class="step-number-inner"><span class="step-number-text">1</span></div>
+        <div class="step-title-wrap">
+          <div class="step-title">Зафиксировать факт <span class="step-badge">Что случилось?</span></div>
+          <div class="step-subtitle">Что именно не работает, когда началось, кто сообщил</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Вопросы</div>
+        <ul class="questions-list" id="q-1">
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Что именно не работает — опиши симптом?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Фиксируй симптом, а не предположение о причине. "Кнопка оплаты не реагирует" — симптом. "Сломался платёжный модуль" — уже гипотеза.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Когда это началось — точное время?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Точное время поможет найти что изменилось прямо перед инцидентом — деплой, миграция, внешний сервис.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Кто обнаружил и как сообщил?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Пользователь, мониторинг или коллега — это влияет на оценку масштаба.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Сколько пользователей затронуто — все или часть?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Масштаб определяет приоритет и срочность. Если затронут 1 пользователь — это P3. Если все — P1.</div></li>
+        </ul>
+        <div class="custom-q-section"><div class="custom-q-label">Свой вопрос</div><div class="add-question-row"><input class="add-question-input" id="cq-1" placeholder="Добавь вопрос для этого кейса..."><button class="btn-add-q" onclick="addCustomQ(1)">+ Добавить</button></div><ul class="questions-list" id="cq-list-1"></ul></div>
+        <div class="notes-header"><div class="notes-label">Заметки</div></div>
+        <textarea class="notes-textarea" id="notes-1" placeholder="Фиксируй факты здесь..."></textarea>
+        <div class="step-footer"><div class="questions-progress" id="qp-1"></div><button class="btn-step-undone" onclick="markStep(1,false)">↩ Вернуть</button><button class="btn-step-done" onclick="markStep(1,true)">Шаг выполнен ✓</button></div>
+      </div>
+    </div>
+
+    <div class="step-card" id="step-2" data-step="2">
+      <div class="step-header" onclick="toggleStep(2)">
+        <div class="step-number-inner"><span class="step-number-text">2</span></div>
+        <div class="step-title-wrap">
+          <div class="step-title">Локализовать проблему <span class="step-badge">Где ломается?</span></div>
+          <div class="step-subtitle">На каком именно шаге, в какой части системы</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Вопросы</div>
+        <ul class="questions-list" id="q-2">
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">На каком шаге пользователь сталкивается с проблемой?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Чем точнее локализация — тем быстрее найдёт причину разработчик.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Это происходит всегда или при определённых условиях?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Если не всегда — ищи паттерн. Определённый браузер, устройство, регион, сумма заказа.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какое сообщение об ошибке видит пользователь?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Текст ошибки или код — прямая подсказка для разработчика где смотреть в логах.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Проблема воспроизводится стабильно?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Если воспроизводится стабильно — проще чинить. Если нет — возможно гонка состояний.</div></li>
+        </ul>
+        <div class="custom-q-section"><div class="custom-q-label">Свой вопрос</div><div class="add-question-row"><input class="add-question-input" id="cq-2" placeholder="Добавь вопрос для этого кейса..."><button class="btn-add-q" onclick="addCustomQ(2)">+ Добавить</button></div><ul class="questions-list" id="cq-list-2"></ul></div>
+        <div class="notes-header"><div class="notes-label">Заметки</div></div>
+        <textarea class="notes-textarea" id="notes-2" placeholder="Где именно ломается..."></textarea>
+        <div class="step-footer"><div class="questions-progress" id="qp-2"></div><button class="btn-step-undone" onclick="markStep(2,false)">↩ Вернуть</button><button class="btn-step-done" onclick="markStep(2,true)">Шаг выполнен ✓</button></div>
+      </div>
+    </div>
+
+    <div class="step-card" id="step-3" data-step="3">
+      <div class="step-header" onclick="toggleStep(3)">
+        <div class="step-number-inner"><span class="step-number-text">3</span></div>
+        <div class="step-title-wrap">
+          <div class="step-title">Найти причину <span class="step-badge">Почему сломалось?</span></div>
+          <div class="step-subtitle">Что изменилось перед инцидентом — деплой, данные, внешний сервис</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Вопросы</div>
+        <ul class="questions-list" id="q-3">
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Что изменялось в системе перед появлением проблемы?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Деплой, миграция базы, изменение конфига — всё что могло стать триггером за последние 24 часа.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Что говорят логи и мониторинг?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Логи — первый источник правды. Попроси разработчика показать ошибки в период инцидента.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Зависит ли проблема от внешнего сервиса?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Платёжный шлюз, SMS-сервис, карты — внешние сервисы падают независимо от вас.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Была ли похожая проблема раньше?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Если да — возможно это повторяющийся баг или системная проблема которую не починили до конца.</div></li>
+        </ul>
+        <div class="custom-q-section"><div class="custom-q-label">Свой вопрос</div><div class="add-question-row"><input class="add-question-input" id="cq-3" placeholder="Добавь вопрос для этого кейса..."><button class="btn-add-q" onclick="addCustomQ(3)">+ Добавить</button></div><ul class="questions-list" id="cq-list-3"></ul></div>
+        <div class="notes-header"><div class="notes-label">Заметки</div></div>
+        <textarea class="notes-textarea" id="notes-3" placeholder="Гипотезы о причине..."></textarea>
+        <div class="step-footer"><div class="questions-progress" id="qp-3"></div><button class="btn-step-undone" onclick="markStep(3,false)">↩ Вернуть</button><button class="btn-step-done" onclick="markStep(3,true)">Шаг выполнен ✓</button></div>
+      </div>
+    </div>
+
+    <div class="step-card" id="step-4" data-step="4">
+      <div class="step-header" onclick="toggleStep(4)">
+        <div class="step-number-inner"><span class="step-number-text">4</span></div>
+        <div class="step-title-wrap">
+          <div class="step-title">Оценить влияние <span class="step-badge">Насколько критично?</span></div>
+          <div class="step-subtitle">Потери, обходной путь, срочность</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Вопросы</div>
+        <ul class="questions-list" id="q-4">
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какие потери несёт бизнес каждую минуту?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Деньги, репутация, SLA — конкретные потери помогают правильно расставить приоритет.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Есть ли обходной путь для пользователей прямо сейчас?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Даже временное решение снижает ущерб пока ищется причина.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Затронуты ли другие части системы?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Иногда одна проблема — симптом более широкого сбоя. Проверь смежные функции.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Есть ли SLA или обязательства перед клиентами?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Нарушение SLA может стоить штрафов или потери контракта.</div></li>
+        </ul>
+        <div class="custom-q-section"><div class="custom-q-label">Свой вопрос</div><div class="add-question-row"><input class="add-question-input" id="cq-4" placeholder="Добавь вопрос для этого кейса..."><button class="btn-add-q" onclick="addCustomQ(4)">+ Добавить</button></div><ul class="questions-list" id="cq-list-4"></ul></div>
+        <div class="notes-header"><div class="notes-label">Заметки</div></div>
+        <textarea class="notes-textarea" id="notes-4" placeholder="Оценка влияния и обходные пути..."></textarea>
+        <div class="step-footer"><div class="questions-progress" id="qp-4"></div><button class="btn-step-undone" onclick="markStep(4,false)">↩ Вернуть</button><button class="btn-step-done" onclick="markStep(4,true)">Шаг выполнен ✓</button></div>
+      </div>
+    </div>
+
+    <div class="step-card" id="step-5" data-step="5">
+      <div class="step-header" onclick="toggleStep(5)">
+        <div class="step-number-inner"><span class="step-number-text">5</span></div>
+        <div class="step-title-wrap">
+          <div class="step-title">Принять решение <span class="step-badge">Что делаем?</span></div>
+          <div class="step-subtitle">Варианты с рисками — и кто принимает финальное решение</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Вопросы</div>
+        <ul class="questions-list" id="q-5">
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какие варианты решения есть — быстрый и надёжный?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Всегда есть минимум два варианта: быстрый с риском и медленный но надёжный.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Кто имеет полномочия принять решение о действиях?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">BA не принимает решение об откате или деплое — это техлид, CTO или продакт.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Сколько времени займёт каждый вариант?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Время — критичный параметр при инциденте.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Нужен ли откат или хватит точечного фикса?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Откат безопаснее но теряешь новый функционал. Точечный фикс быстрее но риск что что-то упустишь.</div></li>
+        </ul>
+        <div class="custom-q-section"><div class="custom-q-label">Свой вопрос</div><div class="add-question-row"><input class="add-question-input" id="cq-5" placeholder="Добавь вопрос для этого кейса..."><button class="btn-add-q" onclick="addCustomQ(5)">+ Добавить</button></div><ul class="questions-list" id="cq-list-5"></ul></div>
+        <div class="notes-header"><div class="notes-label">Заметки</div></div>
+        <textarea class="notes-textarea" id="notes-5" placeholder="Варианты решения и кто решает..."></textarea>
+        <div class="step-footer"><div class="questions-progress" id="qp-5"></div><button class="btn-step-undone" onclick="markStep(5,false)">↩ Вернуть</button><button class="btn-step-done" onclick="markStep(5,true)">Шаг выполнен ✓</button></div>
+      </div>
+    </div>
+
+    <div class="step-card" id="step-6" data-step="6">
+      <div class="step-header" onclick="toggleStep(6)">
+        <div class="step-number-inner"><span class="step-number-text">6</span></div>
+        <div class="step-title-wrap">
+          <div class="step-title">Коммуникация и следующие шаги <span class="step-badge">Кто и что сообщает?</span></div>
+          <div class="step-subtitle">Пользователи, команда, руководство — все должны знать статус</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>
+      <div class="step-body">
+        <div class="questions-label">Вопросы</div>
+        <ul class="questions-list" id="q-6">
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Кто и как сообщает пользователям о проблеме?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Молчание злит больше чем признание проблемы. Даже "мы знаем, чиним" снижает поток жалоб.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Кто информирует руководство о статусе?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">При P1 руководство должно знать сразу.</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Как проверим что проблема решена?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Нужен чёткий критерий — не "разработчик сказал что починил", а "проверили на продакшене".</div></li>
+          <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Что делаем чтобы это не повторилось?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Post-mortem, тест на стейджинге, алерт в мониторинге — зафиксируй что конкретно меняем.</div></li>
+        </ul>
+        <div class="custom-q-section"><div class="custom-q-label">Свой вопрос</div><div class="add-question-row"><input class="add-question-input" id="cq-6" placeholder="Добавь вопрос для этого кейса..."><button class="btn-add-q" onclick="addCustomQ(6)">+ Добавить</button></div><ul class="questions-list" id="cq-list-6"></ul></div>
+        <div class="notes-header"><div class="notes-label">Заметки</div></div>
+        <textarea class="notes-textarea" id="notes-6" placeholder="Кто что сообщает и следующие шаги..."></textarea>
+        <div class="step-footer"><div class="questions-progress" id="qp-6"></div><button class="btn-step-undone" onclick="markStep(6,false)">↩ Вернуть</button><button class="btn-step-done" onclick="markStep(6,true)">Шаг выполнен ✓</button></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-divider"><div class="section-line"></div><div class="section-label">Итог инцидента</div><div class="section-line"></div></div>
+
+  <div class="summary-card">
+    <div class="summary-header">
+      <div class="summary-title">Заметки по всем шагам</div>
+      <button class="btn-secondary" onclick="exportNotes()">📋 Скопировать итог</button>
+    </div>
+    <div id="summary-content"><div class="summary-empty">Заполни заметки в шагах — они появятся здесь</div></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">Скопировано в буфер ✓</div>
+
+<script>
+  const STEP_NAMES = { 1:'Шаг 1 — Факт', 2:'Шаг 2 — Локализация', 3:'Шаг 3 — Причина', 4:'Шаг 4 — Влияние', 5:'Шаг 5 — Решение', 6:'Шаг 6 — Коммуникация' };
+  const TOTAL_STEPS = 6;
+
+  function loadState() { try { return JSON.parse(localStorage.getItem('ba_problem_v2') || '{}'); } catch { return {}; } }
+  function saveState() { localStorage.setItem('ba_problem_v2', JSON.stringify(state)); }
+
+  let state = loadState();
+  let timerInterval = null, timerSeconds = 0, timerRunning = false;
+
+  function init() {
+    for (let i = 1; i <= TOTAL_STEPS; i++) {
+      if (state[`step_${i}_done`]) {
+        const card = document.getElementById(`step-${i}`);
+        card.classList.add('completed');
+        card.querySelector('.step-number-text').textContent = '✓';
+      }
+      if (state[`notes_${i}`]) document.getElementById(`notes-${i}`).value = state[`notes_${i}`];
+      document.querySelectorAll(`#q-${i} .question-item`).forEach((q, idx) => {
+        if (state[`q_${i}_${idx}`]) {
+          q.classList.add('asked');
+          q.closest('.question-wrap').classList.add('asked-wrap');
+          q.querySelector('.question-check').textContent = '✓';
+        }
+      });
+      document.getElementById(`notes-${i}`).addEventListener('input', function() {
+        state[`notes_${i}`] = this.value; saveState(); updateSummary();
+      });
+    }
+    if (state.priority) setPriority(state.priority, true);
+    if (state.participants) {
+      state.participants.forEach(name => {
+        const existing = document.querySelector(`.participant-tag[data-name="${name}"]`);
+        if (existing) { existing.classList.add('active'); existing.querySelector('.tag-check').textContent = '✓ '; }
+        else addParticipantTag(name, true);
+      });
+    }
+    if (state.timerSeconds) { timerSeconds = state.timerSeconds; updateTimerDisplay(); }
+    if (state.resolutionTime) {
+      document.getElementById('resolutionTime').textContent = state.resolutionTime;
+      document.getElementById('resolutionBanner').classList.add('visible');
+    }
+    updateProgress(); updateSummary();
+  }
+
+  function toggleStep(n) { document.getElementById(`step-${n}`).classList.toggle('open'); }
+
+  function toggleQuestion(el) {
+    const wrap = el.closest('.question-wrap');
+    const step = el.closest('.step-card').dataset.step;
+    const idx = Array.from(el.closest('.questions-list').children).indexOf(wrap);
+    el.classList.toggle('asked');
+    wrap.classList.toggle('asked-wrap', el.classList.contains('asked'));
+    el.querySelector('.question-check').textContent = el.classList.contains('asked') ? '✓' : '';
+    state[`q_${step}_${idx}`] = el.classList.contains('asked');
+    saveState(); updateQProgress(parseInt(step));
+  }
+
+  function toggleHint(e, btn) {
+    e.stopPropagation();
+    const wrap = btn.closest('.question-wrap');
+    const hint = wrap.querySelector('.question-hint');
+    if (!hint) return;
+    hint.classList.toggle('visible');
+    btn.classList.toggle('active');
+    wrap.classList.toggle('hint-open', hint.classList.contains('visible'));
+  }
+
+  function updateQProgress(n) {
+    const total = document.querySelectorAll(`#q-${n} .question-item`).length;
+    const done = document.querySelectorAll(`#q-${n} .question-item.asked`).length;
+    const el = document.getElementById(`qp-${n}`);
+    if (el) el.textContent = done > 0 ? `${done} / ${total} вопросов` : '';
+  }
+
+  function markStep(n, done) {
+    const card = document.getElementById(`step-${n}`);
+    const numText = card.querySelector('.step-number-text');
+    if (done) { card.classList.add('completed'); card.classList.remove('open'); numText.textContent = '✓'; }
+    else { card.classList.remove('completed'); numText.textContent = n; }
+    state[`step_${n}_done`] = done;
+    saveState(); updateProgress();
+  }
+
+  function updateProgress() {
+    let done = 0;
+    for (let i = 1; i <= TOTAL_STEPS; i++) if (state[`step_${i}_done`]) done++;
+    const fill = document.getElementById('progressFill');
+    fill.style.width = (done / TOTAL_STEPS * 100) + '%';
+    fill.classList.toggle('all-done', done === TOTAL_STEPS);
+    document.getElementById('progressLabel').textContent = done === TOTAL_STEPS ? '✓ Инцидент разобран' : `${done} из ${TOTAL_STEPS} шагов выполнено`;
+    if (done === TOTAL_STEPS) {
+      if (timerRunning) toggleTimer();
+      const m = Math.floor(timerSeconds/60), s = timerSeconds%60;
+      const timeStr = timerSeconds > 0 ? `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : 'не отслеживалось';
+      document.getElementById('resolutionTime').textContent = timeStr;
+      document.getElementById('resolutionBanner').classList.add('visible');
+      state.resolutionTime = timeStr; saveState();
+    } else {
+      document.getElementById('resolutionBanner').classList.remove('visible');
+    }
+    for (let i = 1; i <= TOTAL_STEPS; i++) updateQProgress(i);
+  }
+
+  function addCustomQ(stepNum) {
+    const input = document.getElementById(`cq-${stepNum}`);
+    const text = input.value.trim();
+    if (!text) return;
+    const list = document.getElementById(`cq-list-${stepNum}`);
+    const li = document.createElement('li');
+    li.innerHTML = `<div class="custom-question-item" onclick="this.classList.toggle('asked');this.querySelector('.question-check').textContent=this.classList.contains('asked')?'✓':''"><div class="question-check"></div><span class="question-text">${text}</span><button class="custom-q-del" onclick="event.stopPropagation();this.closest('li').remove()">×</button></div>`;
+    list.appendChild(li); input.value = ''; input.focus();
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.classList.contains('add-question-input')) {
+      const match = e.target.id.match(/cq-(\d+)/);
+      if (match) addCustomQ(parseInt(match[1]));
+    }
+    if (e.key === 'Enter' && e.target.id === 'participantInput') addParticipant();
+  });
+
+  function setPriority(p, silent = false) {
+    const btn = document.getElementById(`prio-${p}`);
+    const card = document.getElementById('priorityCard');
+    if (btn.classList.contains('selected') && !silent) {
+      btn.classList.remove('selected'); card.className = 'priority-card';
+      state.priority = null; saveState(); return;
+    }
+    ['p1','p2','p3'].forEach(lvl => document.getElementById(`prio-${lvl}`).classList.remove('selected'));
+    btn.classList.add('selected');
+    card.className = `priority-card prio-${p}`;
+    if (!silent) { state.priority = p; saveState(); if (p === 'p1' && !timerRunning) toggleTimer(); }
+  }
+
+  function toggleParticipant(tag) {
+    tag.classList.toggle('active');
+    tag.querySelector('.tag-check').textContent = tag.classList.contains('active') ? '✓ ' : '';
+    saveParticipants();
+  }
+  function addParticipant() {
+    const input = document.getElementById('participantInput');
+    const name = input.value.trim(); if (!name) return;
+    addParticipantTag(name, false); input.value = ''; input.focus();
+  }
+  function addParticipantTag(name, active) {
+    const grid = document.getElementById('participantsGrid');
+    const tag = document.createElement('div');
+    tag.className = 'participant-tag' + (active ? ' active' : '');
+    tag.dataset.name = name;
+    tag.innerHTML = `<span class="tag-check">${active ? '✓ ' : ''}</span>${name}`;
+    tag.onclick = () => toggleParticipant(tag);
+    grid.appendChild(tag);
+    if (!active) { tag.classList.add('active'); tag.querySelector('.tag-check').textContent = '✓ '; saveParticipants(); }
+  }
+  function saveParticipants() {
+    state.participants = Array.from(document.querySelectorAll('.participant-tag.active')).map(t => t.dataset.name);
+    saveState();
+  }
+
+  function toggleTimer() {
+    if (timerRunning) {
+      clearInterval(timerInterval); timerRunning = false;
+      document.getElementById('timerBtn').textContent = 'Старт';
+      document.getElementById('timerBtn').classList.remove('active');
+    } else {
+      timerRunning = true;
+      document.getElementById('timerBtn').textContent = 'Стоп';
+      document.getElementById('timerBtn').classList.add('active');
+      timerInterval = setInterval(() => { timerSeconds++; state.timerSeconds = timerSeconds; saveState(); updateTimerDisplay(); }, 1000);
+    }
+  }
+  function resetTimer() {
+    clearInterval(timerInterval); timerRunning = false; timerSeconds = 0;
+    state.timerSeconds = 0; saveState(); updateTimerDisplay();
+    document.getElementById('timerBtn').textContent = 'Старт';
+    document.getElementById('timerBtn').classList.remove('active');
+  }
+  function updateTimerDisplay() {
+    const m = Math.floor(timerSeconds/60), s = timerSeconds%60;
+    document.getElementById('timerDisplay').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    const wrap = document.getElementById('timerWrap');
+    wrap.className = 'timer-wrap';
+    if (timerSeconds === 0 && !timerRunning) return;
+    if (timerSeconds < 1800) wrap.classList.add('green');
+    else if (timerSeconds < 3600) wrap.classList.add('yellow');
+    else wrap.classList.add('red');
+  }
+
+  function updateSummary() {
+    const container = document.getElementById('summary-content');
+    const items = [];
+    for (let i = 1; i <= TOTAL_STEPS; i++) {
+      const notes = (state[`notes_${i}`] || '').trim();
+      if (notes) items.push({ step: STEP_NAMES[i], text: notes });
+    }
+    container.innerHTML = items.length
+      ? '<div class="summary-list">' + items.map(it => `<div class="summary-item"><div class="summary-item-step">${it.step}</div>${it.text}</div>`).join('') + '</div>'
+      : '<div class="summary-empty">Заполни заметки в шагах — они появятся здесь</div>';
+  }
+
+  function exportNotes() {
+    const priority = state.priority ? state.priority.toUpperCase() : '—';
+    const participants = (state.participants || []).join(', ') || '—';
+    let text = `╔══════════════════════════════════════╗\n   РАЗБОР ИНЦИДЕНТА\n╚══════════════════════════════════════╝\n\n`;
+    text += `🔴 Уровень критичности: ${priority}\n👥 Кто подключён: ${participants}\n\n`;
+    for (let i = 1; i <= TOTAL_STEPS; i++) {
+      const notes = (state[`notes_${i}`] || '').trim();
+      const total = document.querySelectorAll(`#q-${i} .question-item`).length;
+      const asked = document.querySelectorAll(`#q-${i} .question-item.asked`).length;
+      const done = state[`step_${i}_done`] ? 'выполнен' : 'не выполнен';
+      text += `${STEP_NAMES[i].toUpperCase()} [${done}, вопросов: ${asked}/${total}]\n`;
+      text += notes ? `${notes}\n\n` : `(заметок нет)\n\n`;
+    }
+    text += `──────────────────────────────────────\n🤖 ПРОМПТ ДЛЯ АНАЛИЗА С ИИ\n──────────────────────────────────────\n`;
+    text += `Выше — данные разбора инцидента уровня ${priority}.\n\nПожалуйста, проанализируй:\n1. Какие причины инцидента я мог упустить?\n2. Какие альтернативные решения стоит рассмотреть?\n3. Что нужно сделать чтобы это не повторилось?\n4. Есть ли риски в выбранном решении которые я не учёл?`;
+    navigator.clipboard ? navigator.clipboard.writeText(text).then(showToast).catch(() => fallbackCopy(text)) : fallbackCopy(text);
+  }
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea'); ta.value = text;
+    ta.style.cssText = 'position:fixed;top:-9999px;opacity:0;';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try { document.execCommand('copy'); showToast(); } catch(e) {}
+    document.body.removeChild(ta);
+  }
+  function showToast() {
+    const t = document.getElementById('toast'); t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+  function resetAll() {
+    if (!confirm('Сбросить все данные инцидента?')) return;
+    localStorage.removeItem('ba_problem_v2'); state = {}; location.reload();
+  }
+
+  // Theme
+  const savedTheme = localStorage.getItem('ba-theme');
+  if (savedTheme === 'dark') document.body.classList.add('dark');
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('ba-theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+  });
+
+  init();
+</script>
+</body>
+</html>
