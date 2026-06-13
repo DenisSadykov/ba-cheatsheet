@@ -153,6 +153,9 @@ body.dark .progress-bar-track { background: rgba(255,255,255,0.08); }
 
 /* left panel footer */
 .panel-left-footer { padding: 10px; border-top: 1px solid var(--border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; gap: 6px; }
+.panel-donate { padding: 8px 10px; border-top: 1px solid var(--border); flex-shrink: 0; text-align: center; }
+.donate-link { font-size: 11.5px; color: var(--text-muted); text-decoration: none; transition: color .2s; }
+.donate-link:hover { color: #f97316; }
 .btn-footer-sm {
   padding: 10px 6px; border-radius: var(--radius-sm);
   background: var(--glass-bg); border: 1px solid var(--glass-border);
@@ -734,6 +737,9 @@ body.dark .btn-timer.active { background: var(--danger); border-color: var(--dan
       <button class="btn-footer-sm" onclick="sendDoneToJira()"><span class="fi">🔗</span>Закрытые в Jira</button>
       <button class="btn-footer-sm danger-hover" onclick="clearDoneTasks()"><span class="fi">🗑</span>Удалить закрытые</button>
       <button class="btn-footer-sm danger-hover" onclick="clearAllTasks()"><span class="fi">×</span>Очистить всё</button>
+    </div>
+    <div class="panel-donate">
+      <a href="https://boosty.to/denissadykov/donate" target="_blank" rel="noopener" class="donate-link">☕ Поддержать проект</a>
     </div>
   </div>
 
