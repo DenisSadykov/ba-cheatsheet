@@ -189,7 +189,8 @@ body.dark #themeBtn:hover {
   cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 5px;
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
 }
-.btn-secondary:hover { background: var(--glass-bg-hover); color: var(--text); }
+.btn-secondary:hover { background: var(--glass-bg-hover); color: var(--text); box-shadow: var(--glass-shadow-hover); }
+.btn-secondary { box-shadow: var(--glass-shadow); }
 .btn-danger {
   font-size: 13px; font-weight: 500; padding: 0 16px;
   height: 38px; align-self: stretch;
@@ -459,8 +460,30 @@ body.dark .section-line { background: rgba(255,255,255,0.08); }
   font-size: 13px; color: var(--text); padding: 10px 14px;
   background: rgba(255,255,255,0.38); border-radius: 10px;
   border-left: 3px solid var(--accent); white-space: pre-wrap; line-height: 1.6;
+  box-shadow: 0 2px 8px rgba(160,80,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
 }
 .summary-item-step { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+
+/* ── OVERLAY / JIRA MODAL ── */
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 200; display: none; opacity: 0; transition: opacity .2s; }
+.overlay.show { display: block; opacity: 1; }
+.jira-modal {
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0.96);
+  width: 92%; max-width: 440px; max-height: 86vh; overflow-y: auto;
+  background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius);
+  box-shadow: var(--glass-shadow-hover); backdrop-filter: blur(28px) saturate(180%); -webkit-backdrop-filter: blur(28px) saturate(180%);
+  z-index: 201; display: none; opacity: 0;
+  transition: opacity .2s ease, transform .2s cubic-bezier(.34,1.4,.64,1);
+}
+.jira-modal.show { display: block; opacity: 1; transform: translate(-50%,-50%) scale(1); }
+.jira-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; font-weight: 700; font-size: 14px; border-bottom: 1px solid var(--glass-border); }
+.jira-modal-body { padding: 16px 18px; }
+.jira-modal-hint { font-size: 11.5px; color: var(--text-xs); line-height: 1.5; margin-top: 12px; }
+.jira-modal-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 18px; border-top: 1px solid var(--glass-border); }
+.form-label { font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 5px; }
+.jira-modal .add-question-input { width: 100%; }
+.btn-close-modal { width: 28px; height: 28px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 18px; cursor: pointer; }
+.btn-close-modal:hover { color: var(--text); }
 
 /* ── TOAST ── */
 .toast {
@@ -615,10 +638,13 @@ body.dark .custom-question-item { background: rgba(217,119,6,0.12); border-color
 
   <nav class="top-nav">
     <a href="index.html" class="back-pill">← Главная</a>
-    <button class="theme-btn" id="themeBtn">
-      <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-    </button>
+    <div style="display:flex;gap:8px">
+      <button class="theme-btn" id="jiraBtn" onclick="openJiraSettings()" title="Подключение к Jira">🔗</button>
+      <button class="theme-btn" id="themeBtn">
+        <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+    </div>
   </nav>
 
   <div class="header">
@@ -827,7 +853,12 @@ body.dark .custom-question-item { background: rgba(217,119,6,0.12); border-color
   <div class="summary-card">
     <div class="summary-header">
       <div class="summary-title">Заметки по всем шагам</div>
-      <button class="btn-secondary" onclick="exportNotes()">📋 Скопировать итог</button>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn-secondary" onclick="copyPlain()" title="Скопировать только заметки, без промпта">📋 Копировать</button>
+        <button class="btn-secondary" onclick="copyWithAI()" title="Скопировать заметки + промпт для анализа ИИ">🤖 С промптом ИИ</button>
+        <button class="btn-secondary" onclick="downloadMd()" title="Скачать как .md файл">⬇ .md</button>
+        <button class="btn-secondary" onclick="sendSummaryToJira()" title="Создать задачу в Jira">🔗 В Jira</button>
+      </div>
     </div>
     <div id="summary-content"><div class="summary-empty">Заполни заметки в шагах — они появятся здесь</div></div>
   </div>
@@ -835,6 +866,31 @@ body.dark .custom-question-item { background: rgba(217,119,6,0.12); border-color
 </div>
 
 <div class="toast" id="toast">Скопировано в буфер ✓</div>
+
+<div class="overlay" id="jiraOverlay" onclick="closeJiraSettings()"></div>
+<div class="jira-modal" id="jiraModal">
+  <div class="jira-modal-header">
+    <span>🔗 Подключение к Jira</span>
+    <button class="btn-close-modal" onclick="closeJiraSettings()">✕</button>
+  </div>
+  <div class="jira-modal-body">
+    <label class="form-label">Сайт (например, company.atlassian.net)</label>
+    <input class="add-question-input" id="jiraSite" placeholder="company.atlassian.net">
+    <label class="form-label" style="margin-top:10px">Email</label>
+    <input class="add-question-input" id="jiraEmail" placeholder="you@company.com">
+    <label class="form-label" style="margin-top:10px">API токен</label>
+    <input class="add-question-input" id="jiraToken" type="password" placeholder="API token">
+    <label class="form-label" style="margin-top:10px">Проект (ключ)</label>
+    <input class="add-question-input" id="jiraProject" placeholder="PROJ">
+    <label class="form-label" style="margin-top:10px">Proxy URL</label>
+    <input class="add-question-input" id="jiraProxy" placeholder="https://your-worker.workers.dev">
+    <div class="jira-modal-hint">Токен создаётся на id.atlassian.com → Security → API tokens. Данные сохраняются только локально в этом браузере. Jira Cloud блокирует прямые запросы из браузера (CORS) — укажи адрес прокси, иначе запрос не пройдёт. Свой бесплатный прокси можно развернуть за 2 минуты: <a href="https://github.com/DenisSadykov/jira-cors-proxy-for-bsa-toolkit" target="_blank" rel="noopener">инструкция на GitHub</a>.</div>
+  </div>
+  <div class="jira-modal-footer">
+    <button class="btn-secondary" onclick="closeJiraSettings()">Отмена</button>
+    <button class="btn-step-done" style="flex:none;padding:9px 18px" onclick="saveJiraConfig()">Сохранить</button>
+  </div>
+</div>
 
 <script>
   const STEP_NAMES = { 1:'Шаг 1 — Факт', 2:'Шаг 2 — Локализация', 3:'Шаг 3 — Причина', 4:'Шаг 4 — Влияние', 5:'Шаг 5 — Решение', 6:'Шаг 6 — Коммуникация' };
@@ -1037,22 +1093,164 @@ body.dark .custom-question-item { background: rgba(217,119,6,0.12); border-color
       : '<div class="summary-empty">Заполни заметки в шагах — они появятся здесь</div>';
   }
 
-  function exportNotes() {
-    const priority = state.priority ? state.priority.toUpperCase() : '—';
-    const participants = (state.participants || []).join(', ') || '—';
-    let text = `╔══════════════════════════════════════╗\n   РАЗБОР ИНЦИДЕНТА\n╚══════════════════════════════════════╝\n\n`;
-    text += `🔴 Уровень критичности: ${priority}\n👥 Кто подключён: ${participants}\n\n`;
+  function getMeta() {
+    return {
+      priority: state.priority ? state.priority.toUpperCase() : '—',
+      participants: (state.participants || []).join(', ') || '—'
+    };
+  }
+  function getStepsData() {
+    const data = [];
     for (let i = 1; i <= TOTAL_STEPS; i++) {
       const notes = (state[`notes_${i}`] || '').trim();
       const total = document.querySelectorAll(`#q-${i} .question-item`).length;
       const asked = document.querySelectorAll(`#q-${i} .question-item.asked`).length;
-      const done = state[`step_${i}_done`] ? 'выполнен' : 'не выполнен';
-      text += `${STEP_NAMES[i].toUpperCase()} [${done}, вопросов: ${asked}/${total}]\n`;
-      text += notes ? `${notes}\n\n` : `(заметок нет)\n\n`;
+      data.push({ n: i, title: STEP_NAMES[i], notes, totalQ: total, askedQ: asked, done: !!state[`step_${i}_done`] });
     }
-    text += `──────────────────────────────────────\n🤖 ПРОМПТ ДЛЯ АНАЛИЗА С ИИ\n──────────────────────────────────────\n`;
-    text += `Выше — данные разбора инцидента уровня ${priority}.\n\nПожалуйста, проанализируй:\n1. Какие причины инцидента я мог упустить?\n2. Какие альтернативные решения стоит рассмотреть?\n3. Что нужно сделать чтобы это не повторилось?\n4. Есть ли риски в выбранном решении которые я не учёл?`;
+    return data;
+  }
+  function aiPromptText() {
+    const meta = getMeta();
+    return `Выше — данные разбора инцидента уровня ${meta.priority}.\n\nПожалуйста, проанализируй:\n1. ПРИЧИНЫ — какие причины инцидента могли быть упущены или сформулированы поверхностно?\n2. ЛОКАЛИЗАЦИЯ — достаточно ли точно определены границы и масштаб проблемы?\n3. АЛЬТЕРНАТИВЫ — какие альтернативные решения стоит рассмотреть и почему выбранное лучше?\n4. ПРЕВЕНЦИЯ — что нужно сделать, чтобы это не повторилось (мониторинг, тесты, процессы)?\n5. РИСКИ РЕШЕНИЯ — какие риски есть в выбранном решении и плане коммуникации, которые могли остаться неучтёнными?\n6. ГОТОВНОСТЬ — какие шаги/решения по этому инциденту ещё требуют уточнения перед закрытием?`;
+  }
+  function buildReportText(withAIPrompt) {
+    const meta = getMeta();
+    let text = `РАЗБОР ИНЦИДЕНТА\n`;
+    text += `Уровень критичности: ${meta.priority}\nКто подключён: ${meta.participants}\n\n`;
+    getStepsData().forEach(s => {
+      text += `${s.title.toUpperCase()} [${s.done ? 'выполнен' : 'не выполнен'}, вопросов: ${s.askedQ}/${s.totalQ}]\n`;
+      text += s.notes ? `${s.notes}\n\n` : `(заметок нет)\n\n`;
+    });
+    if (withAIPrompt) {
+      text += `──────────────────────────────────────\n🤖 ПРОМПТ ДЛЯ АНАЛИЗА С ИИ\n──────────────────────────────────────\n`;
+      text += aiPromptText();
+    }
+    return text.trim();
+  }
+  function buildReportMarkdown() {
+    const meta = getMeta();
+    let md = `# Разбор инцидента\n\n`;
+    md += `- **Уровень критичности:** ${meta.priority}\n- **Кто подключён:** ${meta.participants}\n\n`;
+    getStepsData().forEach(s => {
+      md += `## ${s.title}\n_${s.done ? 'выполнен' : 'не выполнен'}, вопросов: ${s.askedQ}/${s.totalQ}_\n\n`;
+      md += s.notes ? `${s.notes}\n\n` : `_(заметок нет)_\n\n`;
+    });
+    return md.trim();
+  }
+  function copyPlain() {
+    const text = buildReportText(false);
     navigator.clipboard ? navigator.clipboard.writeText(text).then(showToast).catch(() => fallbackCopy(text)) : fallbackCopy(text);
+  }
+  function copyWithAI() {
+    const text = buildReportText(true);
+    navigator.clipboard ? navigator.clipboard.writeText(text).then(showToast).catch(() => fallbackCopy(text)) : fallbackCopy(text);
+  }
+  function downloadMd() {
+    const md = buildReportMarkdown();
+    const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Разбор инцидента — ${new Date().toLocaleDateString('ru-RU').replace(/[\\/:*?"<>|]+/g, '-')}.md`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // ── Jira integration ──
+  function adfText(t) { return { type: 'text', text: t }; }
+  function adfPara(t) { return { type: 'paragraph', content: [adfText(t)] }; }
+  function adfHeading(t, level=3) { return { type: 'heading', attrs: { level }, content: [adfText(t)] }; }
+  function adfBulletList(items) { return { type: 'bulletList', content: items.map(i => ({ type: 'listItem', content: [adfPara(i)] })) }; }
+  function adfTaskList(items) {
+    return { type: 'taskList', attrs: { localId: Math.random().toString(36).slice(2) }, content: items.map(i => ({
+      type: 'taskItem', attrs: { localId: Math.random().toString(36).slice(2), state: i.done ? 'DONE' : 'TODO' }, content: [adfText(i.text)]
+    })) };
+  }
+  function buildIncidentADF() {
+    const meta = getMeta();
+    const content = [];
+    content.push({ type: 'panel', attrs: { panelType: 'note' }, content: [
+      adfPara(`Уровень критичности: ${meta.priority}`),
+      adfPara(`Кто подключён: ${meta.participants}`)
+    ]});
+    content.push(adfTaskList(getStepsData().map(s => ({ text: s.title, done: s.done }))));
+    getStepsData().forEach(s => {
+      content.push(adfHeading(`${s.title} (вопросов: ${s.askedQ}/${s.totalQ})`));
+      content.push(adfPara(s.notes || '(заметок нет)'));
+    });
+    return { type: 'doc', version: 1, content };
+  }
+  function getJiraConfig() {
+    try { return JSON.parse(localStorage.getItem('ba-jira-config') || '{}'); } catch(e) { return {}; }
+  }
+  function openJiraSettings() {
+    const cfg = getJiraConfig();
+    document.getElementById('jiraSite').value = cfg.site || '';
+    document.getElementById('jiraEmail').value = cfg.email || '';
+    document.getElementById('jiraToken').value = cfg.token || '';
+    document.getElementById('jiraProject').value = cfg.project || '';
+    document.getElementById('jiraProxy').value = cfg.proxy || '';
+    document.getElementById('jiraOverlay').classList.add('show');
+    document.getElementById('jiraModal').classList.add('show');
+  }
+  function closeJiraSettings() {
+    document.getElementById('jiraOverlay').classList.remove('show');
+    document.getElementById('jiraModal').classList.remove('show');
+  }
+  function saveJiraConfig() {
+    const cfg = {
+      site: document.getElementById('jiraSite').value.trim(),
+      email: document.getElementById('jiraEmail').value.trim(),
+      token: document.getElementById('jiraToken').value.trim(),
+      project: document.getElementById('jiraProject').value.trim(),
+      proxy: document.getElementById('jiraProxy').value.trim().replace(/\/$/,'')
+    };
+    localStorage.setItem('ba-jira-config', JSON.stringify(cfg));
+    closeJiraSettings();
+    showToast('Сохранено ✓');
+  }
+  async function createJiraIssue(summary, adf, cfg) {
+    const auth = btoa(`${cfg.email}:${cfg.token}`);
+    const body = {
+      fields: {
+        project: { key: cfg.project },
+        summary: summary || 'Заметка из BA Toolkit',
+        issuetype: { name: 'Task' },
+        description: adf
+      }
+    };
+    try {
+      const targetUrl = `https://${cfg.site}/rest/api/3/issue`;
+      const url = cfg.proxy ? `${cfg.proxy}/?url=${encodeURIComponent(targetUrl)}` : targetUrl;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Authorization': `Basic ${auth}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (res.ok && data.key) return { ok: true, key: data.key };
+      return { ok: false, error: 'Ошибка Jira: ' + (data.errorMessages?.[0] || (data.errors ? JSON.stringify(data.errors) : res.status)) };
+    } catch (e) {
+      return { ok: false, error: cfg.proxy ? 'Не удалось подключиться (прокси/сеть)' : 'Не удалось подключиться напрямую — нужен CORS-прокси, см. настройки 🔗' };
+    }
+  }
+  async function sendSummaryToJira() {
+    const cfg = getJiraConfig();
+    if (!cfg.site || !cfg.email || !cfg.token || !cfg.project) {
+      showToast('Сначала настрой подключение к Jira 🔗');
+      openJiraSettings();
+      return;
+    }
+    const meta = getMeta();
+    showToast('Отправка в Jira...');
+    const summary = `Инцидент (${meta.priority}) — ${new Date().toLocaleDateString('ru-RU')}`;
+    const result = await createJiraIssue(summary, buildIncidentADF(), cfg);
+    if (result.ok) {
+      showToast(`Создано: ${result.key} ✓`);
+      window.open(`https://${cfg.site}/browse/${result.key}`, '_blank');
+    } else {
+      showToast(result.error);
+    }
   }
   function fallbackCopy(text) {
     const ta = document.createElement('textarea'); ta.value = text;
@@ -1061,9 +1259,11 @@ body.dark .custom-question-item { background: rgba(217,119,6,0.12); border-color
     try { document.execCommand('copy'); showToast(); } catch(e) {}
     document.body.removeChild(ta);
   }
-  function showToast() {
-    const t = document.getElementById('toast'); t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2200);
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    if (msg) t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => { t.classList.remove('show'); t.textContent = 'Скопировано в буфер ✓'; }, 2200);
   }
   function resetAll() {
     if (!confirm('Сбросить все данные инцидента?')) return;

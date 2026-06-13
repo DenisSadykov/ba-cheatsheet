@@ -108,6 +108,12 @@
     margin-left: auto;
   }
 
+  .topbar-divider { width: 1px; height: 24px; background: rgba(0,0,0,0.10); flex-shrink: 0; }
+  body.dark .topbar-divider { background: rgba(255,255,255,0.10); }
+
+  .topbar-menu { display: flex; align-items: center; gap: 8px; }
+  .topbar-menu-toggle { display: none; }
+
   .timer-pill {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 5px 4px;
@@ -566,6 +572,30 @@
   }
   .btn-del-field:hover { color: #EF4444; }
 
+  /* ── OVERLAY / JIRA MODAL ── */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 200; display: none; opacity: 0; transition: opacity .2s; }
+  .overlay.show { display: block; opacity: 1; }
+  .jira-modal {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0.96);
+    width: 92%; max-width: 440px; max-height: 86vh; overflow-y: auto;
+    background: rgba(255,255,255,0.92); border: 1px solid rgba(255,255,255,0.95); border-radius: 14px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.18); backdrop-filter: blur(28px) saturate(180%); -webkit-backdrop-filter: blur(28px) saturate(180%);
+    z-index: 201; display: none; opacity: 0;
+    transition: opacity .2s ease, transform .2s cubic-bezier(.34,1.4,.64,1);
+  }
+  body.dark .jira-modal { background: rgba(20,26,33,0.95); border-color: rgba(255,255,255,0.12); }
+  .jira-modal.show { display: block; opacity: 1; transform: translate(-50%,-50%) scale(1); }
+  .jira-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; font-weight: 700; font-size: 14px; border-bottom: 1px solid rgba(0,0,0,0.08); }
+  body.dark .jira-modal-header { border-bottom-color: rgba(255,255,255,0.10); }
+  .jira-modal-body { padding: 16px 18px; }
+  .jira-modal-hint { font-size: 11.5px; color: var(--text-light); line-height: 1.5; margin-top: 12px; }
+  .jira-modal-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 18px; border-top: 1px solid rgba(0,0,0,0.08); }
+  body.dark .jira-modal-footer { border-top-color: rgba(255,255,255,0.10); }
+  .form-label { font-size: 12px; font-weight: 700; color: var(--text-mid); display: block; margin-bottom: 5px; }
+  .jira-modal .add-field-input { width: 100%; }
+  .btn-close-modal { width: 28px; height: 28px; border-radius: 8px; border: none; background: transparent; color: var(--text-mid); font-size: 18px; cursor: pointer; }
+  .btn-close-modal:hover { color: var(--text); }
+
   /* Тост */
   .toast {
     position: fixed; bottom: 24px; right: 24px;
@@ -589,13 +619,133 @@
   .board::-webkit-scrollbar-track { background: transparent; }
   .board::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 3px; }
   body.dark .board::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
+
+  /* ── MOBILE: свайп колонок ── */
+  .col-nav { display: none; }
+  @media (max-width: 767px) {
+    .topbar {
+      flex-wrap: wrap;
+      padding: 10px 12px 6px;
+      position: relative;
+    }
+    .topbar-back, .logo { display: none; }
+    .meta-input { max-width: none; flex: 1 1 auto; min-width: 110px; }
+    .timer-wrap { margin-left: 0; flex: 1 1 100%; justify-content: space-between; }
+    .topbar-menu-toggle { display: flex; }
+    .topbar-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 12px;
+      margin-top: 6px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+      background: rgba(255,255,255,0.96);
+      border: 1px solid rgba(255,255,255,0.92);
+      border-radius: 14px;
+      padding: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 30;
+      min-width: 200px;
+    }
+    body.dark .topbar-menu { background: rgba(20,24,30,0.96); border-color: rgba(255,255,255,0.10); }
+    .topbar-menu.open { display: flex; }
+    .topbar-menu .topbar-divider { display: none; }
+    .topbar-menu .btn { width: 100%; justify-content: center; }
+
+    .board {
+      scroll-snap-type: x mandatory;
+      padding: 10px 0 0;
+      gap: 0;
+    }
+    .board { padding: 10px 16px 88px; gap: 14px; }
+    .column {
+      flex: 0 0 calc(100vw - 32px);
+      min-width: calc(100vw - 32px);
+      width: calc(100vw - 32px);
+      scroll-snap-align: center;
+      scroll-snap-stop: always;
+      border-radius: 18px;
+      border-left-width: 3px;
+      height: calc(100vh - 230px);
+    }
+    .col-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: sticky;
+      bottom: 10px;
+      left: 0;
+      margin: 0 10px 4px;
+      padding: 8px 10px;
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(255,255,255,0.92);
+      border-radius: 22px;
+      box-shadow: 0 2px 0 rgba(255,255,255,0.88) inset, 0 8px 28px rgba(80,60,180,0.12), 0 2px 8px rgba(0,0,0,0.06);
+      backdrop-filter: blur(24px) saturate(160%);
+      -webkit-backdrop-filter: blur(24px) saturate(160%);
+      z-index: 20;
+    }
+    body.dark .col-nav {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 8px 28px rgba(0,0,0,0.35);
+    }
+    .col-nav-btn {
+      flex: 0 0 auto;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.85);
+      background: rgba(255,255,255,0.55);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset, 0 2px 6px rgba(0,0,0,0.06);
+      font-size: 17px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--text-dark, #1a1a2e);
+      transition: opacity .2s, transform .15s, background .2s;
+    }
+    .col-nav-btn:active { transform: scale(0.92); }
+    .col-nav-btn:disabled { opacity: 0.25; cursor: default; }
+    body.dark .col-nav-btn {
+      border-color: rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.08);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 2px 6px rgba(0,0,0,0.25);
+      color: #E6EDF3;
+    }
+    .col-nav-label {
+      flex: 1;
+      text-align: center;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px; font-weight: 700;
+      color: var(--text-dark, #1a1a2e);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    body.dark .col-nav-label { color: #E6EDF3; }
+    .col-nav-dots {
+      display: flex; gap: 5px; justify-content: center; margin-top: 5px;
+    }
+    .col-nav-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(0,0,0,0.15);
+      transition: background .2s, transform .2s;
+    }
+    body.dark .col-nav-dot { background: rgba(255,255,255,0.18); }
+    .col-nav-dot.active {
+      background: var(--c2);
+      transform: scale(1.3);
+    }
+  }
 </style>
 </head>
 <body>
 
 <!-- ШАПКА -->
 <div class="topbar">
-  <a href="index.html" class="btn btn-outline" style="text-decoration:none;font-size:18px;padding:5px 10px" title="На главную">←</a>
+  <a href="index.html" class="btn btn-outline topbar-back" style="text-decoration:none;font-size:18px;padding:5px 10px" title="На главную">←</a>
   <div class="logo">Сбор <span>требований</span></div>
   <input class="meta-input" id="featName" placeholder="Фича / задача..." style="max-width:280px">
   <input class="meta-input" id="stakeholder" placeholder="Стейкхолдер...">
@@ -605,11 +755,18 @@
       <button class="btn btn-outline" id="timerBtn" onclick="toggleTimer()">Старт</button>
       <button class="btn btn-outline" onclick="resetTimer()" title="Сбросить таймер" style="font-size:16px;padding:5px 10px">↺</button>
     </div>
-    <div style="width:1px;height:24px;background:rgba(0,0,0,0.10);flex-shrink:0"></div>
-    <button class="btn btn-outline btn-clear" onclick="clearBoard()" title="Очистить доску">🗑</button>
-    <div style="width:1px;height:24px;background:rgba(0,0,0,0.10);flex-shrink:0"></div>
-    <button class="btn btn-primary" onclick="copyAll()">📋 Скопировать итог</button>
-    <button class="btn btn-outline" id="themeBtn" onclick="toggleTheme()" style="font-size:16px;padding:5px 11px">🌙</button>
+    <button class="btn btn-outline topbar-menu-toggle" id="menuToggle" onclick="toggleTopbarMenu()" title="Меню" style="font-size:16px;padding:5px 11px">☰</button>
+    <div class="topbar-menu" id="topbarMenu">
+      <div class="topbar-divider"></div>
+      <button class="btn btn-outline btn-clear" onclick="clearBoard()" title="Очистить доску">🗑</button>
+      <div class="topbar-divider"></div>
+      <button class="btn btn-primary" onclick="copyPlain()" title="Скопировать только заметки, без промпта">📋 Копировать</button>
+      <button class="btn btn-primary" onclick="copyWithAI()" title="Скопировать заметки + промпт для анализа ИИ">🤖 Для ИИ</button>
+      <button class="btn btn-primary" onclick="downloadMd()" title="Скачать как .md файл">⬇ .md</button>
+      <button class="btn btn-primary" onclick="sendSummaryToJira()" title="Создать задачу в Jira">🔗 В Jira</button>
+      <button class="btn btn-outline" id="jiraBtn" onclick="openJiraSettings()" title="Подключение к Jira" style="font-size:16px;padding:5px 11px">🔗</button>
+      <button class="btn btn-outline" id="themeBtn" onclick="toggleTheme()" style="font-size:16px;padding:5px 11px">🌙</button>
+    </div>
   </div>
 </div>
 
@@ -843,7 +1000,42 @@
 
 </div>
 
+<!-- НАВИГАЦИЯ ПО КОЛОНКАМ (мобильная версия) -->
+<div class="col-nav">
+  <button class="col-nav-btn" id="colNavPrev" onclick="navCol(-1)">‹</button>
+  <div>
+    <div class="col-nav-label" id="colNavLabel">🎯 Контекст</div>
+    <div class="col-nav-dots" id="colNavDots"></div>
+  </div>
+  <button class="col-nav-btn" id="colNavNext" onclick="navCol(1)">›</button>
+</div>
+
 <div class="toast" id="toast"></div>
+
+<div class="overlay" id="jiraOverlay" onclick="closeJiraSettings()"></div>
+<div class="jira-modal" id="jiraModal">
+  <div class="jira-modal-header">
+    <span>🔗 Подключение к Jira</span>
+    <button class="btn-close-modal" onclick="closeJiraSettings()">✕</button>
+  </div>
+  <div class="jira-modal-body">
+    <label class="form-label">Сайт (например, company.atlassian.net)</label>
+    <input class="add-field-input" id="jiraSite" placeholder="company.atlassian.net">
+    <label class="form-label" style="margin-top:10px">Email</label>
+    <input class="add-field-input" id="jiraEmail" placeholder="you@company.com">
+    <label class="form-label" style="margin-top:10px">API токен</label>
+    <input class="add-field-input" id="jiraToken" type="password" placeholder="API token">
+    <label class="form-label" style="margin-top:10px">Проект (ключ)</label>
+    <input class="add-field-input" id="jiraProject" placeholder="PROJ">
+    <label class="form-label" style="margin-top:10px">Proxy URL</label>
+    <input class="add-field-input" id="jiraProxy" placeholder="https://your-worker.workers.dev">
+    <div class="jira-modal-hint">Токен создаётся на id.atlassian.com → Security → API tokens. Данные сохраняются только локально в этом браузере. Jira Cloud блокирует прямые запросы из браузера (CORS) — укажи адрес прокси, иначе запрос не пройдёт. Свой бесплатный прокси можно развернуть за 2 минуты: <a href="https://github.com/DenisSadykov/jira-cors-proxy-for-bsa-toolkit" target="_blank" rel="noopener">инструкция на GitHub</a>.</div>
+  </div>
+  <div class="jira-modal-footer">
+    <button class="btn btn-outline" onclick="closeJiraSettings()">Отмена</button>
+    <button class="btn btn-primary" onclick="saveJiraConfig()">Сохранить</button>
+  </div>
+</div>
 
 <script>
 // ── ТАЙМЕР ──
@@ -960,38 +1152,172 @@ const fieldLabels = {
   f5_1:'Риски',f5_2:'Открытые вопросы',f5_3:'Следующий шаг',f5_4:'Срок',f5_sum:'Вывод',
 };
 
-function copyAll() {
+function getBoardData() {
   const feat = document.getElementById('featName').value || '—';
   const stk  = document.getElementById('stakeholder').value || '—';
   const m = String(Math.floor(seconds/60)).padStart(2,'0');
   const s = String(seconds%60).padStart(2,'0');
-
-  let text = `═══ СБОР ТРЕБОВАНИЙ ═══\n`;
-  text += `Фича: ${feat}\nСтейкхолдер: ${stk}\nВремя: ${m}:${s}\n\n`;
-
+  const steps = [];
   for (let i = 1; i <= 5; i++) {
-    text += `── ШАГ ${i}: ${stepTitles[i-1].toUpperCase()} ──\n`;
+    const items = [];
     Object.entries(fieldLabels).filter(([id]) => id.startsWith(`f${i}_`)).forEach(([id, label]) => {
       const el = document.getElementById(id);
-      if (el && el.value.trim()) text += `  ${label}: ${el.value.trim()}\n`;
+      if (el && el.value.trim()) items.push({ label, value: el.value.trim() });
     });
     (customFields[i] || []).forEach(f => {
       const ta = document.querySelector(`[data-id="${f.id}"] textarea`);
-      if (ta && ta.value.trim()) text += `  ${f.label}: ${ta.value.trim()}\n`;
+      if (ta && ta.value.trim()) items.push({ label: f.label, value: ta.value.trim() });
     });
-    text += '\n';
+    steps.push({ n: i, title: stepTitles[i-1], items });
   }
+  return { feat, stk, time: `${m}:${s}`, steps };
+}
 
-  text += `═══ ПРОМПТ ДЛЯ ИИ ═══\n`;
-  text += `Выше — данные со встречи по сбору требований.\n`;
-  text += `Проанализируй:\n1. Есть ли противоречия в требованиях?\n`;
-  text += `2. Что важное могло остаться невыясненным?\n`;
-  text += `3. Какие риски стоит проработать первым?\n`;
-  text += `4. Есть ли конфликты между стейкхолдерами?`;
+function aiPromptText() {
+  return `Выше — данные со встречи по сбору требований.\n\nПожалуйста, проанализируй:\n1. ПРОТИВОРЕЧИЯ — есть ли противоречия между AS-IS/TO-BE, допущениями и критериями приёмки?\n2. ПРОБЕЛЫ — что важное по контексту, данным или требованиям могло остаться невыясненным?\n3. СТЕЙКХОЛДЕРЫ — есть ли конфликты интересов между участниками, которые не проработаны?\n4. КРИТЕРИИ ПРИЁМКИ — насколько конкретны и проверяемы критерии готовности?\n5. РИСКИ — какие риски стоит проработать первым и почему?\n6. СЛЕДУЮЩИЕ ШАГИ — достаточно ли конкретен план следующих шагов (кто, что, когда)?`;
+}
 
+function buildReportText(withAIPrompt) {
+  const d = getBoardData();
+  let text = `СБОР ТРЕБОВАНИЙ\n`;
+  text += `Фича: ${d.feat}\nСтейкхолдер: ${d.stk}\nВремя встречи: ${d.time}\n\n`;
+  d.steps.forEach(st => {
+    text += `${st.title.toUpperCase()}\n`;
+    if (st.items.length) st.items.forEach(it => text += `  ${it.label}: ${it.value}\n`);
+    else text += `  (заметок нет)\n`;
+    text += '\n';
+  });
+  if (withAIPrompt) {
+    text += `──────────────────────────────────────\n🤖 ПРОМПТ ДЛЯ АНАЛИЗА С ИИ\n──────────────────────────────────────\n`;
+    text += aiPromptText();
+  }
+  return text.trim();
+}
+
+function buildReportMarkdown() {
+  const d = getBoardData();
+  let md = `# Сбор требований — ${d.feat}\n\n`;
+  md += `- **Стейкхолдер:** ${d.stk}\n- **Время встречи:** ${d.time}\n\n`;
+  d.steps.forEach(st => {
+    md += `## ${st.title}\n\n`;
+    if (st.items.length) st.items.forEach(it => md += `- **${it.label}:** ${it.value}\n`);
+    else md += `_(заметок нет)_\n`;
+    md += '\n';
+  });
+  return md.trim();
+}
+
+function copyPlain() {
+  const text = buildReportText(false);
+  try { navigator.clipboard.writeText(text).then(()=>toast('Скопировано ✓')).catch(()=>fallback(text)); } catch(e) { fallback(text); }
+}
+function copyWithAI() {
+  const text = buildReportText(true);
+  try { navigator.clipboard.writeText(text).then(()=>toast('Скопировано ✓')).catch(()=>fallback(text)); } catch(e) { fallback(text); }
+}
+function downloadMd() {
+  const md = buildReportMarkdown();
+  const d = getBoardData();
+  const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Требования — ${d.feat}.md`.replace(/[\\/:*?"<>|]+/g, '-');
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ── Jira integration ──
+function adfText(t) { return { type: 'text', text: t }; }
+function adfPara(t) { return { type: 'paragraph', content: [adfText(t)] }; }
+function adfHeading(t, level=3) { return { type: 'heading', attrs: { level }, content: [adfText(t)] }; }
+function buildRequirementsADF() {
+  const d = getBoardData();
+  const content = [];
+  content.push({ type: 'panel', attrs: { panelType: 'note' }, content: [
+    adfPara(`Стейкхолдер: ${d.stk}`),
+    adfPara(`Время встречи: ${d.time}`)
+  ]});
+  d.steps.forEach(st => {
+    content.push(adfHeading(st.title));
+    if (st.items.length) {
+      content.push({ type: 'bulletList', content: st.items.map(it => ({ type: 'listItem', content: [adfPara(`${it.label}: ${it.value}`)] })) });
+    } else {
+      content.push(adfPara('(заметок нет)'));
+    }
+  });
+  return { type: 'doc', version: 1, content };
+}
+function getJiraConfig() {
+  try { return JSON.parse(localStorage.getItem('ba-jira-config') || '{}'); } catch(e) { return {}; }
+}
+function openJiraSettings() {
+  const cfg = getJiraConfig();
+  document.getElementById('jiraSite').value = cfg.site || '';
+  document.getElementById('jiraEmail').value = cfg.email || '';
+  document.getElementById('jiraToken').value = cfg.token || '';
+  document.getElementById('jiraProject').value = cfg.project || '';
+  document.getElementById('jiraProxy').value = cfg.proxy || '';
+  document.getElementById('jiraOverlay').classList.add('show');
+  document.getElementById('jiraModal').classList.add('show');
+}
+function closeJiraSettings() {
+  document.getElementById('jiraOverlay').classList.remove('show');
+  document.getElementById('jiraModal').classList.remove('show');
+}
+function saveJiraConfig() {
+  const cfg = {
+    site: document.getElementById('jiraSite').value.trim(),
+    email: document.getElementById('jiraEmail').value.trim(),
+    token: document.getElementById('jiraToken').value.trim(),
+    project: document.getElementById('jiraProject').value.trim(),
+    proxy: document.getElementById('jiraProxy').value.trim().replace(/\/$/,'')
+  };
+  localStorage.setItem('ba-jira-config', JSON.stringify(cfg));
+  closeJiraSettings();
+  toast('Сохранено ✓');
+}
+async function createJiraIssue(summary, adf, cfg) {
+  const auth = btoa(`${cfg.email}:${cfg.token}`);
+  const body = {
+    fields: {
+      project: { key: cfg.project },
+      summary: summary || 'Заметка из BA Toolkit',
+      issuetype: { name: 'Task' },
+      description: adf
+    }
+  };
   try {
-    navigator.clipboard.writeText(text).then(()=>toast('Скопировано ✓')).catch(()=>fallback(text));
-  } catch(e) { fallback(text); }
+    const targetUrl = `https://${cfg.site}/rest/api/3/issue`;
+    const url = cfg.proxy ? `${cfg.proxy}/?url=${encodeURIComponent(targetUrl)}` : targetUrl;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Authorization': `Basic ${auth}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (res.ok && data.key) return { ok: true, key: data.key };
+    return { ok: false, error: 'Ошибка Jira: ' + (data.errorMessages?.[0] || (data.errors ? JSON.stringify(data.errors) : res.status)) };
+  } catch (e) {
+    return { ok: false, error: cfg.proxy ? 'Не удалось подключиться (прокси/сеть)' : 'Не удалось подключиться напрямую — нужен CORS-прокси, см. настройки 🔗' };
+  }
+}
+async function sendSummaryToJira() {
+  const cfg = getJiraConfig();
+  if (!cfg.site || !cfg.email || !cfg.token || !cfg.project) {
+    toast('Сначала настрой подключение к Jira 🔗');
+    openJiraSettings();
+    return;
+  }
+  const d = getBoardData();
+  toast('Отправка в Jira...');
+  const result = await createJiraIssue(`Требования — ${d.feat}`, buildRequirementsADF(), cfg);
+  if (result.ok) {
+    toast(`Создано: ${result.key} ✓`);
+    window.open(`https://${cfg.site}/browse/${result.key}`, '_blank');
+  } else {
+    toast(result.error);
+  }
 }
 
 function fallback(text) {
@@ -1096,6 +1422,68 @@ if (_t === 'dark') {
 
 document.getElementById('featName').addEventListener('input', save);
 document.getElementById('stakeholder').addEventListener('input', save);
+
+// ── МЕНЮ ШАПКИ (мобильная версия) ──
+function toggleTopbarMenu() {
+  document.getElementById('topbarMenu').classList.toggle('open');
+}
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('topbarMenu');
+  const toggle = document.getElementById('menuToggle');
+  if (menu.classList.contains('open') && !menu.contains(e.target) && !toggle.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+});
+
+// ── НАВИГАЦИЯ ПО КОЛОНКАМ (мобильная версия) ──
+const colTitles = ['🎯 Контекст', '👥 Стейкхолдеры', '🗄 Данные и источники', '📋 Требования', '⚡ Риски и шаги'];
+const board = document.querySelector('.board');
+const colNavDots = document.getElementById('colNavDots');
+colTitles.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'col-nav-dot' + (i === 0 ? ' active' : '');
+  d.onclick = () => goToCol(i);
+  colNavDots.appendChild(d);
+});
+
+const navColumns = [...document.querySelectorAll('.column')];
+
+function getCurrentCol() {
+  const center = board.scrollLeft + board.clientWidth / 2;
+  let idx = 0, best = Infinity;
+  navColumns.forEach((col, i) => {
+    const colCenter = col.offsetLeft + col.offsetWidth / 2;
+    const d = Math.abs(colCenter - center);
+    if (d < best) { best = d; idx = i; }
+  });
+  return idx;
+}
+
+function updateColNav() {
+  const idx = Math.min(colTitles.length - 1, Math.max(0, getCurrentCol()));
+  document.getElementById('colNavLabel').textContent = colTitles[idx];
+  document.getElementById('colNavPrev').disabled = idx === 0;
+  document.getElementById('colNavNext').disabled = idx === colTitles.length - 1;
+  [...colNavDots.children].forEach((d, i) => d.classList.toggle('active', i === idx));
+}
+
+function goToCol(idx) {
+  idx = Math.min(colTitles.length - 1, Math.max(0, idx));
+  const col = navColumns[idx];
+  board.scrollTo({ left: col.offsetLeft - (board.clientWidth - col.offsetWidth) / 2, behavior: 'smooth' });
+}
+
+function navCol(delta) {
+  goToCol(getCurrentCol() + delta);
+}
+
+let _navScrollTimer = null;
+board.addEventListener('scroll', () => {
+  clearTimeout(_navScrollTimer);
+  _navScrollTimer = setTimeout(updateColNav, 80);
+});
+window.addEventListener('resize', updateColNav);
+updateColNav();
 </script>
 </body>
 </html>

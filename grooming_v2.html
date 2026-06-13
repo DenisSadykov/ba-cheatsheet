@@ -137,7 +137,7 @@
     vertical-align: middle; position: relative; top: -1px;
     flex-shrink: 0;
   }
-  .header-sub { font-size: 13.5px; color: var(--text-muted); margin-top: 6px; line-height: 1.5; }
+  .header-sub { font-size: 13.5px; color: var(--text-muted); margin-top: 14px; line-height: 1.5; }
 
   /* ── TIMER ── */
   .timer-row { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
@@ -470,11 +470,7 @@
     box-shadow: 0 2px 0 rgba(255,255,255,0.88) inset, 0 2px 8px rgba(0,0,0,0.08);
     font-size: 12.5px; font-weight: 600; cursor: pointer;
     font-family: inherit; transition: all .2s; color: var(--text-muted);
-    display: flex; align-items: center; gap: 7px;
-  }
-  .btn-outcome .o-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--glass-border); transition: background .2s; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; text-align: center;
   }
   .btn-outcome:hover { background: var(--glass-bg-hover); transform: translateY(-1px); }
 
@@ -482,18 +478,15 @@
     border-color: var(--success); background: rgba(220,255,235,0.54); color: var(--success);
     box-shadow: 0 0 0 3px rgba(22,163,74,0.10);
   }
-  .btn-outcome.selected-ready .o-dot { background: var(--success); }
 
   .btn-outcome.selected-meeting {
     border-color: var(--warning); background: rgba(255,243,220,0.54); color: var(--warning);
     box-shadow: 0 0 0 3px rgba(217,119,6,0.10);
   }
-  .btn-outcome.selected-meeting .o-dot { background: var(--warning); }
 
   .btn-outcome.selected-backlog {
     border-color: rgba(0,0,0,0.20); background: rgba(0,0,0,0.05); color: var(--text-muted);
   }
-  .btn-outcome.selected-backlog .o-dot { background: rgba(0,0,0,0.20); }
 
   /* ── COPY BUTTON ── */
   .btn-copy {
@@ -504,7 +497,28 @@
     font-family: inherit; transition: all .15s; color: var(--text-muted);
     box-shadow: var(--glass-shadow);
   }
-  .btn-copy:hover { background: var(--glass-bg-hover); border-color: var(--accent); color: var(--accent); }
+  .btn-copy:hover { background: var(--glass-bg-hover); border-color: var(--accent); color: var(--accent); box-shadow: var(--glass-shadow-hover); }
+
+  /* ── OVERLAY / JIRA MODAL ── */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 200; display: none; opacity: 0; transition: opacity .2s; }
+  .overlay.show { display: block; opacity: 1; }
+  .jira-modal {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0.96);
+    width: 92%; max-width: 440px; max-height: 86vh; overflow-y: auto;
+    background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius);
+    box-shadow: var(--glass-shadow-hover); backdrop-filter: blur(28px) saturate(180%); -webkit-backdrop-filter: blur(28px) saturate(180%);
+    z-index: 201; display: none; opacity: 0;
+    transition: opacity .2s ease, transform .2s cubic-bezier(.34,1.4,.64,1);
+  }
+  .jira-modal.show { display: block; opacity: 1; transform: translate(-50%,-50%) scale(1); }
+  .jira-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; font-weight: 700; font-size: 14px; border-bottom: 1px solid var(--glass-border); }
+  .jira-modal-body { padding: 16px 18px; }
+  .jira-modal-hint { font-size: 11.5px; color: var(--text-xs); line-height: 1.5; margin-top: 12px; }
+  .jira-modal-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 18px; border-top: 1px solid var(--glass-border); }
+  .form-label { font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 5px; }
+  .jira-modal .add-item-input { width: 100%; }
+  .btn-close-modal { width: 28px; height: 28px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 18px; cursor: pointer; }
+  .btn-close-modal:hover { color: var(--text); }
 
   /* ── TOAST ── */
   .toast {
@@ -562,16 +576,24 @@
 <div class="container">
   <nav class="top-nav">
     <a href="index.html" class="back-pill">← Главная</a>
-    <button class="theme-btn" id="themeBtn">
-      <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-    </button>
+    <div style="display:flex;gap:8px">
+      <button class="theme-btn" id="jiraBtn" onclick="openJiraSettings()" title="Подключение к Jira">🔗</button>
+      <button class="theme-btn" id="themeBtn">
+        <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+    </div>
   </nav>
 
   <div class="header">
     <div class="header-top-row">
       <h1>Груминг бэклога</h1>
-      <button class="btn-copy" onclick="exportGrooming()">📋 Скопировать итог</button>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn-copy" onclick="copyPlain()" title="Скопировать только итог, без промпта">📋 Копировать</button>
+        <button class="btn-copy" onclick="copyWithAI()" title="Скопировать итог + промпт для анализа ИИ">🤖 С промптом ИИ</button>
+        <button class="btn-copy" onclick="downloadMd()" title="Скачать как .md файл">⬇ .md</button>
+        <button class="btn-copy" onclick="sendReadyToJira()" title="Отправить готовые задачи в Jira">🔗 Готовые в Jira</button>
+      </div>
     </div>
     <div class="header-sub">Разбирай задачи по одной — фиксируй вопросы с ответами, критерии приёмки и хвосты</div>
     <div class="timer-row">
@@ -600,6 +622,31 @@
 </div>
 
 <div class="toast" id="toast">Скопировано в буфер ✓</div>
+
+<div class="overlay" id="jiraOverlay" onclick="closeJiraSettings()"></div>
+<div class="jira-modal" id="jiraModal">
+  <div class="jira-modal-header">
+    <span>🔗 Подключение к Jira</span>
+    <button class="btn-close-modal" onclick="closeJiraSettings()" title="Закрыть">×</button>
+  </div>
+  <div class="jira-modal-body">
+    <label class="form-label">Адрес Jira (например your-company.atlassian.net)</label>
+    <input class="add-item-input" id="jiraSite" placeholder="your-company.atlassian.net">
+    <label class="form-label" style="margin-top:10px">Email учётной записи</label>
+    <input class="add-item-input" id="jiraEmail" placeholder="name@company.com">
+    <label class="form-label" style="margin-top:10px">API-токен</label>
+    <input class="add-item-input" id="jiraToken" type="password" placeholder="...">
+    <label class="form-label" style="margin-top:10px">Ключ проекта по умолчанию</label>
+    <input class="add-item-input" id="jiraProject" placeholder="например PROJ">
+    <label class="form-label" style="margin-top:10px">CORS-прокси (опционально)</label>
+    <input class="add-item-input" id="jiraProxy" placeholder="https://your-worker.workers.dev">
+    <p class="jira-modal-hint">Токен хранится только локально в этом браузере. Настройки общие для всех инструментов BA Toolkit. Jira Cloud блокирует прямые запросы из браузера (CORS) — укажи адрес прокси, иначе запрос не пройдёт. Свой бесплатный прокси можно развернуть за 2 минуты: <a href="https://github.com/DenisSadykov/jira-cors-proxy-for-bsa-toolkit" target="_blank" rel="noopener">инструкция на GitHub</a>.</p>
+  </div>
+  <div class="jira-modal-footer">
+    <button class="btn-copy" onclick="closeJiraSettings()">Отмена</button>
+    <button class="btn-add" style="padding:9px 18px" onclick="saveJiraConfig()">Сохранить</button>
+  </div>
+</div>
 
 <script>
   // Theme init
@@ -855,6 +902,7 @@
           <input class="task-name-input" value="${escHtml(t.name)}" placeholder="Название задачи"
             oninput="updateTaskName('${t.id}',this.value)">
           <button class="collapse-btn" onclick="toggleTask('${t.id}')">Свернуть ↑</button>
+          <button class="collapse-btn" onclick="sendTaskToJira('${t.id}')" title="Создать задачу в Jira">🔗 В Jira</button>
           <button class="collapse-btn" style="color:var(--danger);border-color:var(--danger);opacity:0.6;" onclick="deleteTask('${t.id}')">Удалить</button>
         </div>
         <div class="task-meta-row">
@@ -926,9 +974,9 @@
         <div class="outcome-section">
           <div class="outcome-label">Итог по задаче:</div>
           <div class="outcome-btns">
-            <button class="${oBtnReady}" onclick="setOutcome('${t.id}','ready')"><span class="o-dot"></span>Готова к разработке</button>
-            <button class="${oBtnMeeting}" onclick="setOutcome('${t.id}','meeting')"><span class="o-dot"></span>Нужна встреча</button>
-            <button class="${oBtnBacklog}" onclick="setOutcome('${t.id}','backlog')"><span class="o-dot"></span>Вернуть в бэклог</button>
+            <button class="${oBtnReady}" onclick="setOutcome('${t.id}','ready')">Готова к разработке</button>
+            <button class="${oBtnMeeting}" onclick="setOutcome('${t.id}','meeting')">Нужна встреча</button>
+            <button class="${oBtnBacklog}" onclick="setOutcome('${t.id}','backlog')">Вернуть в бэклог</button>
           </div>
         </div>
 
@@ -955,65 +1003,238 @@
   render();
 
   // ── ЭКСПОРТ ──
-  function exportGrooming() {
-    if (tasks.length === 0) { alert('Нет задач для копирования.'); return; }
-    let text = `╔══════════════════════════════════════╗\n   ГРУМИНГ БЭКЛОГА\n╚══════════════════════════════════════╝\n\n`;
+  const STATUS_MAP = { ready: 'Готова к разработке', meeting: 'Нужна встреча', backlog: 'Вернуть в бэклог' };
+
+  function buildTaskText(t) {
+    const status = STATUS_MAP[t.outcome] || 'Не закрыта';
+    const sp = t.storyPoints !== '?' ? t.storyPoints + ' SP' : 'не оценена';
+    let text = `${t.name}\n`;
+    text += `Приоритет: ${getPriorityLabel(t.priority)} | Story points: ${sp} | Итог: ${status}\n\n`;
+    if (t.criteria.length) {
+      text += `Критерии приёмки:\n`;
+      t.criteria.forEach(c => { text += `  - ${c.text}\n`; });
+      text += '\n';
+    }
+    if (t.qas.length) {
+      text += `Вопросы и ответы:\n`;
+      t.qas.forEach(q => {
+        text += `  ? ${q.question}\n`;
+        if (q.answer) text += `    → ${q.answer}\n`;
+      });
+      text += '\n';
+    }
+    if (t.decisions.length) {
+      text += `Решения:\n`;
+      t.decisions.forEach(d => { text += `  - ${d.text}\n`; });
+      text += '\n';
+    }
+    if (t.tails.length) {
+      text += `Хвосты:\n`;
+      t.tails.forEach(tl => {
+        const parts = [tl.who, tl.what, tl.when].filter(Boolean);
+        if (parts.length) text += `  - ${parts.join(' — ')}\n`;
+      });
+      text += '\n';
+    }
+    if (t.notes.trim()) text += `Заметки:\n${t.notes.trim()}\n`;
+    return text.trim();
+  }
+
+  function aiPromptText() {
+    let p = '';
+    p += `ЗАДАЧА ДЛЯ ИИ\n`;
+    p += `Ты — техлид/скрам-мастер и ревьюишь итоги груминга бэклога выше. Ответь по пунктам:\n\n`;
+    p += `1. КРИТЕРИИ ПРИЁМКИ — для каких задач они неполные, неизмеримые или содержат скрытые допущения?\n`;
+    p += `2. НЕЗАКРЫТЫЕ ВОПРОСЫ — какие вопросы без ответа способны заблокировать старт разработки?\n`;
+    p += `3. ХВОСТЫ — какие хвосты наиболее критичны по срокам и в каком порядке их закрывать?\n`;
+    p += `4. ОЦЕНКИ — для каких задач story points выглядят за- или недооценёнными относительно описанного объёма?\n`;
+    p += `5. ГОТОВНОСТЬ — какие задачи реально готовы к разработке, а какие отмечены так преждевременно?\n`;
+    p += `6. ПРИОРИТЕТЫ — есть ли расхождения между заявленным приоритетом и содержанием (рисками, зависимостями, хвостами)?`;
+    return p;
+  }
+
+  function buildSessionText(withAI) {
+    if (!tasks.length) return '';
+    let text = `ГРУМИНГ БЭКЛОГА\n\n`;
     text += `Задач разобрано: ${tasks.length}\n`;
     text += `Дата: ${new Date().toLocaleDateString('ru-RU')}\n\n`;
+    tasks.forEach((t, i) => { text += `${'─'.repeat(40)}\n${i+1}. ${buildTaskText(t)}\n\n`; });
+    if (withAI) { text += `${'─'.repeat(40)}\n` + aiPromptText(); }
+    return text.trim();
+  }
 
+  function buildSessionMarkdown() {
+    let md = `# Груминг бэклога\n\n`;
+    md += `- Задач разобрано: ${tasks.length}\n- Дата: ${new Date().toLocaleDateString('ru-RU')}\n\n`;
     tasks.forEach((t, i) => {
-      const statusMap = { ready: 'Готова к разработке', meeting: 'Нужна встреча', backlog: 'Вернуть в бэклог' };
-      const status = statusMap[t.outcome] || 'Не закрыта';
+      const status = STATUS_MAP[t.outcome] || 'Не закрыта';
       const sp = t.storyPoints !== '?' ? t.storyPoints + ' SP' : 'не оценена';
-
-      text += `${'─'.repeat(40)}\n`;
-      text += `${i+1}. ${t.name.toUpperCase()}\n`;
-      text += `   Приоритет: ${t.priority === 'high' ? 'High' : t.priority === 'medium' ? 'Medium' : 'Low'} | Story points: ${sp} | Итог: ${status}\n\n`;
-
-      if (t.criteria.length) {
-        text += `КРИТЕРИИ ПРИЁМКИ:\n`;
-        t.criteria.forEach(c => { text += `  ◆ ${c.text}\n`; });
-        text += '\n';
-      }
-
-      if (t.qas.length) {
-        text += `ВОПРОСЫ И ОТВЕТЫ:\n`;
-        t.qas.forEach(q => {
-          text += `  ? ${q.question}\n`;
-          if (q.answer) text += `  → ${q.answer}\n`;
-        });
-        text += '\n';
-      }
-
-      if (t.decisions.length) {
-        text += `РЕШЕНИЯ:\n`;
-        t.decisions.forEach(d => { text += `  ✓ ${d.text}\n`; });
-        text += '\n';
-      }
-
-      if (t.tails.length) {
-        text += `ХВОСТЫ:\n`;
-        t.tails.forEach(tl => {
-          const parts = [tl.who, tl.what, tl.when].filter(Boolean);
-          if (parts.length) text += `  → ${parts.join(' — ')}\n`;
-        });
-        text += '\n';
-      }
-
-      if (t.notes) { text += `ЗАМЕТКИ:\n${t.notes}\n\n`; }
+      md += `## ${i+1}. ${t.name}\n`;
+      md += `_Приоритет: ${getPriorityLabel(t.priority)} · SP: ${sp} · Итог: ${status}_\n\n`;
+      if (t.criteria.length) { md += `**Критерии приёмки**\n`; t.criteria.forEach(c => md += `- ${c.text}\n`); md += '\n'; }
+      if (t.qas.length) { md += `**Вопросы и ответы**\n`; t.qas.forEach(q => { md += `- [${q.done?'x':' '}] ${q.question}`; if (q.answer) md += ` — ${q.answer}`; md += '\n'; }); md += '\n'; }
+      if (t.decisions.length) { md += `**Решения**\n`; t.decisions.forEach(d => md += `- ${d.text}\n`); md += '\n'; }
+      if (t.tails.length) { md += `**Хвосты**\n`; t.tails.forEach(tl => { const parts=[tl.who,tl.what,tl.when].filter(Boolean); if (parts.length) md += `- ${parts.join(' — ')}\n`; }); md += '\n'; }
+      if (t.notes.trim()) md += `**Заметки**\n\n${t.notes.trim()}\n\n`;
     });
+    return md.trim();
+  }
 
-    text += `${'═'.repeat(40)}\n`;
-    text += `🤖 ПРОМПТ ДЛЯ АНАЛИЗА С ИИ\n`;
-    text += `${'═'.repeat(40)}\n`;
-    text += `Выше — итоги груминга бэклога.\n\n`;
-    text += `Пожалуйста, проанализируй:\n`;
-    text += `1. Какие критерии приёмки могут быть неполными или неточными?\n`;
-    text += `2. Есть ли незакрытые вопросы которые могут заблокировать разработку?\n`;
-    text += `3. Какие хвосты наиболее критичны и почему?\n`;
-    text += `4. Какие риски я мог упустить при оценке задач?`;
+  function copyPlain() {
+    if (!tasks.length) { alert('Нет задач для копирования.'); return; }
+    copyToClipboard(buildSessionText(false));
+  }
+  function copyWithAI() {
+    if (!tasks.length) { alert('Нет задач для копирования.'); return; }
+    copyToClipboard(buildSessionText(true));
+  }
+  function downloadMd() {
+    if (!tasks.length) { alert('Нет задач для экспорта.'); return; }
+    const md = buildSessionMarkdown();
+    const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `Груминг бэклога — ${new Date().toLocaleDateString('ru-RU')}.md`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Файл .md сохранён ✓');
+  }
 
-    copyToClipboard(text.trim());
+  // ── Jira ──
+  function adfText(s, marks) { return marks ? { type:'text', text:s, marks } : { type:'text', text:s }; }
+  function adfPara(children) { return { type:'paragraph', content: children }; }
+  function adfHeading(text, level=3) { return { type:'heading', attrs:{level}, content:[adfText(text)] }; }
+  function adfBulletList(items) {
+    return { type:'bulletList', content: items.map(it => ({ type:'listItem', content:[adfPara([adfText(it)])] })) };
+  }
+  function adfTaskList(items) {
+    return { type:'taskList', attrs:{ localId: 'tl-'+Math.random().toString(36).slice(2) }, content: items.map(it => ({
+      type:'taskItem',
+      attrs: { localId: 'ti-'+Math.random().toString(36).slice(2), state: it.done ? 'DONE' : 'TODO' },
+      content: [adfText(it.text)]
+    })) };
+  }
+
+  function buildTaskADF(t) {
+    const status = STATUS_MAP[t.outcome] || 'Не закрыта';
+    const sp = t.storyPoints !== '?' ? t.storyPoints + ' SP' : 'не оценена';
+    const content = [];
+    content.push({ type:'panel', attrs:{ panelType:'note' }, content:[adfPara([
+      adfText(`Приоритет: ${getPriorityLabel(t.priority)}   ·   SP: ${sp}   ·   Итог: ${status}`, [{type:'em'}])
+    ])] });
+    if (t.criteria.length) { content.push(adfHeading('◆ Критерии приёмки')); content.push(adfBulletList(t.criteria.map(c=>c.text))); }
+    if (t.qas.length) {
+      content.push(adfHeading('💬 Вопросы и ответы'));
+      content.push(adfTaskList(t.qas.map(q => ({ text: q.answer ? `${q.question} — ${q.answer}` : q.question, done: q.done }))));
+    }
+    if (t.decisions.length) { content.push(adfHeading('✅ Решения')); content.push(adfBulletList(t.decisions.map(d=>d.text))); }
+    if (t.tails.length) {
+      content.push(adfHeading('🔗 Хвосты'));
+      content.push(adfBulletList(t.tails.map(tl => [tl.who,tl.what,tl.when].filter(Boolean).join(' — ')).filter(Boolean)));
+    }
+    if (t.notes.trim()) {
+      content.push(adfHeading('📝 Заметки'));
+      t.notes.trim().split('\n').forEach(line => content.push(adfPara(line ? [adfText(line)] : [])));
+    }
+    if (content.length === 1) content.push(adfPara([adfText('Заметка создана в BA Toolkit.')]));
+    return { type:'doc', version:1, content };
+  }
+
+  function getJiraConfig() {
+    try { return JSON.parse(localStorage.getItem('ba-jira-config')) || {}; }
+    catch(e) { return {}; }
+  }
+  function openJiraSettings() {
+    const cfg = getJiraConfig();
+    document.getElementById('jiraSite').value = cfg.site || '';
+    document.getElementById('jiraEmail').value = cfg.email || '';
+    document.getElementById('jiraToken').value = cfg.token || '';
+    document.getElementById('jiraProject').value = cfg.project || '';
+    document.getElementById('jiraProxy').value = cfg.proxy || '';
+    document.getElementById('jiraOverlay').classList.add('show');
+    document.getElementById('jiraModal').classList.add('show');
+  }
+  function closeJiraSettings() {
+    document.getElementById('jiraOverlay').classList.remove('show');
+    document.getElementById('jiraModal').classList.remove('show');
+  }
+  function saveJiraConfig() {
+    let site = document.getElementById('jiraSite').value.trim().replace(/^https?:\/\//,'').replace(/\/$/,'');
+    const cfg = {
+      site,
+      email: document.getElementById('jiraEmail').value.trim(),
+      token: document.getElementById('jiraToken').value.trim(),
+      project: document.getElementById('jiraProject').value.trim().toUpperCase(),
+      proxy: document.getElementById('jiraProxy').value.trim().replace(/\/$/,'')
+    };
+    localStorage.setItem('ba-jira-config', JSON.stringify(cfg));
+    closeJiraSettings();
+    showToast('Настройки Jira сохранены ✓');
+  }
+
+  async function createJiraIssue(summary, adf, cfg) {
+    const auth = btoa(`${cfg.email}:${cfg.token}`);
+    const body = {
+      fields: {
+        project: { key: cfg.project },
+        summary: summary || 'Заметка из BA Toolkit',
+        issuetype: { name: 'Task' },
+        description: adf
+      }
+    };
+    try {
+      const targetUrl = `https://${cfg.site}/rest/api/3/issue`;
+      const url = cfg.proxy ? `${cfg.proxy}/?url=${encodeURIComponent(targetUrl)}` : targetUrl;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Authorization': `Basic ${auth}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (res.ok && data.key) return { ok: true, key: data.key };
+      return { ok: false, error: 'Ошибка Jira: ' + (data.errorMessages?.[0] || (data.errors ? JSON.stringify(data.errors) : res.status)) };
+    } catch (e) {
+      return { ok: false, error: cfg.proxy ? 'Не удалось подключиться (прокси/сеть)' : 'Не удалось подключиться напрямую — нужен CORS-прокси, см. настройки 🔗' };
+    }
+  }
+
+  async function sendTaskToJira(id) {
+    const t = tasks.find(t=>t.id===id);
+    if (!t) return;
+    const cfg = getJiraConfig();
+    if (!cfg.site || !cfg.email || !cfg.token || !cfg.project) {
+      showToast('Сначала настрой подключение к Jira 🔗');
+      openJiraSettings();
+      return;
+    }
+    showToast('Отправка в Jira...');
+    const result = await createJiraIssue(t.name || 'Задача из груминга', buildTaskADF(t), cfg);
+    if (result.ok) {
+      showToast(`Создано: ${result.key} ✓`);
+      window.open(`https://${cfg.site}/browse/${result.key}`, '_blank');
+    } else {
+      showToast(result.error);
+    }
+  }
+
+  async function sendReadyToJira() {
+    const cfg = getJiraConfig();
+    if (!cfg.site || !cfg.email || !cfg.token || !cfg.project) {
+      showToast('Сначала настрой подключение к Jira 🔗');
+      openJiraSettings();
+      return;
+    }
+    const ready = tasks.filter(t => t.outcome === 'ready');
+    if (!ready.length) { showToast('Нет задач со статусом «Готова к разработке»'); return; }
+    const keys = []; const errors = [];
+    for (const t of ready) {
+      showToast(`Отправка в Jira... (${keys.length + errors.length + 1}/${ready.length})`);
+      const result = await createJiraIssue(t.name || 'Задача из груминга', buildTaskADF(t), cfg);
+      if (result.ok) keys.push(result.key); else errors.push(t.name || '?');
+    }
+    if (keys.length && !errors.length) showToast(`Создано задач: ${keys.length} ✓ (${keys.join(', ')})`);
+    else if (keys.length) showToast(`Создано: ${keys.join(', ')}. Ошибки: ${errors.join(', ')}`);
+    else showToast('Не удалось отправить ни одной задачи');
   }
 
   function copyToClipboard(text) {
@@ -1030,10 +1251,11 @@
     document.body.removeChild(ta);
   }
 
-  function showToast() {
+  function showToast(msg) {
     const t = document.getElementById('toast');
+    if (msg) t.textContent = msg;
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2200);
+    setTimeout(() => { t.classList.remove('show'); t.textContent = 'Скопировано в буфер ✓'; }, 2200);
   }
 </script>
 </body>
