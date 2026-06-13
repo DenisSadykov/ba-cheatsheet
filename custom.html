@@ -1589,9 +1589,16 @@ function toggleCopyMenu(taskId) {
   if (!m) return;
   document.querySelectorAll('.copy-menu.show').forEach(el => { if (el !== m) el.classList.remove('show'); });
   const willShow = !m.classList.contains('show');
+  if (willShow && m.parentElement !== document.body) {
+    m._origParent = m.parentElement;
+    m._origNext = m.nextSibling;
+    document.body.appendChild(m);
+  } else if (!willShow && m._origParent) {
+    m._origParent.insertBefore(m, m._origNext);
+  }
   m.classList.toggle('show');
   if (willShow) {
-    const btn = m.previousElementSibling;
+    const btn = document.querySelector(`[onclick="toggleCopyMenu('${taskId}')"]`);
     const r = btn.getBoundingClientRect();
     const menuW = m.offsetWidth || 200;
     let left = r.left;
@@ -1602,7 +1609,10 @@ function toggleCopyMenu(taskId) {
   }
 }
 function closeCopyMenus() {
-  document.querySelectorAll('.copy-menu.show').forEach(el => el.classList.remove('show'));
+  document.querySelectorAll('.copy-menu.show').forEach(el => {
+    el.classList.remove('show');
+    if (el._origParent) { el._origParent.insertBefore(el, el._origNext); }
+  });
 }
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.copy-menu-wrap')) closeCopyMenus();
