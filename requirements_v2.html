@@ -183,6 +183,10 @@ body.dark #themeBtn {
 }
 .btn-secondary:hover { box-shadow: var(--glass-shadow-hover); }
 .btn-secondary:hover { background: var(--glass-bg-hover); color: var(--text); }
+@media (min-width: 760px) {
+  .summary-actions { flex-wrap: nowrap !important; }
+  .summary-actions .btn-secondary { font-size: 12px; padding: 7px 10px; gap: 4px; white-space: nowrap; }
+}
 
 .btn-danger {
   font-size: 13px; font-weight: 500; padding: 0 16px;
@@ -506,6 +510,20 @@ body.dark #themeBtn {
 .jira-modal .meta-input { width: 100%; }
 .btn-close-modal { width: 28px; height: 28px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 18px; cursor: pointer; }
 .btn-close-modal:hover { color: var(--text); }
+.connector-icon { opacity: 0.35; filter: grayscale(1); transition: all .15s; }
+.connector-icon:hover { opacity: 0.7; }
+.connector-icon.active { opacity: 1; filter: none; }
+.brand-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; border-radius: 5px; flex-shrink: 0;
+  font-size: 11px; font-weight: 800; color: #fff; font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1;
+}
+.brand-badge.jira { background: linear-gradient(135deg, #2684FF, #0052CC); }
+.brand-badge.confluence { background: linear-gradient(135deg, #4FCAFF, #2684FF); }
+.brand-icon { display: inline-flex; align-items: center; gap: 7px; }
+.topbar-sep { width: 1px; height: 22px; background: rgba(0,0,0,0.18); margin: 0 2px; flex-shrink: 0; align-self: center; }
+body.dark .topbar-sep { background: rgba(255,255,255,0.18); }
 
 /* ── TOAST ── */
 .toast {
@@ -572,7 +590,9 @@ body.dark .section-line { background: rgba(255,255,255,0.08); }
   <nav class="top-nav">
     <a href="index.html" class="back-pill">← Главная</a>
     <div style="display:flex;gap:8px">
-      <button class="theme-btn" id="jiraBtn" onclick="openJiraSettings()" title="Подключение к Jira">🔗</button>
+      <button class="theme-btn connector-icon" id="jiraBtn" onclick="openJiraSettings()" title="Подключение к Jira"><span class="brand-badge jira">J</span></button>
+      <button class="theme-btn connector-icon" id="confBtn" onclick="openConfluenceSettings()" title="Подключение к Confluence"><span class="brand-badge confluence">C</span></button>
+      <div class="topbar-sep"></div>
       <button class="theme-btn" id="themeBtn">
         <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
@@ -840,11 +860,12 @@ body.dark .section-line { background: rgba(255,255,255,0.08); }
   <div class="summary-card">
     <div class="summary-header">
       <div class="summary-title">Заметки по всем шагам</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <div class="summary-actions" style="display:flex;gap:6px;flex-wrap:wrap">
         <button class="btn-secondary" onclick="copyPlain()" title="Скопировать только заметки, без промпта">📋 Копировать</button>
         <button class="btn-secondary" onclick="copyWithAI()" title="Скопировать заметки + промпт для анализа ИИ">🤖 С промптом ИИ</button>
         <button class="btn-secondary" onclick="downloadMd()" title="Скачать как .md файл">⬇ .md</button>
-        <button class="btn-secondary" onclick="sendSummaryToJira()" title="Создать задачу в Jira">🔗 В Jira</button>
+        <button class="btn-secondary" onclick="sendSummaryToJira()" title="Создать задачу в Jira"><span class="brand-icon"><span class="brand-badge jira">J</span> В Jira</span></button>
+        <button class="btn-secondary" onclick="sendSummaryToConfluence()" title="Создать страницу в Confluence"><span class="brand-icon"><span class="brand-badge confluence">C</span> В Confluence</span></button>
       </div>
     </div>
     <div id="summary-content">
@@ -859,7 +880,7 @@ body.dark .section-line { background: rgba(255,255,255,0.08); }
 <div class="overlay" id="jiraOverlay" onclick="closeJiraSettings()"></div>
 <div class="jira-modal" id="jiraModal">
   <div class="jira-modal-header">
-    <span>🔗 Подключение к Jira</span>
+    <span class="brand-icon"><span class="brand-badge jira">J</span> Подключение к Jira</span>
     <button class="btn-close-modal" onclick="closeJiraSettings()" title="Закрыть">×</button>
   </div>
   <div class="jira-modal-body">
@@ -878,6 +899,31 @@ body.dark .section-line { background: rgba(255,255,255,0.08); }
   <div class="jira-modal-footer">
     <button class="btn-secondary" onclick="closeJiraSettings()">Отмена</button>
     <button class="btn-step-done" style="flex:none;padding:9px 18px" onclick="saveJiraConfig()">Сохранить</button>
+  </div>
+</div>
+
+<div class="overlay" id="confluenceOverlay" onclick="closeConfluenceSettings()"></div>
+<div class="jira-modal" id="confluenceModal">
+  <div class="jira-modal-header">
+    <span class="brand-icon"><span class="brand-badge confluence">C</span> Подключение к Confluence</span>
+    <button class="btn-close-modal" onclick="closeConfluenceSettings()" title="Закрыть">×</button>
+  </div>
+  <div class="jira-modal-body">
+    <label class="form-label">Адрес Confluence (например your-company.atlassian.net)</label>
+    <input class="meta-input" id="confSite" placeholder="your-company.atlassian.net">
+    <label class="form-label" style="margin-top:10px">Email учётной записи</label>
+    <input class="meta-input" id="confEmail" placeholder="name@company.com">
+    <label class="form-label" style="margin-top:10px">API-токен</label>
+    <input class="meta-input" id="confToken" type="password" placeholder="...">
+    <label class="form-label" style="margin-top:10px">ID пространства (Space ID)</label>
+    <input class="meta-input" id="confSpace" placeholder="например 65567">
+    <label class="form-label" style="margin-top:10px">CORS-прокси (опционально)</label>
+    <input class="meta-input" id="confProxy" placeholder="https://your-worker.workers.dev">
+    <p class="jira-modal-hint">Email и API-токен — от вашего Atlassian-аккаунта (создать токен: <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" rel="noopener">id.atlassian.com</a>). Space ID (числовой) можно найти через <code>GET /wiki/api/v2/spaces?keys=КЛЮЧ</code> или в URL пространства. Токен хранится только локально в этом браузере (localStorage) и никуда не отправляется, кроме самого Confluence.</p><p class="jira-modal-hint">Confluence Cloud блокирует прямые запросы из браузера (CORS), поэтому нужен адрес прокси — без него запрос не пройдёт. Развернуть бесплатный прокси за 2 минуты: <a href="https://github.com/DenisSadykov/jira-cors-proxy-for-bsa-toolkit#confluence" target="_blank" rel="noopener">инструкция для Confluence</a>.</p>
+  </div>
+  <div class="jira-modal-footer">
+    <button class="btn-secondary" onclick="closeConfluenceSettings()">Отмена</button>
+    <button class="btn-step-done" style="flex:none;padding:9px 18px" onclick="saveConfluenceConfig()">Сохранить</button>
   </div>
 </div>
 
@@ -1355,8 +1401,94 @@ body.dark .section-line { background: rgba(255,255,255,0.08); }
     };
     localStorage.setItem('ba-jira-config', JSON.stringify(cfg));
     closeJiraSettings();
+    updateConnectorIcons();
     showToast('Настройки Jira сохранены ✓');
   }
+
+  // ══ CONFLUENCE ══
+  function getConfluenceConfig() {
+    try { return JSON.parse(localStorage.getItem('ba-confluence-config')) || {}; }
+    catch(e) { return {}; }
+  }
+  function openConfluenceSettings() {
+    const cfg = getConfluenceConfig();
+    const jiraCfg = getJiraConfig();
+    document.getElementById('confSite').value = cfg.site || jiraCfg.site || '';
+    document.getElementById('confEmail').value = cfg.email || jiraCfg.email || '';
+    document.getElementById('confToken').value = cfg.token || jiraCfg.token || '';
+    document.getElementById('confSpace').value = cfg.space || '';
+    document.getElementById('confProxy').value = cfg.proxy || jiraCfg.proxy || '';
+    document.getElementById('confluenceOverlay').classList.add('show');
+    document.getElementById('confluenceModal').classList.add('show');
+  }
+  function closeConfluenceSettings() {
+    document.getElementById('confluenceOverlay').classList.remove('show');
+    document.getElementById('confluenceModal').classList.remove('show');
+  }
+  function saveConfluenceConfig() {
+    let site = document.getElementById('confSite').value.trim().replace(/^https?:\/\//,'').replace(/\/$/,'');
+    const cfg = {
+      site,
+      email: document.getElementById('confEmail').value.trim(),
+      token: document.getElementById('confToken').value.trim(),
+      space: document.getElementById('confSpace').value.trim(),
+      proxy: document.getElementById('confProxy').value.trim().replace(/\/$/,'')
+    };
+    localStorage.setItem('ba-confluence-config', JSON.stringify(cfg));
+    closeConfluenceSettings();
+    updateConnectorIcons();
+    showToast('Настройки Confluence сохранены ✓');
+  }
+  async function createConfluencePage(title, adf, cfg) {
+    const auth = btoa(`${cfg.email}:${cfg.token}`);
+    const body = {
+      spaceId: cfg.space,
+      status: 'current',
+      title: `${title || 'Заметка из BA Toolkit'} — ${new Date().toLocaleDateString('ru-RU')}`,
+      body: { representation: 'atlas_doc_format', value: JSON.stringify(adf) }
+    };
+    try {
+      const targetUrl = `https://${cfg.site}/wiki/api/v2/pages`;
+      const url = cfg.proxy ? `${cfg.proxy}/?url=${encodeURIComponent(targetUrl)}` : targetUrl;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Authorization': `Basic ${auth}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (res.ok && data.id) return { ok: true, link: data._links?.webui || `/pages/${data.id}` };
+      return { ok: false, error: 'Ошибка Confluence: ' + (data.errors?.[0]?.title || data.message || res.status) };
+    } catch (e) {
+      return { ok: false, error: cfg.proxy ? 'Не удалось подключиться (прокси/сеть)' : 'Не удалось подключиться напрямую — нужен CORS-прокси, см. настройки' };
+    }
+  }
+  async function sendSummaryToConfluence() {
+    const cfg = getConfluenceConfig();
+    if (!cfg.site || !cfg.email || !cfg.token || !cfg.space) {
+      showToast('Сначала настрой подключение к Confluence');
+      openConfluenceSettings();
+      return;
+    }
+    const meta = getMeta();
+    showToast('Отправка в Confluence...');
+    const title = meta.feature !== '—' ? `Сбор требований: ${meta.feature}` : 'Сбор требований — итог встречи';
+    const result = await createConfluencePage(title, buildRequirementsADF(), cfg);
+    if (result.ok) {
+      showToast('Страница создана ✓');
+      window.open(`https://${cfg.site}/wiki${result.link}`, '_blank');
+    } else {
+      showToast(result.error);
+    }
+  }
+  function updateConnectorIcons() {
+    const jiraCfg = getJiraConfig();
+    const confCfg = getConfluenceConfig();
+    const jiraOk = !!(jiraCfg.site && jiraCfg.email && jiraCfg.token && jiraCfg.project);
+    const confOk = !!(confCfg.site && confCfg.email && confCfg.token && confCfg.space);
+    document.getElementById('jiraBtn')?.classList.toggle('active', jiraOk);
+    document.getElementById('confBtn')?.classList.toggle('active', confOk);
+  }
+  document.addEventListener('DOMContentLoaded', updateConnectorIcons);
 
   async function createJiraIssue(summary, adf, cfg) {
     const auth = btoa(`${cfg.email}:${cfg.token}`);
