@@ -351,6 +351,16 @@ body.dark .jira-modal { background: rgba(30,36,44,0.92); }
   transition: border-color .15s;
 }
 .status-select:focus { border-color: var(--accent); }
+.status-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.status-pill {
+  padding: 4px 12px; border-radius: 99px; border: 1.5px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.55); font-size: 12px; font-weight: 600;
+  color: var(--text-muted); font-family: inherit; cursor: pointer; transition: all .15s;
+}
+.status-pill:hover { border-color: var(--accent); color: var(--accent); }
+.status-pill.active { background: var(--accent); border-color: var(--accent); color: white; }
+body.dark .status-pill { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.14); color: var(--text); }
+body.dark .status-pill.active { background: var(--accent); border-color: var(--accent); color: white; }
 .btn-sm {
   padding: 5px 12px; border-radius: 6px;
   background: var(--glass-bg); border: 1px solid var(--glass-border);
@@ -552,6 +562,14 @@ body.dark .section-line { background: rgba(255,255,255,0.08); }
   .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 100; display: none; }
   .overlay.show { display: block; }
   .panel-empty .btn-start-new { margin-top: 14px; }
+  .panel-left, .panel-right { background: var(--bg); }
+  body.dark .panel-left, body.dark .panel-right { background: var(--bg); }
+
+  /* ── РАБОЧАЯ КАРТОЧКА ЗАДАЧИ ── */
+  .work-task-header { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 44px; }
+  .work-task-actions { flex-wrap: wrap; }
+  .work-task-actions .btn-sm { flex: 1 1 auto; text-align: center; }
+  .work-wrap { padding-bottom: 20px; }
 }
 
 /* ── DARK OVERRIDES ── */
@@ -1233,12 +1251,12 @@ function renderWorkView(task) {
             oninput="renameTask('${task.id}',this.value)" title="Нажми чтобы переименовать">
           <div class="work-task-badges">
             <span class="type-badge type-${task.type}">${tpl.label}</span>
-            <select class="status-select" onchange="setStatus('${task.id}',this.value)">
-              <option value="active"  ${task.status==='active'  ?'selected':''}>🔄 В работе</option>
-              <option value="done"    ${task.status==='done'    ?'selected':''}>✅ Закрыто</option>
-              <option value="blocked" ${task.status==='blocked' ?'selected':''}>🚫 Заблокировано</option>
-              <option value="backlog" ${task.status==='backlog' ?'selected':''}>📦 В бэклог</option>
-            </select>
+            <div class="status-pills">
+              <button class="status-pill${task.status==='active'  ?' active':''}" onclick="setStatus('${task.id}','active')">🔄 В работе</button>
+              <button class="status-pill${task.status==='done'    ?' active':''}" onclick="setStatus('${task.id}','done')">✅ Закрыто</button>
+              <button class="status-pill${task.status==='blocked' ?' active':''}" onclick="setStatus('${task.id}','blocked')">🚫 Заблокировано</button>
+              <button class="status-pill${task.status==='backlog' ?' active':''}" onclick="setStatus('${task.id}','backlog')">📦 В бэклог</button>
+            </div>
             ${task.createdAt ? `<span style="font-size:11px;color:var(--text-xs)">${new Date(task.createdAt).toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'})}</span>` : ''}
           </div>
           ${(()=>{ const total=task.questions.length, done=task.questions.filter(q=>q.done).length; return total>0?`<div class="progress-bar-wrap" style="max-width:260px;margin-top:8px"><div class="progress-bar-track"><div class="progress-bar-fill${done===total?' done':''}" style="width:${Math.round(done/total*100)}%"></div></div><div class="progress-label">${done} из ${total} вопросов закрыто${done===total?' ✓':''}</div></div>`:''; })()}
