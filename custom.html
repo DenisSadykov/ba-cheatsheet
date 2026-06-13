@@ -549,10 +549,10 @@ body.dark .section-line { background: rgba(255,255,255,0.08); }
 .overlay.show { display: block; opacity: 1; }
 
 @media (max-width: 767px) {
-  .panel-left { position: fixed; top: 0; left: 0; bottom: 0; z-index: 110; width: 82vw; max-width: 320px; transform: translateX(-100%); box-shadow: 4px 0 20px rgba(0,0,0,0.12); }
+  .panel-left { position: fixed; top: 0; left: 0; bottom: 0; z-index: 110; width: 100vw; max-width: none; transform: translateX(-100%); }
   .panel-left.open { transform: translateX(0); }
-  .panel-right { position: fixed; top: 0; right: 0; bottom: 0; z-index: 110; width: 82vw; max-width: 320px; box-shadow: -4px 0 20px rgba(0,0,0,0.12); }
-  .panel-right.hidden { width: 82vw; max-width: 320px; opacity: 0; transform: translateX(100%); pointer-events: none; }
+  .panel-right { position: fixed; top: 0; right: 0; bottom: 0; z-index: 110; width: 100vw; max-width: none; }
+  .panel-right.hidden { width: 100vw; max-width: none; opacity: 0; transform: translateX(100%); pointer-events: none; }
   .panel-right { transition: transform .3s, opacity .3s; transform: translateX(100%); }
   .panel-right.open { transform: translateX(0); opacity: 1; pointer-events: all; }
   .panel-center { width: 100%; }
@@ -566,7 +566,7 @@ body.dark .section-line { background: rgba(255,255,255,0.08); }
   body.dark .panel-left, body.dark .panel-right { background: var(--bg); }
 
   /* ── РАБОЧАЯ КАРТОЧКА ЗАДАЧИ ── */
-  .work-task-header { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 44px; }
+  .work-task-header { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 33px; }
   .work-task-actions { flex-wrap: wrap; }
   .work-task-actions .btn-sm { flex: 1 1 auto; text-align: center; }
   .work-wrap { padding-bottom: 20px; }
@@ -677,6 +677,7 @@ body.dark .btn-timer.active { background: var(--danger); border-color: var(--dan
 
     <!-- mobile top bar -->
     <div class="mobile-bar">
+      <a href="index.html" class="btn-icon" title="На главную" style="text-decoration:none">←</a>
       <button class="btn-icon" onclick="toggleLeftMobile()" title="Задачи">☰</button>
       <span class="mb-title" id="mobileCrumb">Кастомная заметка</span>
       <button class="btn-icon" id="padBtnMobile" onclick="togglePad()" title="Заметки">📝</button>
@@ -748,14 +749,11 @@ let padOpen = false;
 function togglePad() {
   padOpen = !padOpen;
   const pr = document.getElementById('panelRight');
-  const ov = document.getElementById('overlay');
   if (padOpen) {
     pr.classList.remove('hidden'); pr.classList.add('open');
     document.getElementById('panelLeft').classList.remove('open');
-    ov.classList.add('show');
   } else {
     pr.classList.add('hidden'); pr.classList.remove('open');
-    ov.classList.remove('show');
   }
   const btn = document.getElementById('padBtn');
   if (btn) btn.classList.toggle('active-pad', padOpen);
@@ -784,9 +782,7 @@ function loadPad() {
 // ══ MOBILE ══
 function toggleLeftMobile() {
   const pl = document.getElementById('panelLeft');
-  const ov = document.getElementById('overlay');
   pl.classList.toggle('open');
-  ov.classList.toggle('show', pl.classList.contains('open'));
 }
 function closeOverlays() {
   document.getElementById('panelLeft').classList.remove('open');
