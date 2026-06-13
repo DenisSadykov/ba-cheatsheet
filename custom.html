@@ -342,7 +342,7 @@ body.dark .jira-modal { background: rgba(30,36,44,0.92); }
 
 .copy-menu-wrap { position: relative; }
 .copy-menu {
-  display: none; position: absolute; top: calc(100% + 6px); left: 0; z-index: 500;
+  display: none; position: fixed; z-index: 500;
   min-width: 190px; flex-direction: column; gap: 2px; padding: 6px;
   background: var(--panel-bg); backdrop-filter: blur(20px);
   border: 1px solid var(--border); border-radius: 12px;
@@ -358,7 +358,7 @@ body.dark .jira-modal { background: rgba(30,36,44,0.92); }
 .copy-menu button:hover { background: rgba(0,0,0,0.06); }
 body.dark .copy-menu button:hover { background: rgba(255,255,255,0.08); }
 @media (max-width: 767px) {
-  .copy-menu { left: 0; right: auto; min-width: 200px; max-width: calc(100vw - 56px); z-index: 1000; }
+  .copy-menu { min-width: 200px; max-width: calc(100vw - 56px); z-index: 1000; }
 }
 
 .status-select {
@@ -1588,7 +1588,18 @@ function toggleCopyMenu(taskId) {
   const m = document.getElementById('copyMenu-'+taskId);
   if (!m) return;
   document.querySelectorAll('.copy-menu.show').forEach(el => { if (el !== m) el.classList.remove('show'); });
+  const willShow = !m.classList.contains('show');
   m.classList.toggle('show');
+  if (willShow) {
+    const btn = m.previousElementSibling;
+    const r = btn.getBoundingClientRect();
+    const menuW = m.offsetWidth || 200;
+    let left = r.left;
+    if (left + menuW > window.innerWidth - 8) left = window.innerWidth - menuW - 8;
+    if (left < 8) left = 8;
+    m.style.left = left + 'px';
+    m.style.top = (r.bottom + 6) + 'px';
+  }
 }
 function closeCopyMenus() {
   document.querySelectorAll('.copy-menu.show').forEach(el => el.classList.remove('show'));
