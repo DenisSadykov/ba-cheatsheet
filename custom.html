@@ -340,6 +340,27 @@ body.dark .jira-modal { background: rgba(30,36,44,0.92); }
 .work-task-badges { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .work-task-actions { display: flex; gap: 6px; flex-shrink: 0; }
 
+.copy-menu-wrap { position: relative; }
+.copy-menu {
+  display: none; position: absolute; top: calc(100% + 6px); left: 0; z-index: 50;
+  min-width: 190px; flex-direction: column; gap: 2px; padding: 6px;
+  background: var(--panel-bg); backdrop-filter: blur(20px);
+  border: 1px solid var(--border); border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+}
+.copy-menu.show { display: flex; }
+.copy-menu button {
+  display: block; width: 100%; text-align: left; padding: 8px 10px;
+  border: none; background: transparent; border-radius: 8px;
+  font-size: 13px; color: var(--text); cursor: pointer; font-family: inherit;
+  white-space: nowrap;
+}
+.copy-menu button:hover { background: rgba(0,0,0,0.06); }
+body.dark .copy-menu button:hover { background: rgba(255,255,255,0.08); }
+@media (max-width: 767px) {
+  .copy-menu { left: auto; right: 0; min-width: 200px; }
+}
+
 .status-select {
   padding: 4px 10px 4px 10px; padding-right: 26px;
   border-radius: 99px; border: 1.5px solid rgba(0,0,0,0.15);
@@ -1258,6 +1279,14 @@ function renderWorkView(task) {
           ${(()=>{ const total=task.questions.length, done=task.questions.filter(q=>q.done).length; return total>0?`<div class="progress-bar-wrap" style="max-width:260px;margin-top:8px"><div class="progress-bar-track"><div class="progress-bar-fill${done===total?' done':''}" style="width:${Math.round(done/total*100)}%"></div></div><div class="progress-label">${done} из ${total} вопросов закрыто${done===total?' ✓':''}</div></div>`:''; })()}
         </div>
         <div class="work-task-actions">
+          <div class="copy-menu-wrap">
+            <button class="btn-sm" onclick="toggleCopyMenu('${task.id}')" title="Скопировать заметку">📋 Скопировать</button>
+            <div class="copy-menu" id="copyMenu-${task.id}">
+              <button onclick="copyTaskPlain('${task.id}')">📋 Только текст</button>
+              <button onclick="copyTaskWithAI('${task.id}')">🤖 С промптом для ИИ</button>
+              <button onclick="downloadTaskMd('${task.id}')">⬇ Скачать .md</button>
+            </div>
+          </div>
           <button class="btn-sm" onclick="sendToJira('${task.id}')" title="Создать задачу в Jira">🔗 В Jira</button>
           <button class="btn-sm" onclick="duplicateTask('${task.id}')" title="Создать копию задачи">⧉ Дублировать</button>
           <button class="btn-sm danger" onclick="deleteTask('${task.id}')">Удалить</button>
@@ -1552,6 +1581,54 @@ function exportNote() {
   const task = tasks.find(t=>t.id===activeId);
   if (!task) return;
   navigator.clipboard.writeText(buildNoteText(task)).then(() => showToast('Скопировано в буфер ✓'));
+}
+
+// ══ COPY PER TASK ══
+function toggleCopyMenu(taskId) {
+  const m = document.getElementById('copyMenu-'+taskId);
+  if (!m) return;
+  document.querySelectorAll('.copy-menu.show').forEach(el => { if (el !== m) el.classList.remove('show'); });
+  m.classList.toggle('show');
+}
+function closeCopyMenus() {
+  document.querySelectorAll('.copy-menu.show').forEach(el => el.classList.remove('show'));
+}
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.copy-menu-wrap')) closeCopyMenus();
+});
+function aiPromptTextNote() {
+  return 'Проанализируй эту заметку по задаче и помоги доработать её перед передачей в разработку:\n' +
+    '1. Есть ли пробелы в требованиях?\n' +
+    '2. Какие вопросы остались без ответа и почему это важно?\n' +
+    '3. Достаточно ли критериев приёмки?\n' +
+    '4. Есть ли нерешённые риски без плана действий?\n' +
+    '5. Что нужно уточнить перед стартом разработки?';
+}
+function copyTaskPlain(taskId) {
+  const task = tasks.find(t=>t.id===taskId);
+  if (!task) return;
+  navigator.clipboard.writeText(buildNoteText(task)).then(() => showToast('Скопировано в буфер ✓'));
+  closeCopyMenus();
+}
+function copyTaskWithAI(taskId) {
+  const task = tasks.find(t=>t.id===taskId);
+  if (!task) return;
+  const text = buildNoteText(task) + '\n' + aiPromptTextNote();
+  navigator.clipboard.writeText(text).then(() => showToast('Скопировано с промптом для ИИ ✓'));
+  closeCopyMenus();
+}
+function downloadTaskMd(taskId) {
+  const task = tasks.find(t=>t.id===taskId);
+  if (!task) return;
+  const blob = new Blob([buildNoteText(task)], { type: 'text/markdown' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = (task.name || 'task').replace(/[\\/:*?"<>|]/g, '_') + '.md';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Файл .md сохранён ✓');
+  closeCopyMenus();
 }
 
 function buildNoteText(task) {
