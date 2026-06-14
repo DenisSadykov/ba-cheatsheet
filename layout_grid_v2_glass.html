@@ -802,18 +802,18 @@
     <button class="btn btn-outline topbar-menu-toggle" id="menuToggle" onclick="toggleTopbarMenu()" title="Меню" style="font-size:16px;padding:5px 11px">☰</button>
     <div class="topbar-menu" id="topbarMenu">
       <div class="topbar-divider"></div>
-      <button class="btn btn-outline btn-clear" onclick="clearBoard()" title="Очистить доску">🗑<span class="btn-mobile-label">Очистить доску</span></button>
+      <button class="btn btn-outline btn-clear" onclick="clearBoard()" title="Очистить доску"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg><span class="btn-mobile-label">Очистить доску</span></button>
       <div class="topbar-divider"></div>
       <div class="menu-wrap">
-        <button class="btn btn-primary" onclick="toggleMenu('copyMenu')" title="Скопировать заметки">📋 Копировать</button>
+        <button class="btn btn-primary" onclick="toggleMenu('copyMenu')" title="Скопировать заметки"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Копировать</button>
         <div class="dropdown-menu" id="copyMenu">
-          <button onclick="closeMenus();copyPlain()">📋 Только текст</button>
-          <button onclick="closeMenus();copyWithAI()">🤖 С промптом для ИИ</button>
-          <button onclick="closeMenus();downloadMd()">⬇ Скачать .md</button>
+          <button onclick="closeMenus();copyPlain()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Только текст</button>
+          <button onclick="closeMenus();copyWithAI()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5l4.6-1.9z"/><path d="M19 14l.8 2 .2.8.8.2 2 .8-2 .8-.8.2-.2.8-.8 2-.8-2-.2-.8-.8-.2-2-.8 2-.8.8-.2.2-.8z"/></svg>С промптом для ИИ</button>
+          <button onclick="closeMenus();downloadMd()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Скачать .md</button>
         </div>
       </div>
       <div class="menu-wrap">
-        <button class="btn btn-primary" onclick="toggleMenu('sendMenu')" title="Отправить задачу">📤 Отправить</button>
+        <button class="btn btn-primary" onclick="toggleMenu('sendMenu')" title="Отправить задачу"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Отправить</button>
         <div class="dropdown-menu" id="sendMenu">
           <button onclick="closeMenus();sendSummaryToJira()" class="brand-icon"><span class="brand-badge jira">J</span> В Jira</button>
           <button onclick="closeMenus();sendSummaryToConfluence()" class="brand-icon"><span class="brand-badge confluence">C</span> В Confluence</button>
@@ -823,7 +823,7 @@
       <button class="btn btn-outline connector-icon" id="jiraBtn" onclick="openJiraSettings()" title="Подключение к Jira" style="width:36px;height:36px;padding:0;display:flex;align-items:center;justify-content:center"><span class="brand-badge jira">J</span><span class="btn-mobile-label">Подключить Jira</span></button>
       <button class="btn btn-outline connector-icon" id="confBtn" onclick="openConfluenceSettings()" title="Подключение к Confluence" style="width:36px;height:36px;padding:0;display:flex;align-items:center;justify-content:center"><span class="brand-badge confluence">C</span><span class="btn-mobile-label">Подключить Confluence</span></button>
       <div class="topbar-sep"></div>
-      <button class="btn btn-outline" id="themeBtn" onclick="toggleTheme()" style="width:36px;height:36px;padding:0;font-size:16px;display:flex;align-items:center;justify-content:center"><span id="themeBtnIcon">🌙</span><span class="btn-mobile-label">Тёмная тема</span></button>
+      <button class="btn btn-outline" id="themeBtn" onclick="toggleTheme()" style="width:36px;height:36px;padding:0;font-size:16px;display:flex;align-items:center;justify-content:center"><span id="themeBtnIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span><span class="btn-mobile-label">Тёмная тема</span></button>
     </div>
   </div>
 </div>
@@ -843,7 +843,7 @@
   <div class="column col-1" id="col1">
     <div class="col-head">
       <div class="col-head-left">
-        <div class="col-title">🎯 Контекст</div>
+        <div class="col-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Контекст</div>
         <div class="col-hint">Что хотят сделать и почему</div>
       </div>
       <div class="col-head-sep"></div>
@@ -888,7 +888,7 @@
   <div class="column col-2" id="col2">
     <div class="col-head">
       <div class="col-head-left">
-        <div class="col-title">👥 Стейкхолдеры</div>
+        <div class="col-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Стейкхолдеры</div>
         <div class="col-hint">Кто участвует и кто решает</div>
       </div>
       <div class="col-head-sep"></div>
@@ -929,7 +929,7 @@
   <div class="column col-3" id="col3">
     <div class="col-head">
       <div class="col-head-left">
-        <div class="col-title">🗄 Данные и источники</div>
+        <div class="col-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>Данные и источники</div>
         <div class="col-hint">Откуда данные и кто нужен</div>
       </div>
       <div class="col-head-sep"></div>
@@ -974,7 +974,7 @@
   <div class="column col-4" id="col4">
     <div class="col-head">
       <div class="col-head-left">
-        <div class="col-title">📋 Требования</div>
+        <div class="col-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>Требования</div>
         <div class="col-hint">Что должна делать система</div>
       </div>
       <div class="col-head-sep"></div>
@@ -1019,7 +1019,7 @@
   <div class="column col-5" id="col5">
     <div class="col-head">
       <div class="col-head-left">
-        <div class="col-title">⚡ Риски и шаги</div>
+        <div class="col-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Риски и шаги</div>
         <div class="col-hint">Что может пойти не так</div>
       </div>
       <div class="col-head-sep"></div>
@@ -1062,7 +1062,7 @@
 <div class="col-nav">
   <button class="col-nav-btn" id="colNavPrev" onclick="navCol(-1)">‹</button>
   <div>
-    <div class="col-nav-label" id="colNavLabel">🎯 Контекст</div>
+    <div class="col-nav-label" id="colNavLabel">Контекст</div>
     <div class="col-nav-dots" id="colNavDots"></div>
   </div>
   <button class="col-nav-btn" id="colNavNext" onclick="navCol(1)">›</button>
@@ -1477,13 +1477,13 @@ async function createJiraIssue(summary, adf, cfg) {
     if (res.ok && data.key) return { ok: true, key: data.key };
     return { ok: false, error: 'Ошибка Jira: ' + (data.errorMessages?.[0] || (data.errors ? JSON.stringify(data.errors) : res.status)) };
   } catch (e) {
-    return { ok: false, error: cfg.proxy ? 'Не удалось подключиться (прокси/сеть)' : 'Не удалось подключиться напрямую — нужен CORS-прокси, см. настройки 🔗' };
+    return { ok: false, error: cfg.proxy ? 'Не удалось подключиться (прокси/сеть)' : 'Не удалось подключиться напрямую — нужен CORS-прокси, см. настройки' };
   }
 }
 async function sendSummaryToJira() {
   const cfg = getJiraConfig();
   if (!cfg.site || !cfg.email || !cfg.token || !cfg.project) {
-    toast('Сначала настрой подключение к Jira 🔗');
+    toast('Сначала настрой подключение к Jira');
     openJiraSettings();
     return;
   }
@@ -1586,16 +1586,18 @@ function load() {
 load();
 for (let i = 1; i <= 5; i++) updateCounter(i);
 
+const MOON_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const SUN_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
 function toggleTheme() {
   document.body.classList.toggle('dark');
   const isDark = document.body.classList.contains('dark');
-  document.getElementById('themeBtnIcon').textContent = isDark ? '☀️' : '🌙';
+  document.getElementById('themeBtnIcon').innerHTML = isDark ? SUN_SVG : MOON_SVG;
   localStorage.setItem('ba-theme', isDark ? 'dark' : 'light');
 }
 const _t = localStorage.getItem('ba-theme');
 if (_t === 'dark') {
   document.body.classList.add('dark');
-  document.getElementById('themeBtnIcon').textContent = '☀️';
+  document.getElementById('themeBtnIcon').innerHTML = SUN_SVG;
 }
 
 document.getElementById('featName').addEventListener('input', save);
@@ -1614,7 +1616,7 @@ document.addEventListener('click', (e) => {
 });
 
 // ── НАВИГАЦИЯ ПО КОЛОНКАМ (мобильная версия) ──
-const colTitles = ['🎯 Контекст', '👥 Стейкхолдеры', '🗄 Данные и источники', '📋 Требования', '⚡ Риски и шаги'];
+const colTitles = ['Контекст', 'Стейкхолдеры', 'Данные и источники', 'Требования', 'Риски и шаги'];
 const board = document.querySelector('.board');
 const colNavDots = document.getElementById('colNavDots');
 colTitles.forEach((_, i) => {
@@ -1663,5 +1665,7 @@ board.addEventListener('scroll', () => {
 window.addEventListener('resize', updateColNav);
 updateColNav();
 </script>
+<script src="docs.js"></script>
+<script>initDocs('requirements')</script>
 </body>
 </html>

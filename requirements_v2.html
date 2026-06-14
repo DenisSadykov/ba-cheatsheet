@@ -589,7 +589,7 @@ body.dark .section-line { background: rgba(255,255,255,0.08); }
 
   <nav class="top-nav">
     <a href="index.html" class="back-pill">← Главная</a>
-    <a href="https://boosty.to/denissadykov/donate" target="_blank" rel="noopener" style="font-size:11.5px;color:#9ca3af;text-decoration:none;" onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='#9ca3af'">☕ Поддержать</a>
+    <a href="https://boosty.to/denissadykov/donate" target="_blank" rel="noopener" style="font-size:11.5px;color:#9ca3af;text-decoration:none;" onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='#9ca3af'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:4px"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>Поддержать</a>
     <div style="display:flex;gap:8px">
       <button class="theme-btn connector-icon" id="jiraBtn" onclick="openJiraSettings()" title="Подключение к Jira"><span class="brand-badge jira">J</span></button>
       <button class="theme-btn connector-icon" id="confBtn" onclick="openConfluenceSettings()" title="Подключение к Confluence"><span class="brand-badge confluence">C</span></button>
@@ -724,13 +724,13 @@ body.dark .section-line { background: rgba(255,255,255,0.08); }
           <div class="step-number-inner"><span class="step-number-text">3</span></div>
         </div>
         <div class="step-title-wrap">
-          <div class="step-title">Откуда данные и кто нам нужен? <span class="step-badge">⚠ Самый важный</span></div>
+          <div class="step-title">Откуда данные и кто нам нужен? <span class="step-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Самый важный</span></div>
           <div class="step-subtitle">Проверь: данные есть, дата-аналитик подключён, юридика чистая — иначе фича не взлетит</div>
         </div>
         <div class="step-toggle">⌄</div>
       </div>
       <div class="step-body">
-        <div class="questions-label">Вопросы <span class="risk-tag">⚠ риск</span></div>
+        <div class="questions-label">Вопросы <span class="risk-tag"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>риск</span></div>
         <ul class="questions-list" id="q-3">
           <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Какие данные нужны для работы этой фичи?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Большинство фич требуют данных для работы или измерения результата. Выясни что именно нужно до начала разработки.</div></li>
           <li class="question-wrap"><div class="question-item" onclick="toggleQuestion(this)"><div class="question-check"></div><span class="question-text">Эти данные у нас уже есть? В каком виде и где хранятся?</span><button class="btn-info" onclick="toggleHint(event,this)">i</button></div><div class="question-hint">Если данных нет — фича не взлетит. Это самый частый невидимый риск который обнаруживают уже в середине разработки.</div></li>
@@ -862,9 +862,9 @@ body.dark .section-line { background: rgba(255,255,255,0.08); }
     <div class="summary-header">
       <div class="summary-title">Заметки по всем шагам</div>
       <div class="summary-actions" style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="btn-secondary" onclick="copyPlain()" title="Скопировать только заметки, без промпта">📋 Копировать</button>
-        <button class="btn-secondary" onclick="copyWithAI()" title="Скопировать заметки + промпт для анализа ИИ">🤖 С промптом ИИ</button>
-        <button class="btn-secondary" onclick="downloadMd()" title="Скачать как .md файл">⬇ .md</button>
+        <button class="btn-secondary" onclick="copyPlain()" title="Скопировать только заметки, без промпта"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Копировать</button>
+        <button class="btn-secondary" onclick="copyWithAI()" title="Скопировать заметки + промпт для анализа ИИ"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5l4.6-1.9z"/><path d="M19 14l.8 2 .2.8.8.2 2 .8-2 .8-.8.2-.2.8-.8 2-.8-2-.2-.8-.8-.2-2-.8 2-.8.8-.2.2-.8z"/></svg>С промптом ИИ</button>
+        <button class="btn-secondary" onclick="downloadMd()" title="Скачать как .md файл"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>.md</button>
         <button class="btn-secondary" onclick="sendSummaryToJira()" title="Создать задачу в Jira"><span class="brand-icon"><span class="brand-badge jira">J</span> В Jira</span></button>
         <button class="btn-secondary" onclick="sendSummaryToConfluence()" title="Создать страницу в Confluence"><span class="brand-icon"><span class="brand-badge confluence">C</span> В Confluence</span></button>
       </div>
@@ -1513,14 +1513,14 @@ body.dark .section-line { background: rgba(255,255,255,0.08); }
       if (res.ok && data.key) return { ok: true, key: data.key };
       return { ok: false, error: 'Ошибка Jira: ' + (data.errorMessages?.[0] || (data.errors ? JSON.stringify(data.errors) : res.status)) };
     } catch (e) {
-      return { ok: false, error: cfg.proxy ? 'Не удалось подключиться (прокси/сеть)' : 'Не удалось подключиться напрямую — нужен CORS-прокси, см. настройки 🔗' };
+      return { ok: false, error: cfg.proxy ? 'Не удалось подключиться (прокси/сеть)' : 'Не удалось подключиться напрямую — нужен CORS-прокси, см. настройки' };
     }
   }
 
   async function sendSummaryToJira() {
     const cfg = getJiraConfig();
     if (!cfg.site || !cfg.email || !cfg.token || !cfg.project) {
-      showToast('Сначала настрой подключение к Jira 🔗');
+      showToast('Сначала настрой подключение к Jira');
       openJiraSettings();
       return;
     }
@@ -1551,5 +1551,7 @@ body.dark .section-line { background: rgba(255,255,255,0.08); }
 
   init();
 </script>
+<script src="docs.js"></script>
+<script>initDocs('requirements')</script>
 </body>
 </html>

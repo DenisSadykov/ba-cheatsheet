@@ -605,7 +605,7 @@
 <div class="container">
   <nav class="top-nav">
     <a href="index.html" class="back-pill">← Главная</a>
-    <a href="https://boosty.to/denissadykov/donate" target="_blank" rel="noopener" style="font-size:11.5px;color:#9ca3af;text-decoration:none;" onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='#9ca3af'">☕ Поддержать</a>
+    <a href="https://boosty.to/denissadykov/donate" target="_blank" rel="noopener" style="font-size:11.5px;color:#9ca3af;text-decoration:none;" onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='#9ca3af'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:4px"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>Поддержать</a>
     <div style="display:flex;gap:8px">
       <button class="theme-btn connector-icon" id="jiraBtn" onclick="openJiraSettings()" title="Подключение к Jira"><span class="brand-badge jira">J</span></button>
       <button class="theme-btn connector-icon" id="confBtn" onclick="openConfluenceSettings()" title="Подключение к Confluence"><span class="brand-badge confluence">C</span></button>
@@ -630,15 +630,15 @@
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <div class="menu-wrap">
-          <button class="btn-copy" onclick="toggleMenu('copyMenu')" title="Скопировать заметки">📋 Копировать</button>
+          <button class="btn-copy" onclick="toggleMenu('copyMenu')" title="Скопировать заметки"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Копировать</button>
           <div class="dropdown-menu" id="copyMenu">
-            <button onclick="closeMenus();copyPlain()">📋 Только текст</button>
-            <button onclick="closeMenus();copyWithAI()">🤖 С промптом для ИИ</button>
-            <button onclick="closeMenus();downloadMd()">⬇ Скачать .md</button>
+            <button onclick="closeMenus();copyPlain()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Только текст</button>
+            <button onclick="closeMenus();copyWithAI()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5l4.6-1.9z"/><path d="M19 14l.8 2 .2.8.8.2 2 .8-2 .8-.8.2-.2.8-.8 2-.8-2-.2-.8-.8-.2-2-.8 2-.8.8-.2.2-.8z"/></svg>С промптом для ИИ</button>
+            <button onclick="closeMenus();downloadMd()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Скачать .md</button>
           </div>
         </div>
         <div class="menu-wrap">
-          <button class="btn-copy" onclick="toggleMenu('sendMenu')" title="Отправить готовые задачи">📤 Отправить готовые</button>
+          <button class="btn-copy" onclick="toggleMenu('sendMenu')" title="Отправить готовые задачи"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Отправить готовые</button>
           <div class="dropdown-menu" id="sendMenu">
             <button onclick="closeMenus();sendReadyToJira()" class="brand-icon"><span class="brand-badge jira">J</span> Готовые в Jira</button>
             <button onclick="closeMenus();sendReadyToConfluence()" class="brand-icon"><span class="brand-badge confluence">C</span> Готовые в Confluence</button>
@@ -657,7 +657,7 @@
 
   <div class="task-list" id="taskList">
     <div class="empty-state">
-      <div class="emoji">📋</div>
+      <div class="emoji"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg></div>
       Добавь первую задачу из бэклога
       <p>Активная задача раскрыта на весь экран, остальные свёрнуты в полоску</p>
     </div>
@@ -883,9 +883,9 @@
   // ── RENDER HELPERS ──
   function getStatusLabel(outcome) {
     if (!outcome) return { text: 'В разборе', cls: 'active' };
-    if (outcome === 'ready') return { text: '✅ Готова', cls: 'ready' };
-    if (outcome === 'meeting') return { text: '📅 Нужна встреча', cls: 'meeting' };
-    return { text: '🔄 В бэклог', cls: 'backlog' };
+    if (outcome === 'ready') return { text: 'Готова', cls: 'ready' };
+    if (outcome === 'meeting') return { text: 'Нужна встреча', cls: 'meeting' };
+    return { text: 'В бэклог', cls: 'backlog' };
   }
   function getStripCls(outcome) {
     if (!outcome) return 'status-active';
@@ -1063,7 +1063,7 @@
   function render() {
     const list = document.getElementById('taskList');
     if (tasks.length === 0) {
-      list.innerHTML = `<div class="empty-state"><div class="emoji">📋</div>Добавь первую задачу из бэклога<p>Активная задача раскрыта на весь экран, остальные свёрнуты в полоску</p></div>`;
+      list.innerHTML = `<div class="empty-state"><div class="emoji"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg></div>Добавь первую задачу из бэклога<p>Активная задача раскрыта на весь экран, остальные свёрнуты в полоску</p></div>`;
       return;
     }
     list.innerHTML = tasks.map(t => t.id===activeTaskId ? renderCard(t) : renderStrip(t)).join('');
@@ -1277,7 +1277,7 @@
       if (res.ok && data.key) return { ok: true, key: data.key };
       return { ok: false, error: 'Ошибка Jira: ' + (data.errorMessages?.[0] || (data.errors ? JSON.stringify(data.errors) : res.status)) };
     } catch (e) {
-      return { ok: false, error: cfg.proxy ? 'Не удалось подключиться (прокси/сеть)' : 'Не удалось подключиться напрямую — нужен CORS-прокси, см. настройки 🔗' };
+      return { ok: false, error: cfg.proxy ? 'Не удалось подключиться (прокси/сеть)' : 'Не удалось подключиться напрямую — нужен CORS-прокси, см. настройки' };
     }
   }
 
@@ -1286,7 +1286,7 @@
     if (!t) return;
     const cfg = getJiraConfig();
     if (!cfg.site || !cfg.email || !cfg.token || !cfg.project) {
-      showToast('Сначала настрой подключение к Jira 🔗');
+      showToast('Сначала настрой подключение к Jira');
       openJiraSettings();
       return;
     }
@@ -1303,7 +1303,7 @@
   async function sendReadyToJira() {
     const cfg = getJiraConfig();
     if (!cfg.site || !cfg.email || !cfg.token || !cfg.project) {
-      showToast('Сначала настрой подключение к Jira 🔗');
+      showToast('Сначала настрой подключение к Jira');
       openJiraSettings();
       return;
     }
@@ -1449,5 +1449,7 @@
     setTimeout(() => { t.classList.remove('show'); t.textContent = 'Скопировано в буфер ✓'; }, 2200);
   }
 </script>
+<script src="docs.js"></script>
+<script>initDocs('grooming')</script>
 </body>
 </html>
