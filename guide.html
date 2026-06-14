@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Гайд — BA Toolkit</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%235B5CF6'/><polygon points='36,8 20,36 30,36 26,56 46,28 34,28' fill='white'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-base: #DDE3F0;
+  --glass-bg: rgba(255,255,255,0.52);
+  --glass-bg-hover: rgba(255,255,255,0.70);
+  --glass-border: rgba(255,255,255,0.80);
+  --glass-shadow: 0 2px 0 rgba(255,255,255,0.90) inset, 0 4px 16px rgba(80,80,160,0.08), 0 1px 4px rgba(0,0,0,0.05);
+  --text: #17172A;
+  --text-mid: #4B4B6A;
+  --text-soft: rgba(50,50,90,0.55);
+  --accent: #5B5CF6;
+  --accent-soft: rgba(91,92,246,0.10);
+  --code-bg: rgba(91,92,246,0.10);
+  --note-bg: rgba(91,92,246,0.07);
+  --note-border: rgba(91,92,246,0.30);
+  --warn-bg: rgba(217,119,6,0.09);
+  --warn-border: rgba(217,119,6,0.35);
+  --warn-text: #B45309;
+  --ok-bg: rgba(8,145,128,0.09);
+  --ok-border: rgba(8,145,128,0.32);
+  --ok-text: #0F766E;
+  --blob1: rgba(100,104,230,0.20);
+  --blob2: rgba(14,140,126,0.16);
+  --blob4: rgba(139,92,246,0.12);
+}
+body.dark {
+  --bg-base: #0D1117;
+  --glass-bg: rgba(255,255,255,0.055);
+  --glass-bg-hover: rgba(255,255,255,0.095);
+  --glass-border: rgba(255,255,255,0.10);
+  --glass-shadow: 0 1px 0 rgba(255,255,255,0.07) inset, 0 4px 20px rgba(0,0,0,0.35);
+  --text: #E6EDF3;
+  --text-mid: rgba(180,195,220,0.78);
+  --text-soft: rgba(160,180,210,0.45);
+  --accent: #818CF8;
+  --accent-soft: rgba(129,140,248,0.12);
+  --code-bg: rgba(129,140,248,0.14);
+  --note-bg: rgba(129,140,248,0.08);
+  --note-border: rgba(129,140,248,0.30);
+  --warn-bg: rgba(245,158,11,0.10);
+  --warn-border: rgba(245,158,11,0.32);
+  --warn-text: #FBBF24;
+  --ok-bg: rgba(16,185,160,0.10);
+  --ok-border: rgba(16,185,160,0.30);
+  --ok-text: #34D399;
+  --blob1: rgba(120,124,255,0.28);
+  --blob2: rgba(8,145,178,0.22);
+  --blob4: rgba(160,100,255,0.20);
+}
+
+html { overflow-x: hidden; scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg-base); color: var(--text);
+  min-height: 100vh; line-height: 1.65;
+  -webkit-font-smoothing: antialiased; position: relative;
+}
+.mesh { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.blob { position: absolute; border-radius: 50%; filter: blur(90px); }
+.blob-1 { width: 600px; height: 600px; background: var(--blob1); top: -240px; left: -180px; }
+.blob-2 { width: 460px; height: 460px; background: var(--blob2); bottom: -160px; right: -140px; }
+.blob-4 { width: 300px; height: 300px; background: var(--blob4); top: 40%; left: 50%; }
+
+/* Theme toggle */
+.theme-toggle {
+  position: fixed; top: 20px; right: 20px; z-index: 100;
+  width: 38px; height: 38px; border-radius: 12px;
+  border: 1px solid var(--glass-border); background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%);
+  box-shadow: var(--glass-shadow); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .2s cubic-bezier(.34,1.4,.64,1); color: var(--text-mid);
+}
+.theme-toggle:hover { transform: scale(1.1); }
+.theme-toggle svg { width: 17px; height: 17px; }
+.icon-sun { display: none; }
+body.dark .icon-moon { display: none; }
+body.dark .icon-sun { display: block; color: #FCD34D; }
+
+/* Layout */
+.wrap { position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; padding: 0 24px;
+  display: grid; grid-template-columns: 248px 1fr; gap: 40px; }
+.back-pill {
+  display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600;
+  color: var(--text-mid); text-decoration: none; padding: 8px 14px; border-radius: 10px;
+  border: 1px solid var(--glass-border); background: var(--glass-bg); margin: 22px 0 0;
+  backdrop-filter: blur(20px); transition: background .15s;
+}
+.back-pill:hover { background: var(--glass-bg-hover); }
+
+/* Sidebar TOC */
+.toc { position: sticky; top: 22px; align-self: start; padding: 22px 0; max-height: calc(100vh - 44px); overflow-y: auto; }
+.toc-brand { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 17px; letter-spacing: -0.02em; margin-bottom: 4px; }
+.toc-sub { font-size: 12px; color: var(--text-soft); margin-bottom: 18px; }
+.toc a {
+  display: block; font-size: 13px; color: var(--text-mid); text-decoration: none;
+  padding: 6px 12px; border-radius: 8px; border-left: 2px solid transparent; transition: all .12s;
+}
+.toc a:hover { color: var(--text); background: var(--accent-soft); }
+.toc a.active { color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+.toc-group { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-soft); margin: 16px 0 6px 12px; }
+
+/* Content */
+.content { padding: 24px 0 100px; max-width: 760px; }
+.content h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 34px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 10px; }
+.lead { font-size: 16px; color: var(--text-mid); margin-bottom: 8px; }
+section { scroll-margin-top: 22px; padding-top: 40px; }
+section h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 23px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--glass-border); }
+section h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 17px; font-weight: 700; margin: 22px 0 8px; }
+section p { color: var(--text-mid); margin-bottom: 12px; }
+section ul, section ol { margin: 0 0 14px 20px; color: var(--text-mid); }
+section li { margin-bottom: 7px; }
+section a { color: var(--accent); }
+strong { color: var(--text); font-weight: 600; }
+code { font-family: 'SF Mono', ui-monospace, Menlo, monospace; font-size: 12.5px; background: var(--code-bg); color: var(--accent); padding: 2px 6px; border-radius: 5px; }
+
+.note, .warn, .ok { border-radius: 12px; padding: 14px 16px; margin: 16px 0; font-size: 14px; border: 1px solid; }
+.note { background: var(--note-bg); border-color: var(--note-border); color: var(--text-mid); }
+.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+.warn strong, .warn b { color: var(--warn-text); }
+.ok { background: var(--ok-bg); border-color: var(--ok-border); }
+.ok strong, .ok b { color: var(--ok-text); }
+.callout-label { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+.warn .callout-label { color: var(--warn-text); }
+.ok .callout-label { color: var(--ok-text); }
+.note .callout-label { color: var(--accent); }
+
+.steps { counter-reset: step; list-style: none; margin-left: 0; }
+.steps > li { counter-increment: step; position: relative; padding-left: 38px; margin-bottom: 14px; }
+.steps > li::before { content: counter(step); position: absolute; left: 0; top: -1px;
+  width: 26px; height: 26px; border-radius: 8px; background: var(--accent); color: #fff;
+  font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+
+.faq-q { font-weight: 600; color: var(--text); margin: 18px 0 4px; }
+.faq-q::before { content: "— "; color: var(--accent); }
+
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: 1fr; gap: 0; }
+  .toc { position: static; max-height: none; padding: 8px 0 0; }
+  .toc a { display: inline-block; }
+  .content { padding-top: 12px; }
+}
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" title="Переключить тему">
+  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+</button>
+
+<div class="mesh"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-4"></div></div>
+
+<div class="wrap">
+
+  <aside class="toc">
+    <a class="back-pill" href="index.html">← На главную</a>
+    <div style="margin-top:18px">
+      <div class="toc-brand">Гайд</div>
+      <div class="toc-sub">Полное руководство по BA Toolkit</div>
+    </div>
+    <div class="toc-group">Начало</div>
+    <a href="#start">С чего начать</a>
+    <a href="#method">Методология: почему так</a>
+    <div class="toc-group">Инструменты</div>
+    <a href="#req-steps">Сбор требований · по шагам</a>
+    <a href="#req-grid">Сбор требований · доска</a>
+    <a href="#problem">Встреча по проблеме</a>
+    <a href="#grooming">Груминг бэклога</a>
+    <a href="#custom">Произвольная заметка</a>
+    <div class="toc-group">Интеграции</div>
+    <a href="#proxy">CORS-прокси</a>
+    <a href="#jira">Подключение Jira</a>
+    <a href="#confluence">Подключение Confluence</a>
+    <a href="#export">Экспорт результата</a>
+    <div class="toc-group">Помощь</div>
+    <a href="#faq">Частые проблемы</a>
+  </aside>
+
+  <main class="content">
+    <h1>Руководство по BA Toolkit</h1>
+    <p class="lead">Набор браузерных инструментов для бизнес-аналитика: от формулировки проблемы
+    до груминга задач и выгрузки в Jira / Confluence. Всё работает локально — без установки и без сервера.</p>
+
+    <section id="start">
+      <h2>С чего начать</h2>
+      <p>BA Toolkit — это не одна программа, а несколько отдельных шаблонов под разные рабочие ситуации.
+      Открой <a href="index.html">главную</a> и выбери инструмент под свою задачу:</p>
+      <ul>
+        <li><strong>Не понимаешь, что именно делать</strong> → «Встреча по проблеме».</li>
+        <li><strong>Нужно собрать требования к фиче</strong> → «Сбор требований» (по шагам — если хочешь, чтобы вели за руку; доска — если хочешь видеть всё сразу).</li>
+        <li><strong>Готовишь задачу к обсуждению с командой</strong> → «Груминг бэклога».</li>
+        <li><strong>Ничего из этого не подходит</strong> → «Произвольная заметка».</li>
+      </ul>
+      <div class="note">
+        <span class="callout-label">Как хранятся данные</span>
+        Всё, что ты вводишь, сохраняется только в твоём браузере (localStorage). Можно закрыть вкладку
+        и вернуться позже — данные останутся. Но на другом устройстве их не будет: синхронизации между
+        устройствами пока нет.
+      </div>
+    </section>
+
+    <section id="method">
+      <h2>Методология: почему инструменты устроены именно так</h2>
+      <p>Шаблоны не случайны — в них зашит рабочий подход бизнес-аналитика. Понимание «почему» важнее, чем знание «куда нажать».</p>
+      <h3>Сначала проблема, потом решение</h3>
+      <p>Стейкхолдер почти всегда приходит с готовым решением («сделайте кнопку», «добавьте отчёт»).
+      Задача аналитика — откатиться на шаг назад и понять <em>проблему</em>, которую он пытается решить.
+      Часто оказывается, что нужная фича — другая. Поэтому в «Сборе требований» первый шаг — именно про проблему, а не про фичу.</p>
+      <h3>Измеримый результат</h3>
+      <p>«Станет лучше» — не цель. Цель — «время оформления заявки снизится с 8 до 3 минут».
+      Если результат нельзя измерить, непонятно, выполнена ли задача. Поэтому шаблоны просят конкретную метрику.</p>
+      <h3>Данные и доступы — раньше, чем код</h3>
+      <p>Самая частая причина, по которой фича не взлетает, — данных нет, доступ не дали или юридика не пропустила.
+      Это надо проверять <em>до</em> начала разработки, а не после. Поэтому в требованиях есть отдельный шаг про источники данных.</p>
+    </section>
+
+    <section id="req-steps">
+      <h2>Сбор требований · по шагам</h2>
+      <p>Подходит, когда ведёшь встречу и хочешь ничего не упустить. Инструмент проводит через 5 шагов:
+      проблема → результат и метрики → данные и доступы → скоуп и дедлайн → фиксация и следующие шаги.</p>
+      <ol>
+        <li>Заполни шапку: название фичи, стейкхолдер, команда, кто принимает решение.</li>
+        <li>Раскрывай шаги по очереди, отмечай галочками проработанные вопросы.</li>
+        <li>Справа автоматически собирается итоговый конспект.</li>
+        <li>В конце — скопируй результат или отправь в Jira / Confluence.</li>
+      </ol>
+      <div class="note"><span class="callout-label">Совет</span>
+      Таймер вверху помогает держать встречу в рамках — включи его в начале разговора.</div>
+    </section>
+
+    <section id="req-grid">
+      <h2>Сбор требований · открытая доска</h2>
+      <p>Та же логика, но все блоки видны сразу в виде колонок (Контекст, Стейкхолдеры, Данные, Требования, Риски).
+      Подходит, когда разговор идёт нелинейно и ты перескакиваешь между темами — заполняй в любом порядке.</p>
+      <ul>
+        <li>В каждой колонке можно добавлять свои поля кнопкой «+».</li>
+        <li>Внизу каждой колонки — поле «Вывод по шагу» для краткого итога.</li>
+        <li>Счётчик у заголовка колонки показывает заполненность.</li>
+      </ul>
+    </section>
+
+    <section id="problem">
+      <h2>Встреча по проблеме</h2>
+      <p>Для инцидентов и багов, когда нужно быстро локализовать причину и принять решение.
+      Сначала выбери уровень критичности (P1 / P2 / P3) — от него зависит срочность реакции.</p>
+      <ul>
+        <li>Структура ведёт от симптомов к гипотезам причин и решению.</li>
+        <li>Результат можно отправить как описание задачи в Jira.</li>
+      </ul>
+    </section>
+
+    <section id="grooming">
+      <h2>Груминг бэклога</h2>
+      <p>Подготовка задач к обсуждению с командой. Разбирай задачи по одной: формулировка, вопросы и ответы,
+      решения, хвосты (что осталось выяснить), оценка.</p>
+      <ul>
+        <li>Каждой задаче можно выставить исход: готова / нужна встреча / в бэклог.</li>
+        <li>Готовые задачи можно пачкой отправить в Jira.</li>
+      </ul>
+    </section>
+
+    <section id="custom">
+      <h2>Произвольная заметка</h2>
+      <p>Гибкий формат для всего, что не укладывается в другие шаблоны. Создавай задачи, задавай свои вопросы,
+      веди заметки в свободной форме. Поддерживает статусы, скратчпад и тот же экспорт в Jira / Confluence.</p>
+    </section>
+
+    <section id="proxy">
+      <h2>CORS-прокси — зачем он нужен</h2>
+      <p>Jira и Confluence в облаке (Atlassian Cloud) <strong>не разрешают</strong> браузеру обращаться к ним напрямую
+      из стороннего веб-приложения — это блокирует механизм безопасности CORS. Поэтому между BA Toolkit и Atlassian
+      нужен маленький посредник — прокси, который ты разворачиваешь у себя за пару минут.</p>
+      <div class="ok"><span class="callout-label">Важно про безопасность</span>
+      Прокси разворачивается в <strong>твоём</strong> аккаунте Cloudflare и работает только с адресами
+      <code>*.atlassian.net</code>. Он ничего не логирует и не хранит — ни токены, ни данные. Один и тот же прокси
+      подходит и для Jira, и для Confluence.</div>
+      <p>Развернуть бесплатно (выбери один способ):</p>
+      <ol class="steps">
+        <li><strong>Через GitHub</strong> — кнопка «Deploy to Cloudflare Workers» форкнет репозиторий и настроит автодеплой.</li>
+        <li><strong>Без GitHub</strong> — создай Worker вручную из шаблона «Hello World», вставь код из <code>src/index.js</code>, нажми «Save and Deploy».</li>
+      </ol>
+      <p>Полная инструкция со скриншотами и кнопками — в репозитории
+      <a href="https://github.com/DenisSadykov/jira-cors-proxy-for-bsa-toolkit" target="_blank" rel="noopener">jira-cors-proxy-for-bsa-toolkit</a>.
+      После деплоя ты получишь адрес вида <code>https://jira-cors-proxy.&lt;аккаунт&gt;.workers.dev</code> — он понадобится ниже.</p>
+    </section>
+
+    <section id="jira">
+      <h2>Подключение к Jira</h2>
+      <p>Нажми значок <strong>J</strong> в шапке любого инструмента и заполни:</p>
+      <ol class="steps">
+        <li><strong>Адрес Jira</strong> — твой сайт Atlassian, например <code>your-company.atlassian.net</code> (без <code>https://</code>).</li>
+        <li><strong>Email</strong> — почта твоей учётной записи Atlassian.</li>
+        <li><strong>API-токен</strong> — создай на <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" rel="noopener">id.atlassian.com</a> → «Create API token». Скопируй сразу — потом он не покажется.</li>
+        <li><strong>Код проекта</strong> — короткий префикс задач, например <code>PROJ</code> (виден в ключах задач: <code>PROJ-123</code>).</li>
+        <li><strong>Proxy URL</strong> — адрес прокси из раздела выше.</li>
+      </ol>
+      <p>Нажми «Сохранить». Значок <strong>J</strong> станет активным — подключение готово.</p>
+      <div class="note"><span class="callout-label">Где хранится токен</span>
+      Только в localStorage твоего браузера. Он отправляется напрямую в Jira (через твой прокси) и больше никуда.</div>
+    </section>
+
+    <section id="confluence">
+      <h2>Подключение к Confluence</h2>
+      <p>Нажми значок <strong>C</strong> в шапке. Email и API-токен — те же, что и для Jira (можно использовать один токен). Отличие — нужен <strong>Space ID</strong> пространства, куда создавать страницы.</p>
+      <h3>Как найти Space ID</h3>
+      <p>Space ID — это числовой идентификатор пространства (не буквенный ключ). Самый надёжный способ:</p>
+      <ol class="steps">
+        <li>Открой в браузере, где ты авторизован в Confluence, адрес:<br>
+          <code>https://&lt;твой-сайт&gt;.atlassian.net/wiki/api/v2/spaces</code></li>
+        <li>В ответе (JSON) найди нужное пространство по полю <code>"name"</code> или <code>"key"</code>.</li>
+        <li>Рядом будет поле <code>"id"</code> с числом — это и есть Space ID.</li>
+      </ol>
+      <div class="warn"><span class="callout-label">Если список пуст</span>
+      Ответ <code>{"results":[]}</code> означает, что у тебя ещё нет ни одного пространства. Создай его на странице
+      <code>/wiki/spaces</code> кнопкой «Создать раздел», затем повтори запрос.</div>
+      <p>Заполни поля (адрес, email, токен, Space ID, Proxy URL) и нажми «Сохранить».</p>
+    </section>
+
+    <section id="export">
+      <h2>Экспорт результата</h2>
+      <p>Из любого инструмента готовый конспект можно вынести несколькими способами:</p>
+      <ul>
+        <li><strong>Копировать</strong> — простой текст в буфер обмена.</li>
+        <li><strong>С промптом для ИИ</strong> — тот же конспект плюс готовый запрос, чтобы вставить в ChatGPT / Claude и попросить проанализировать или дописать.</li>
+        <li><strong>Скачать .md</strong> — выгрузка в Markdown-файл для вики или заметок.</li>
+        <li><strong>В Jira</strong> — создаёт задачу с конспектом в теле (нужно подключение).</li>
+        <li><strong>В Confluence</strong> — создаёт страницу в выбранном пространстве (нужно подключение).</li>
+      </ul>
+    </section>
+
+    <section id="faq">
+      <h2>Частые проблемы</h2>
+
+      <p class="faq-q">Нажимаю «В Jira», но ничего не происходит / ошибка сети</p>
+      <p>Скорее всего не указан Proxy URL или прокси не развёрнут. Браузер не может ходить в Atlassian напрямую —
+      проверь раздел <a href="#proxy">CORS-прокси</a> и поле Proxy URL в настройках подключения.</p>
+
+      <p class="faq-q">Ошибка 401 / 403 при отправке</p>
+      <p>Неверный email или API-токен, либо у токена нет прав на проект/пространство. Перевыпусти токен на
+      <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" rel="noopener">id.atlassian.com</a>
+      и проверь, что email совпадает с аккаунтом.</p>
+
+      <p class="faq-q">Ошибка 403 «only *.atlassian.net is allowed»</p>
+      <p>В адресе сайта опечатка или указан не тот домен. Прокси по соображениям безопасности работает только с адресами
+      <code>*.atlassian.net</code> — проверь поле «Адрес».</p>
+
+      <p class="faq-q">Confluence: «не удалось создать страницу»</p>
+      <p>Чаще всего неверный Space ID (нужно <em>число</em>, а не буквенный ключ) или у тебя нет прав на запись в это пространство.
+      См. <a href="#confluence">как найти Space ID</a>.</p>
+
+      <p class="faq-q">Открыл инструмент на другом компьютере — данные пропали</p>
+      <p>Это ожидаемо: данные хранятся локально в браузере и между устройствами не синхронизируются. На каждом устройстве
+      настройки и заметки свои.</p>
+
+      <p class="faq-q">Случайно очистил доску / удалил задачу</p>
+      <p>Восстановления нет — данные хранятся только в браузере. Перед очисткой выгружай важное через «Скачать .md».</p>
+    </section>
+  </main>
+</div>
+
+<script>
+  const tg = document.getElementById('themeToggle');
+  if (localStorage.getItem('ba-theme') === 'dark') document.body.classList.add('dark');
+  tg.addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('ba-theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+  });
+
+  const links = [...document.querySelectorAll('.toc a[href^="#"]')];
+  const sections = links.map(a => document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.toggle('active', l.getAttribute('href').slice(1) === e.target.id));
+      }
+    });
+  }, { rootMargin: '-10% 0px -80% 0px' });
+  sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>

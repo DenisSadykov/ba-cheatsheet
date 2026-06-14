@@ -138,6 +138,18 @@ function initDocs(currentPageId) {
     .docs-item-content p { margin: 6px 0; }
     .docs-item-content code { background: rgba(99,102,241,0.12); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
     .docs-item-content a { color: #6366F1; }
+    .docs-guide-link {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      text-decoration: none; padding: 12px 14px; margin: 6px 0 10px;
+      border-radius: 10px; background: linear-gradient(135deg, rgba(129,140,248,0.16), rgba(99,102,241,0.12));
+      border: 1px solid rgba(99,102,241,0.28); transition: background .15s, transform .12s;
+    }
+    .docs-guide-link:hover { background: linear-gradient(135deg, rgba(129,140,248,0.24), rgba(99,102,241,0.18)); transform: translateX(2px); }
+    .docs-guide-title { display: block; font-weight: 700; font-size: 13.5px; color: #6366F1; }
+    body.dark .docs-guide-title { color: #A5B4FC; }
+    .docs-guide-sub { display: block; font-size: 11.5px; color: inherit; opacity: 0.75; margin-top: 2px; }
+    .docs-guide-arrow { font-size: 18px; color: #6366F1; flex-shrink: 0; }
+    body.dark .docs-guide-arrow { color: #A5B4FC; }
   `;
   document.head.appendChild(style);
 
@@ -152,7 +164,15 @@ function initDocs(currentPageId) {
       <span>Документация</span>
       <button class="docs-close" title="Закрыть">×</button>
     </div>
-    <div class="docs-modal-body"></div>
+    <div class="docs-modal-body">
+      <a class="docs-guide-link" href="guide.html">
+        <span>
+          <span class="docs-guide-title">Полное руководство</span>
+          <span class="docs-guide-sub">Подключение, методология, частые проблемы</span>
+        </span>
+        <span class="docs-guide-arrow">→</span>
+      </a>
+    </div>
   `;
   document.body.appendChild(modal);
 
